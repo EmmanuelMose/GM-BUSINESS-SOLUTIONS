@@ -1,0 +1,30 @@
+.products-section {
+  padding: 64px 0;
+}
+.products-header {
+  margin-bottom: 32px;
+}
+.products-title {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.products-sub {
+  font-size: 14px;
+  color: var(--gray-500);
+  margin-top: 4px;
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+}
+.products-empty {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--gray-500);
+  border: 1px dashed var(--gray-200);
+  border-radius: 12px;
+  background: white;
+}

@@ -1,0 +1,48 @@
+.fulfillment-container {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  background: white;
+}
+.fulfillment-tabs {
+  display: flex;
+  gap: 8px;
+  background: var(--surface);
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--gray-200);
+  margin-bottom: 12px;
+}
+.fulfillment-tab {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: var(--radius-control);
+  font-weight: 700;
+  font-size: 12px;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+  color: var(--gray-500);
+}
+.fulfillment-tab-active {
+  background: white;
+  border: 1px solid var(--gray-200);
+  color: var(--gray-900);
+}
+.fulfillment-text {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-top: 8px;
+}
+.fulfillment-text strong {
+  color: var(--gray-900);
+}
+.fulfillment-link {
+  display: inline-flex;
+  color: var(--brand-500);
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+.fulfillment-link:hover {
+  text-decoration: underline;
+}

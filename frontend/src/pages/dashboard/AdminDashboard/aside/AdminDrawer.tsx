@@ -1,0 +1,69 @@
+import { NavLink, useNavigate } from 'react-router-dom';
+import { adminDrawerData, type DrawerItem } from './drawerData';
+import './AdminDrawer.css';
+
+interface AdminDrawerProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+export default function AdminDrawer({ isOpen, onToggle }: AdminDrawerProps) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
+    navigate('/login');
+  };
+
+  return (
+    <aside className={`admin-drawer ${isOpen ? 'open' : 'closed'}`}>
+      <div className="drawer-header">
+        <span className={`drawer-logo ${isOpen ? 'visible' : 'hidden'}`}>
+          Naoja <span className="logo-dot">.</span>
+        </span>
+        <button onClick={onToggle} className="drawer-toggle">
+          {isOpen ? '◀' : '▶'}
+        </button>
+      </div>
+
+      <nav className="drawer-nav">
+        {adminDrawerData.map((item: DrawerItem) => {
+          if (item.id === 'logout') {
+            return (
+              <button
+                key={item.id}
+                onClick={handleLogout}
+                className="drawer-item logout"
+              >
+                <span className="drawer-icon">{item.icon}</span>
+                {isOpen && <span className="drawer-label">{item.name}</span>}
+              </button>
+            );
+          }
+
+          return (
+            <NavLink
+              key={item.id}
+              to={item.link}
+              className={({ isActive }) =>
+                `drawer-item ${isActive ? 'active' : ''}`
+              }
+            >
+              <span className="drawer-icon">{item.icon}</span>
+              {isOpen && <span className="drawer-label">{item.name}</span>}
+            </NavLink>
+          );
+        })}
+      </nav>
+
+      <div className={`drawer-footer ${isOpen ? 'visible' : 'hidden'}`}>
+        <p>© {new Date().getFullYear()} Naoja Ventures</p>
+        <p className="drawer-version">v1.0.0</p>
+      </div>
+    </aside>
+  );
+}

@@ -1,0 +1,40 @@
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.qty-btn {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-control);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+.qty-btn:hover {
+  background: var(--surface);
+}
+.qty-btn-sm {
+  width: 32px;
+  height: 32px;
+}
+.qty-btn-md {
+  width: 40px;
+  height: 40px;
+}
+.qty-value {
+  font-weight: 700;
+  text-align: center;
+  width: 24px;
+}
+.qty-value-sm {
+  font-size: 14px;
+}
+.qty-value-md {
+  font-size: 16px;
+}

@@ -1,0 +1,17 @@
+.filter-select {
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-control);
+  font-size: 14px;
+  outline: none;
+  background: white;
+  min-width: 150px;
+}
+.filter-select:focus {
+  border-color: var(--brand-500);
+}
+.action-btn.view:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+}

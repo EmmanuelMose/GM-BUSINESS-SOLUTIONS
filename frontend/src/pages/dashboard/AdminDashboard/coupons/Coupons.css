@@ -1,0 +1,7 @@
+.coupon-code {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--brand-600);
+  letter-spacing: 0.05em;
+}

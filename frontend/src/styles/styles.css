@@ -1,0 +1,175 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  background-color: #f9fafb;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+input,
+textarea,
+select {
+  font-family: inherit;
+  outline: none;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+:root {
+  --brand-50: #e8f5ee;
+  --brand-100: #d1ebdd;
+  --brand-200: #bfe8d3;
+  --brand-300: #8dd5b5;
+  --brand-400: #5bc297;
+  --brand-500: #0b6b3a;
+  --brand-600: #0a5d33;
+  --brand-700: #08512c;
+  --brand-800: #063e22;
+  --brand-900: #042b18;
+  --surface: #f6f8f7;
+  --surface-card: #ffffff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --radius-card: 12px;
+  --radius-control: 10px;
+  --shadow-hover: 0 8px 20px rgba(16, 24, 40, 0.08);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+}
+.text-brand {
+  color: var(--brand-500);
+}
+.bg-brand {
+  background: var(--brand-500);
+}
+.bg-brand-light {
+  background: var(--brand-50);
+}
+.btn-primary {
+  height: 44px;
+  padding: 0 16px;
+  background: var(--brand-500);
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--radius-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: var(--brand-600);
+}
+.btn-primary:disabled {
+  background: var(--gray-200);
+  color: var(--gray-400);
+  cursor: not-allowed;
+}
+.btn-secondary {
+  height: 44px;
+  padding: 0 16px;
+  background: #fff;
+  border: 1px solid var(--brand-500);
+  color: var(--brand-500);
+  font-weight: 600;
+  border-radius: var(--radius-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s;
+}
+.btn-secondary:hover {
+  background: var(--brand-50);
+}
+.btn-whatsapp {
+  height: 44px;
+  padding: 0 16px;
+  background: #25d366;
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--radius-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s;
+}
+.btn-whatsapp:hover {
+  background: #20ba56;
+}
+.btn-full {
+  width: 100%;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--brand-400);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-500);
+}
+@media (min-width: 640px) {
+  .hide-sm {
+    display: inline !important;
+  }
+}
+@media (min-width: 768px) {
+  .hide-md {
+    display: flex !important;
+  }
+}
+@media (min-width: 1024px) {
+  .hide-lg {
+    display: inline !important;
+  }
+}
+.hide-sm {
+  display: none;
+}
+.hide-md {
+  display: none;
+}
+.hide-lg {
+  display: none;
+}

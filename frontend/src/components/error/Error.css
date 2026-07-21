@@ -1,0 +1,31 @@
+.error-page {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+}
+.error-content {
+  text-align: center;
+  max-width: 500px;
+}
+.error-code {
+  font-family: var(--font-serif);
+  font-size: 120px;
+  font-weight: 700;
+  color: var(--gray-200);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.error-title {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+.error-message {
+  color: var(--gray-500);
+  font-size: 16px;
+  margin-bottom: 24px;
+}

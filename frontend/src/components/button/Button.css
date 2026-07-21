@@ -1,0 +1,36 @@
+.btn-custom {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+.btn-primary-custom {
+  background: var(--brand-500);
+  color: white;
+}
+.btn-primary-custom:hover {
+  background: var(--brand-600);
+}
+.btn-primary-custom:disabled {
+  background: var(--gray-200);
+  color: var(--gray-400);
+  cursor: not-allowed;
+}
+.btn-secondary-custom {
+  background: white;
+  border: 1px solid var(--brand-500);
+  color: var(--brand-500);
+}
+.btn-secondary-custom:hover {
+  background: var(--brand-50);
+}
+.btn-full-custom {
+  width: 100%;
+}
