@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import ProductCard from '../productcard/ProductCard';
 import Loader from '../loader/Loader';
 import { productsAPI, type Product } from '../../Features/products/productsAPI';
-import './Products.css';
+import './products.css';
 
 export default function Products() {
   const location = useLocation();
