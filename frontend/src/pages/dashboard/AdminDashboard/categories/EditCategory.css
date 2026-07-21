@@ -1,0 +1,14 @@
+.category-form {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-card);
+  padding: 24px;
+}
+.description-group {
+  grid-column: 1 / -1;
+}
+@media (max-width: 768px) {
+  .description-group {
+    grid-column: 1 / -1;
+  }
+}

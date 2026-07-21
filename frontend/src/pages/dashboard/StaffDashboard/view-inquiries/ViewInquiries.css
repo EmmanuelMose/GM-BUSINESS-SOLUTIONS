@@ -1,0 +1,78 @@
+.inquiries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.inquiry-card {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+.inquiry-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+.inquiry-card.unread {
+  border-left: 4px solid var(--brand-500);
+  background: var(--brand-50);
+}
+.inquiry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.inquiry-sender {
+  display: flex;
+  flex-direction: column;
+}
+.inquiry-name {
+  font-weight: 600;
+  color: var(--gray-900);
+}
+.inquiry-email {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+.inquiry-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.inquiry-date {
+  font-size: 12px;
+  color: var(--gray-400);
+}
+.inquiry-message {
+  color: var(--gray-700);
+  font-size: 14px;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+.inquiry-phone {
+  font-size: 13px;
+  color: var(--gray-600);
+  margin-top: 4px;
+}
+.inquiry-actions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-100);
+}
+.mark-read-btn {
+  padding: 6px 20px;
+  background: var(--brand-500);
+  color: white;
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+.mark-read-btn:hover {
+  background: var(--brand-600);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(11, 107, 58, 0.3);
+}

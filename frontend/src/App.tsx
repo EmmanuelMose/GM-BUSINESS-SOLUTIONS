@@ -6,6 +6,7 @@ import ProductPage from "./pages/ProductPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import AccountPage from "./pages/AccountPage";
+import WishlistPage from "./pages/WishlistPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgetPassword";
@@ -16,7 +17,11 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import AdminDashboard from "./pages/dashboard/AdminDashboard/AdminDashboard";
 import AdminDashboardOverview from "./pages/dashboard/AdminDashboard/admindashboard/AdminDashboardOverview";
 import Products from "./pages/dashboard/AdminDashboard/products/Products";
+import CreateProduct from "./pages/dashboard/AdminDashboard/products/CreateProduct";
+import EditProduct from "./pages/dashboard/AdminDashboard/products/EditProduct";
 import Categories from "./pages/dashboard/AdminDashboard/categories/Categories";
+import CreateCategory from "./pages/dashboard/AdminDashboard/categories/CreateCategory";
+import EditCategory from "./pages/dashboard/AdminDashboard/categories/EditCategory";
 import Orders from "./pages/dashboard/AdminDashboard/orders/Orders";
 import Reviews from "./pages/dashboard/AdminDashboard/reviews/Reviews";
 import Coupons from "./pages/dashboard/AdminDashboard/coupons/Coupons";
@@ -24,12 +29,24 @@ import Inquiries from "./pages/dashboard/AdminDashboard/inquiries/Inquiries";
 import Analytics from "./pages/dashboard/AdminDashboard/analytics/Analytics";
 import Reports from "./pages/dashboard/AdminDashboard/reports/Reports";
 import ManageUsers from "./pages/dashboard/AdminDashboard/manage-users/ManageUsers";
+import ManageStaff from "./pages/dashboard/AdminDashboard/manage-staff/ManageStaff";
+import ManageAdmins from "./pages/dashboard/AdminDashboard/manage-admins/ManageAdmins";
+import PickupStations from "./pages/dashboard/AdminDashboard/pickup-stations/PickupStations";
+import CreatePickupStation from "./pages/dashboard/AdminDashboard/pickup-stations/CreatePickupStation";
+import EditPickupStation from "./pages/dashboard/AdminDashboard/pickup-stations/EditPickupStation";
+
+import StaffDashboard from "./pages/dashboard/StaffDashboard/StaffDashboard";
+import StaffDashboardOverview from "./pages/dashboard/StaffDashboard/staffdashboard/StaffDashboardOverview";
+import ManageAdminsStaff from "./pages/dashboard/StaffDashboard/manage-admins/ManageAdmins";
+import ViewOrders from "./pages/dashboard/StaffDashboard/view-orders/ViewOrders";
+import ViewInquiries from "./pages/dashboard/StaffDashboard/view-inquiries/ViewInquiries";
 
 import Error from "./components/error/Error";
 import "./styles/styles.css";
 
 function App() {
   const isAdmin = localStorage.getItem('userRole') === 'admin';
+  const isStaff = localStorage.getItem('userRole') === 'staff';
 
   const router = createBrowserRouter([
     {
@@ -56,6 +73,10 @@ function App() {
     {
       path: "/account",
       element: <AccountPage />,
+    },
+    {
+      path: "/wishlist",
+      element: <WishlistPage />,
     },
     {
       path: "/login",
@@ -88,7 +109,11 @@ function App() {
         { path: "", element: <Navigate to="admindashboard" replace /> },
         { path: "admindashboard", element: <AdminDashboardOverview /> },
         { path: "products", element: <Products /> },
+        { path: "products/create", element: <CreateProduct /> },
+        { path: "products/edit/:id", element: <EditProduct /> },
         { path: "categories", element: <Categories /> },
+        { path: "categories/create", element: <CreateCategory /> },
+        { path: "categories/edit/:id", element: <EditCategory /> },
         { path: "orders", element: <Orders /> },
         { path: "reviews", element: <Reviews /> },
         { path: "coupons", element: <Coupons /> },
@@ -96,6 +121,22 @@ function App() {
         { path: "analytics", element: <Analytics /> },
         { path: "reports", element: <Reports /> },
         { path: "manage-users", element: <ManageUsers /> },
+        { path: "manage-staff", element: <ManageStaff /> },
+        { path: "manage-admins", element: <ManageAdmins /> },
+        { path: "pickup-stations", element: <PickupStations /> },
+        { path: "pickup-stations/create", element: <CreatePickupStation /> },
+        { path: "pickup-stations/edit/:id", element: <EditPickupStation /> },
+      ]
+    },
+    {
+      path: "/staff",
+      element: isStaff ? <StaffDashboard /> : <Navigate to="/login" replace />,
+      children: [
+        { path: "", element: <Navigate to="staffdashboard" replace /> },
+        { path: "staffdashboard", element: <StaffDashboardOverview /> },
+        { path: "manage-admins", element: <ManageAdminsStaff /> },
+        { path: "view-orders", element: <ViewOrders /> },
+        { path: "view-inquiries", element: <ViewInquiries /> },
       ]
     },
     {

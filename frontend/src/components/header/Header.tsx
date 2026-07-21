@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, Heart, Search, Menu, X, ChevronDown } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -65,17 +65,15 @@ export default function Header() {
         <div className="container">
           <div className="announcement-content">
             <span>
-              Free delivery from <strong>KSh 600</strong>
+              🚚 Nationwide Pickup <strong>GMNEX</strong>
             </span>
 
             <span className="announcement-mid">
-              Order before <strong>4:00pm</strong> for{' '}
-              <strong>same-day delivery</strong> (Sun-Fri)
+              Over <strong>50+</strong> pickup locations across Kenya
             </span>
 
             <span className="announcement-end">
-              Pickup: <strong>Kakamega (Lurambi, Opp. Bamboo)</strong> - Closed{' '}
-              <strong className="closed-text">Saturday</strong>
+              M-Pesa Till: <strong>4149288</strong>
             </span>
           </div>
         </div>
@@ -87,7 +85,7 @@ export default function Header() {
 
             <div className="left-section">
               <Link to="/" className="logo">
-                Naoja <span className="logo-dot">.</span>
+                GMNEX <span className="logo-dot">.</span>
               </Link>
 
               <div className="categories-wrapper" ref={dropdownRef}>
@@ -165,7 +163,7 @@ export default function Header() {
 
               <input
                 type="text"
-                placeholder="Search phones, TVs, solar, appliances..."
+                placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleSearch}
@@ -173,10 +171,8 @@ export default function Header() {
               />
             </div>
 
-            {/* RIGHT SECTION */}
             <div className="right-section">
 
-              {/* LOGIN BUTTON */}
               <Link to="/login" className="login-button">
                 <User size={18} />
                 <span>Login</span>
@@ -188,7 +184,7 @@ export default function Header() {
               </Link>
 
               <Link
-                to="/account?tab=wishlist"
+                to="/wishlist"
                 className="icon-button"
               >
                 <Heart size={20} />
@@ -229,7 +225,7 @@ export default function Header() {
               className="logo"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Naoja <span className="logo-dot">.</span>
+              GMNEX <span className="logo-dot">.</span>
             </Link>
 
             <button
@@ -289,7 +285,7 @@ export default function Header() {
             </Link>
 
             <Link
-              to="/account?tab=wishlist"
+              to="/wishlist"
               className="mobile-nav-link"
               onClick={() => setMobileMenuOpen(false)}
             >
