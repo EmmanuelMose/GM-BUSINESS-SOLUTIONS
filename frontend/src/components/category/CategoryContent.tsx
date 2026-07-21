@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import ProductCard from '../productCard/ProductCard';
+import ProductCard from '../productcard/ProductCard';
 import Loader from '../loader/Loader';
 import { categoriesAPI, type Category } from '../../Features/categories/categoriesAPI';
 import { productsAPI, type Product } from '../../Features/products/productsAPI';
