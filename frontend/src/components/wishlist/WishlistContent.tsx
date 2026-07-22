@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingBag, Trash2, ShoppingCart, AlertCircle, CheckCircle } from 'lucide-react';
+import { Trash2, ShoppingCart, AlertCircle, CheckCircle } from 'lucide-react';
 import { wishlistAPI, type WishlistItem } from '../../Features/wishlist/wishlistAPI';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../../context/AuthContext';

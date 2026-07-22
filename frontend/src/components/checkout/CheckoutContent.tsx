@@ -24,7 +24,7 @@ export default function CheckoutContent() {
   const [locations, setLocations] = useState<PickupLocation[]>([]);
   const [loadingStations, setLoadingStations] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [orderId, setOrderId] = useState<number | null>(null);
+  const [, setOrderId] = useState<number | null>(null);
   const [paymentId, setPaymentId] = useState<number | null>(null);
   const [paymentStatus, setPaymentStatus] = useState("");
   const [mpesaPhone, setMpesaPhone] = useState("");

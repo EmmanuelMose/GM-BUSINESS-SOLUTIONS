@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { productsAPI, type Product } from '../../../../Features/products/productsAPI';
+import { productsAPI } from '../../../../Features/products/productsAPI';
 import { categoriesAPI, type Category } from '../../../../Features/categories/categoriesAPI';
 import './EditProduct.css';
 
