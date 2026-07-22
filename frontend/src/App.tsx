@@ -1,6 +1,8 @@
+// src/App.tsx
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { CartProvider } from "./components/context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
+import { WishlistProvider } from "./context/WishlistContext";
 import HomePage from "./pages/HomePage";
 import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
@@ -148,9 +150,11 @@ function App() {
 
   return (
     <AuthProvider>
-      <CartProvider>
-        <RouterProvider router={router} />
-      </CartProvider>
+      <WishlistProvider>
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
+      </WishlistProvider>
     </AuthProvider>
   );
 }

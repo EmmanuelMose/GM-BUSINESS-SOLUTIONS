@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingBag, Trash2, ShoppingCart, AlertCircle } from 'lucide-react';
+import { Heart, ShoppingBag, Trash2, ShoppingCart, AlertCircle, CheckCircle } from 'lucide-react';
 import { wishlistAPI, type WishlistItem } from '../../Features/wishlist/wishlistAPI';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { useWishlist } from '../../context/WishlistContext';
 import './WishlistContent.css';
 
 export default function WishlistContent() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { decrement } = useWishlist();
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { addItem } = useCart();
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -45,15 +48,19 @@ export default function WishlistContent() {
       const res = await wishlistAPI.remove(productId);
       if (res.success) {
         setItems(items.filter(item => item.productId !== productId));
+        decrement();
       }
     } catch (err) {
       console.error('Error removing from wishlist:', err);
-      alert('Failed to remove item. Please try again.');
+      setToast({ message: 'Failed to remove item. Please try again.', type: 'error' });
+      setTimeout(() => setToast(null), 3000);
     }
   };
 
   const handleAddToCart = (product: any) => {
     addItem(product, 1);
+    setToast({ message: `${product.name} added to cart!`, type: 'success' });
+    setTimeout(() => setToast(null), 3000);
   };
 
   if (!isAuthenticated) {
@@ -82,6 +89,12 @@ export default function WishlistContent() {
   return (
     <div className="wishlist-content">
       <div className="container">
+        {toast && (
+          <div className={`wishlist-toast ${toast.type}`}>
+            {toast.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+            <span>{toast.message}</span>
+          </div>
+        )}
         <div className="wishlist-header">
           <h1 className="wishlist-title">My Wishlist</h1>
           <p className="wishlist-sub">

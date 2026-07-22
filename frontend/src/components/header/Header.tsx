@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, User, Heart, Search, Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
+import { useWishlist } from "../../context/WishlistContext";
 import { categoriesAPI, type Category } from "../../Features/categories/categoriesAPI";
 import "./Header.css";
 
@@ -10,6 +11,7 @@ export default function Header() {
   const navigate = useNavigate();
   const { itemCount } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
+  const { count: wishlistCount } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesMenuOpen, setCategoriesMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,8 +48,10 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    if (window.confirm("Are you sure you want to logout?")) {
+      logout();
+      navigate("/");
+    }
   };
 
   return (
@@ -107,7 +111,13 @@ export default function Header() {
                 <Link to="/login" className="login-button"><User size={18} /><span>Login</span></Link>
               )}
               <Link to="/account" className="icon-button"><User size={20} /><span className="icon-label">Account</span></Link>
-              <Link to="/wishlist" className="icon-button"><Heart size={20} /><span className="icon-label">Wishlist</span></Link>
+              <Link to="/wishlist" className="icon-button" style={{ position: 'relative' }}>
+                <Heart size={20} />
+                <span className="icon-label">Wishlist</span>
+                {isAuthenticated && wishlistCount > 0 && (
+                  <span className="wishlist-badge">{wishlistCount}</span>
+                )}
+              </Link>
               <Link to="/cart" className="icon-button">
                 <ShoppingCart size={20} />
                 {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}

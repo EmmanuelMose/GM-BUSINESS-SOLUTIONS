@@ -6,6 +6,7 @@ import ProductCard from "../productcard/ProductCard";
 import Loader from "../loader/Loader";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
+import { useWishlist } from "../../context/WishlistContext";
 import { productsAPI, type Product } from "../../Features/products/productsAPI";
 import { wishlistAPI } from "../../Features/wishlist/wishlistAPI";
 import "./ProductContent.css";
@@ -15,6 +16,7 @@ export default function ProductContent() {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { isAuthenticated } = useAuth();
+  const { increment, decrement } = useWishlist();
   const [product, setProduct] = useState<Product | null>(null);
   const [related, setRelated] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(1);
@@ -79,9 +81,11 @@ export default function ProductContent() {
       if (isWishlisted) {
         await wishlistAPI.remove(product.productId);
         setIsWishlisted(false);
+        decrement();
       } else {
         await wishlistAPI.add(product.productId);
         setIsWishlisted(true);
+        increment();
       }
     } catch (error) {
       console.error("Error toggling wishlist:", error);
