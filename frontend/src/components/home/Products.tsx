@@ -5,7 +5,7 @@ import ProductCard from "../productcard/ProductCard";
 import Loader from "../loader/Loader";
 import { productsAPI, type Product } from "../../Features/products/productsAPI";
 import { wishlistAPI } from "../../Features/wishlist/wishlistAPI";
-import "./Products.css";
+import "./Product.css";
 
 export default function Products() {
   const location = useLocation();
