@@ -1,13 +1,12 @@
-
 .product-content {
-  padding-top: 24px;
+  padding-top: 16px;
   padding-bottom: 32px;
 }
 .product-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 24px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--gray-100);
 }
 .product-breadcrumb {
@@ -36,13 +35,13 @@
 .product-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  padding-top: 32px;
+  gap: 24px;
+  padding-top: 24px;
 }
 .product-image {
   aspect-ratio: 1/1;
-  max-height: 520px;
-  border-radius: 16px;
+  max-height: 450px;
+  border-radius: 12px;
   border: 1px solid var(--gray-200);
   background: var(--surface);
   overflow: hidden;
@@ -61,13 +60,14 @@
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 .product-status {
   font-size: 12px;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 9999px;
+  display: inline-block;
 }
 .product-status.in {
   background: var(--brand-50);
@@ -81,7 +81,7 @@
 }
 .product-name {
   font-family: var(--font-serif);
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--gray-900);
 }
@@ -92,7 +92,7 @@
   font-weight: 600;
 }
 .product-price-wrap {
-  padding: 8px 0;
+  padding: 6px 0;
   border-top: 1px solid var(--gray-100);
   border-bottom: 1px solid var(--gray-100);
 }
@@ -102,7 +102,7 @@
 }
 .product-price {
   font-weight: 800;
-  font-size: 32px;
+  font-size: 28px;
   color: var(--gray-900);
 }
 .product-desc {
@@ -113,8 +113,8 @@
 .product-qty {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 8px 0;
+  gap: 12px;
+  padding: 6px 0;
 }
 .product-qty span {
   font-size: 12px;
@@ -124,8 +124,8 @@
 }
 .product-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 8px;
+  gap: 10px;
+  margin-top: 4px;
 }
 .product-add {
   flex: 1;
@@ -135,21 +135,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  transition: background 0.2s;
+  gap: 8px;
+  transition: all 0.3s;
   background: var(--brand-500);
   color: white;
 }
 .product-add:hover:not(:disabled) {
   background: var(--brand-600);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(11, 107, 58, 0.3);
 }
 .product-add:disabled {
   background: var(--gray-100);
   color: var(--gray-400);
   cursor: not-allowed;
-}
-.product-add.added {
-  background: #16a34a;
+  transform: none;
 }
 .product-buy {
   flex: 1;
@@ -159,29 +159,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  border: 1px solid var(--brand-500);
+  gap: 8px;
+  border: 2px solid var(--brand-500);
   color: var(--brand-500);
   background: white;
-  transition: background 0.2s;
+  transition: all 0.3s;
 }
 .product-buy:hover:not(:disabled) {
   background: var(--brand-50);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(11, 107, 58, 0.15);
 }
 .product-buy:disabled {
   border-color: var(--gray-200);
   color: var(--gray-400);
   cursor: not-allowed;
-}
-.product-whatsapp {
-  width: 100%;
+  transform: none;
 }
 .product-wishlist {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 0;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--gray-500);
   border-bottom: 1px solid transparent;
   transition: all 0.3s;
@@ -202,29 +202,32 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+.product-whatsapp {
+  width: 100%;
+}
 .product-related {
-  padding-top: 48px;
+  padding-top: 40px;
   border-top: 1px solid var(--gray-100);
-  margin-top: 48px;
+  margin-top: 40px;
 }
 .product-related-title {
   font-family: var(--font-serif);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--gray-900);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 .product-related-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 24px;
+  gap: 20px;
 }
 @media (max-width: 768px) {
   .product-grid {
     grid-template-columns: 1fr;
   }
   .product-image {
-    max-height: 300px;
+    max-height: 280px;
   }
   .product-name {
     font-size: 22px;
@@ -235,7 +238,24 @@
   .product-actions {
     flex-direction: column;
   }
+  .product-add, .product-buy {
+    height: 40px;
+  }
   .product-related-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .product-content {
+    padding-top: 8px;
+  }
+  .product-name {
+    font-size: 18px;
+  }
+  .product-price {
+    font-size: 20px;
+  }
+  .product-related-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 }
