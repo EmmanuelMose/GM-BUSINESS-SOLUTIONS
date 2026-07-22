@@ -90,8 +90,8 @@
   left: 0;
   margin-top: 8px;
   width: 288px;
-  background: white;
-  border: 1px solid var(--gray-200);
+  background: var(--brand-500);
+  border: 1px solid var(--brand-600);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -105,23 +105,23 @@
 .categories-list {
   max-height: 400px;
   overflow-y: auto;
-  background: white;
+  background: var(--brand-500);
 }
 .category-item {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   transition: all 0.3s ease;
-  color: var(--gray-800);
+  color: white;
 }
 .category-item:last-child {
   border-bottom: none;
 }
 .category-item:hover {
-  background: var(--brand-50);
-  color: var(--brand-700);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
 }
 .category-image {
   width: 40px;
@@ -132,12 +132,13 @@
 .category-image-placeholder {
   width: 40px;
   height: 40px;
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
+  color: white;
 }
 .category-info {
   flex: 1;
@@ -146,29 +147,29 @@
 .category-name {
   font-weight: 500;
   font-size: 14px;
-  color: var(--gray-900);
+  color: white;
 }
 .category-description {
   font-size: 11px;
-  color: var(--gray-500);
+  color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .dropdown-footer {
-  border-top: 1px solid var(--gray-200);
-  background: var(--gray-50);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.1);
 }
 .footer-link {
   display: block;
   padding: 12px 16px;
   font-size: 14px;
-  color: var(--gray-600);
+  color: rgba(255, 255, 255, 0.9);
   transition: all 0.3s ease;
 }
 .footer-link:hover {
-  background: var(--surface);
-  color: var(--brand-500);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 .search-wrapper {
   flex: 1;
