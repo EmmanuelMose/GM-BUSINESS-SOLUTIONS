@@ -1,3 +1,4 @@
+// src/orders/orders.controller.ts
 import { Request, Response } from "express";
 import { ordersService } from "./orders.service";
 
@@ -58,20 +59,19 @@ export const getOrderByRefController = async (req: Request, res: Response) => {
 export const createOrderController = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.userId;
-    
     if (!req.body.items || !Array.isArray(req.body.items) || req.body.items.length === 0) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Items array is required and must have at least one item" 
+      return res.status(400).json({
+        success: false,
+        message: "Items array is required and must have at least one item",
       });
     }
-
     const data = await ordersService.create({
       ...req.body,
-      userId: userId || null
+      userId: userId || null,
     });
     res.status(201).json({ success: true, data });
   } catch (e: any) {
+    console.error("Order creation error:", e);
     res.status(400).json({ success: false, message: e.message });
   }
 };

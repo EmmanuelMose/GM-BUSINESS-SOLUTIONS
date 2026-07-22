@@ -77,7 +77,9 @@ export const ordersAPI = {
     api.get(`/orders/${id}`).then(res => res.data),
   getByRef: (ref: string): Promise<{ success: boolean; data: Order }> =>
     api.get(`/orders/ref/${ref}`).then(res => res.data),
-  create: (data: NewOrder): Promise<{ success: boolean; data: Order }> =>
+  create: (data: NewOrder): Promise<{
+    message: string; success: boolean; data: Order 
+}> =>
     api.post('/orders', data).then(res => res.data),
   cancel: (id: number): Promise<{ success: boolean; data: Order; message: string }> =>
     api.patch(`/orders/${id}/cancel`).then(res => res.data),

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, MapPin, Phone, Mail, CheckCircle, User, Store, ChevronDown } from "lucide-react";
@@ -88,6 +87,8 @@ export default function CheckoutContent() {
           productId: item.product.productId,
           quantity: item.quantity,
           price: parseFloat(item.product.price),
+          productName: item.product.name,
+          productSku: item.product.sku || undefined,
         })),
         total: total,
         subtotal: total,
@@ -108,9 +109,10 @@ export default function CheckoutContent() {
         guestEmail: formData.email,
         guestPhone: formData.phone,
         userId: null,
-        pickupStationId: parseInt(stationId),
-        pickupLocationId: parseInt(locationId),
+        pickupStationId: stationId ? parseInt(stationId) : null,
+        pickupLocationId: locationId ? parseInt(locationId) : null,
       };
+
       const orderRes = await ordersAPI.create(payload);
       if (orderRes.success) {
         const order = orderRes.data;
@@ -129,9 +131,10 @@ export default function CheckoutContent() {
           setPaymentStatus("Failed to create payment record.");
         }
       } else {
-        setPaymentStatus("Order creation failed.");
+        setPaymentStatus(orderRes.message || "Order creation failed.");
       }
     } catch (error: any) {
+      console.error("Order creation error:", error);
       setPaymentStatus(error.message || "An error occurred.");
     } finally {
       setSubmitting(false);
