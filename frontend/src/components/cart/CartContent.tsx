@@ -1,10 +1,11 @@
+
 import { Link } from "react-router-dom";
-import QuantityControl from "../quantitycontrol/QuantityControl";
+import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import "./CartContent.css";
 
 export default function CartContent() {
-  const { items, total, updateQuantity, removeItem } = useCart();
+  const { items, total, updateQuantity, removeItem, clearCart } = useCart();
 
   if (items.length === 0) {
     return (
@@ -12,7 +13,7 @@ export default function CartContent() {
         <div className="container">
           <div className="cart-empty-icon">🛒</div>
           <h1 className="cart-empty-title">Your Cart is Empty</h1>
-          <p className="cart-empty-text">Explore our categories to add electronic and electrical products.</p>
+          <p className="cart-empty-text">Browse our products and add items you love.</p>
           <Link to="/" className="btn-primary">Continue Shopping</Link>
         </div>
       </div>
@@ -26,31 +27,65 @@ export default function CartContent() {
           <Link to="/">Home</Link> <span>/</span> <span className="current">Cart</span>
         </div>
         <h1 className="cart-title">Shopping Cart</h1>
+
         <div className="cart-grid">
           <div className="cart-items">
-            {items.map(item => (
-              <div key={item.product.productId} className="cart-item">
+            {items.map((item) => (
+              <div key={item.product.productId} className="cart-item slide-up">
                 <div className="cart-item-image">
-                  {item.product.featuredPhoto ? <img src={item.product.featuredPhoto} alt={item.product.name} /> : <span>No img</span>}
+                  {item.product.featuredPhoto ? (
+                    <img src={item.product.featuredPhoto} alt={item.product.name} />
+                  ) : (
+                    <span>No img</span>
+                  )}
                 </div>
                 <div className="cart-item-info">
                   <h3 className="cart-item-name">{item.product.name}</h3>
-                  <p className="cart-item-brand">{item.product.brand}</p>
+                  <p className="cart-item-brand">{item.product.brand || "GMNEX"}</p>
                   <p className="cart-item-price">KSh {parseFloat(item.product.price).toLocaleString()}</p>
                 </div>
                 <div className="cart-item-actions">
-                  <QuantityControl quantity={item.quantity} onIncrease={() => updateQuantity(item.product.productId, item.quantity + 1)} onDecrease={() => updateQuantity(item.product.productId, item.quantity - 1)} size="sm" />
-                  <button className="cart-item-remove" onClick={() => removeItem(item.product.productId)}>✕ Remove</button>
+                  <div className="cart-item-qty">
+                    <button
+                      className="qty-btn"
+                      onClick={() => updateQuantity(item.product.productId, item.quantity - 1)}
+                      disabled={item.quantity <= 1}
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="qty-value">{item.quantity}</span>
+                    <button
+                      className="qty-btn"
+                      onClick={() => updateQuantity(item.product.productId, item.quantity + 1)}
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                  <button className="cart-item-remove" onClick={() => removeItem(item.product.productId)}>
+                    <Trash2 size={16} /> Remove
+                  </button>
                 </div>
               </div>
             ))}
+            <button className="cart-clear" onClick={clearCart}>
+              Clear Cart
+            </button>
           </div>
+
           <div className="cart-summary">
             <h2 className="cart-summary-title">Order Summary</h2>
-            <div className="cart-summary-row"><span>Subtotal</span><strong>KSh {total.toLocaleString()}</strong></div>
+            <div className="cart-summary-row">
+              <span>Subtotal</span>
+              <strong>KSh {total.toLocaleString()}</strong>
+            </div>
             <hr className="cart-summary-divider" />
-            <div className="cart-summary-total"><strong>Total</strong><strong className="cart-summary-grand">KSh {total.toLocaleString()}</strong></div>
-            <Link to="/checkout" className="btn-primary btn-full cart-summary-checkout">Proceed to Checkout</Link>
+            <div className="cart-summary-total">
+              <strong>Total</strong>
+              <strong className="cart-summary-grand">KSh {total.toLocaleString()}</strong>
+            </div>
+            <Link to="/checkout" className="btn-primary btn-full cart-summary-checkout">
+              <ShoppingBag size={18} /> Proceed to Checkout
+            </Link>
           </div>
         </div>
       </div>
