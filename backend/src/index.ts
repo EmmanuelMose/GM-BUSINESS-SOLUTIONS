@@ -17,6 +17,7 @@ import paymentsRouter from "./payments/payment.router";
 import usersRouter from "./users/users.router";
 import adminsRouter from "./admins/admins.router";
 import staffRouter from "./staff/staff.router";
+import pickupStationsRouter from "./pickup-stations/pickup-stations.router";
 
 dotenv.config();
 
@@ -64,6 +65,7 @@ app.use("/api/payments", paymentsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/admins", adminsRouter);
 app.use("/api/staff", staffRouter);
+app.use("/api/pickup-stations", pickupStationsRouter);
 
 app.get("/", (_req, res) => {
   res.status(200).json({

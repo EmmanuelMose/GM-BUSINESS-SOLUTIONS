@@ -1,15 +1,10 @@
-import { Link } from 'react-router-dom';
-import QuantityControl from '../quantitycontrol/QuantityControl';
-import FulfillmentModule from '../fulfillmentmodule/FulfillmentModule';
-import { useCart } from '../context/CartContext';
-import { getDeliveryFee, isFreeDelivery, FREE_DELIVERY_THRESHOLD } from '../fulfillmentmodule/FulfillmentModule';
-import './CartContent.css';
+import { Link } from "react-router-dom";
+import QuantityControl from "../quantitycontrol/QuantityControl";
+import { useCart } from "../context/CartContext";
+import "./CartContent.css";
 
 export default function CartContent() {
   const { items, total, updateQuantity, removeItem } = useCart();
-  const deliveryFee = getDeliveryFee(total);
-  const freeDelivery = isFreeDelivery(total);
-  const grandTotal = total + deliveryFee;
 
   if (items.length === 0) {
     return (
@@ -31,7 +26,6 @@ export default function CartContent() {
           <Link to="/">Home</Link> <span>/</span> <span className="current">Cart</span>
         </div>
         <h1 className="cart-title">Shopping Cart</h1>
-
         <div className="cart-grid">
           <div className="cart-items">
             {items.map(item => (
@@ -51,17 +45,12 @@ export default function CartContent() {
               </div>
             ))}
           </div>
-
           <div className="cart-summary">
             <h2 className="cart-summary-title">Order Summary</h2>
             <div className="cart-summary-row"><span>Subtotal</span><strong>KSh {total.toLocaleString()}</strong></div>
-            <div className="cart-summary-row"><span>Delivery Fee</span><strong>{freeDelivery ? 'Free' : `KSh ${deliveryFee.toLocaleString()}`}</strong></div>
-            {!freeDelivery && <p className="cart-summary-free">Add items worth <strong>KSh {(FREE_DELIVERY_THRESHOLD - total).toLocaleString()}</strong> more for free delivery.</p>}
             <hr className="cart-summary-divider" />
-            <div className="cart-summary-total"><strong>Total</strong><strong className="cart-summary-grand">KSh {grandTotal.toLocaleString()}</strong></div>
+            <div className="cart-summary-total"><strong>Total</strong><strong className="cart-summary-grand">KSh {total.toLocaleString()}</strong></div>
             <Link to="/checkout" className="btn-primary btn-full cart-summary-checkout">Proceed to Checkout</Link>
-            <hr className="cart-summary-divider" />
-            <FulfillmentModule subtotal={total} showPanels={false} />
           </div>
         </div>
       </div>

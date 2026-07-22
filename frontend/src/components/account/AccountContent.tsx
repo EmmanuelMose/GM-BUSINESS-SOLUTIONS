@@ -126,49 +126,41 @@ export default function AccountContent() {
               </section>
             )}
 
-            {activeTab === 'support' && (
-              <section>
-                <div className="account-section-header">
-                  <h2 className="account-section-title">Support &amp; Inquiries</h2>
-                  <p className="account-section-sub">Contact us regarding orders, brand partnerships, or general technical support.</p>
-                </div>
-                <div className="account-support-grid">
-                  <div className="account-support-left">
-                    <div className="account-support-box">
-                      <h4 className="account-support-box-title">Direct Support lines</h4>
-                      <p className="account-support-box-sub">Our phone support is open 8:30am-8:00pm (Sunday-Thursday).</p>
-                      <div className="account-support-links">
-                        <p>📞 Phone: <a href="tel:0704812343" className="account-support-link">0704812343</a></p>
-                        <p>💬 WhatsApp: <a href="https://wa.me/254704812343" target="_blank" rel="noopener noreferrer" className="account-support-link">0704812343</a></p>
-                        <p>✉️ Email: <a href="mailto:enquiries@naojaventures.com" className="account-support-link">enquiries@naojaventures.com</a></p>
-                      </div>
-                    </div>
-                    <div className="account-support-box">
-                      <h4 className="account-support-box-title">Warranty Policy</h4>
-                      <p className="account-support-box-sub">All electrical supplies (cables, breakers, solar) and electronics sold at Naoja Ventures have official manufacturer warranties. Please retain invoice receipts for verification.</p>
-                    </div>
-                  </div>
-                  <div className="account-form">
-                    <h3 className="account-form-title">Send an Inquiry</h3>
-                    <p className="account-form-sub">Have a question or request? Send us a message and we'll reply via email.</p>
-                    {contactStatus.message && (
-                      <div className={`account-status ${contactStatus.success ? 'success' : 'error'}`}>
-                        {contactStatus.success && <span className="account-status-icon">✓</span>}
-                        <span>{contactStatus.message}</span>
-                      </div>
-                    )}
-                    <form onSubmit={handleContact} className="account-form-group">
-                      <div className="account-form-row">
-                        <div><label className="account-label">Your Name</label><input type="text" required className="account-input" value={contactName} onChange={e => setContactName(e.target.value)} placeholder="Enter your name" /></div>
-                        <div><label className="account-label">Email Address</label><input type="email" required className="account-input" value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder="name@example.com" /></div>
-                      </div>
-                      <div><label className="account-label">Message</label><textarea rows={4} required className="account-textarea" value={contactMessage} onChange={e => setContactMessage(e.target.value)} placeholder="How can we help you?" /></div>
-                      <button type="submit" className="btn-primary btn-full" disabled={submitting}>{submitting ? 'Sending...' : 'Send Message'}</button>
-                    </form>
-                  </div>
-                </div>
-              </section>
-            )}
+            // Only show modified support tab section
+{activeTab === "support" && (
+  <section>
+    <div className="account-section-header">
+      <h2 className="account-section-title">Support & Inquiries</h2>
+      <p className="account-section-sub">Contact us regarding orders, partnerships, or technical support.</p>
+    </div>
+    <div className="account-support-grid">
+      <div className="account-support-left">
+        <div className="account-support-box">
+          <h4>Direct Support</h4>
+          <div className="account-support-links">
+            <p>📞 Phone: <a href="tel:0704812343" className="account-support-link">0704812343</a></p>
+            <p>💬 WhatsApp: <a href="https://wa.me/254704812343" target="_blank" rel="noopener noreferrer" className="account-support-link">0704812343</a></p>
+            <p>✉️ Email: <a href="mailto:support@gmnex.com" className="account-support-link">support@gmnex.com</a></p>
+          </div>
+        </div>
+        <div className="account-support-box">
+          <h4>Warranty Policy</h4>
+          <p>All products have official manufacturer warranties. Keep your receipt for claims.</p>
+        </div>
+      </div>
+      <div className="account-form">
+        <h3>Send an Inquiry</h3>
+        <form onSubmit={handleContact} className="account-form-group">
+          <input type="text" placeholder="Your Name" value={contactName} onChange={(e) => setContactName(e.target.value)} className="account-input" required />
+          <input type="email" placeholder="Email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} className="account-input" required />
+          <textarea rows={4} placeholder="Message" value={contactMessage} onChange={(e) => setContactMessage(e.target.value)} className="account-textarea" required />
+          <button type="submit" className="btn-primary btn-full" disabled={submitting}>{submitting ? "Sending..." : "Send"}</button>
+          {contactStatus.message && <div className={`account-status ${contactStatus.success ? "success" : "error"}`}>{contactStatus.message}</div>}
+        </form>
+      </div>
+    </div>
+  </section>
+)}
           </main>
         </div>
       </div>

@@ -30,12 +30,7 @@ export const paymentStatusEnum = pgEnum("payment_status", [
   "refunded"
 ]);
 
-export const paymentMethodEnum = pgEnum("payment_method", [
-  "mpesa",
-  "cash",
-  "bank_transfer",
-  "card"
-]);
+export const paymentMethodEnum = pgEnum("payment_method", ["mpesa"]);
 
 export const userRoleEnum = pgEnum("user_role", [
   "customer",
@@ -107,7 +102,6 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
 
-// Updated schema (only admins and staff tables)
 export const admins = pgTable("admins", {
   adminId: serial("admin_id").primaryKey(),
   userId: integer("user_id").references(() => users.userId, { onDelete: "set null" }).unique(),
@@ -123,6 +117,7 @@ export const staff = pgTable("staff", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
+
 export const adminActivityLogs = pgTable("admin_activity_logs", {
   logId: serial("log_id").primaryKey(),
   userId: integer("user_id").references(() => users.userId, { onDelete: "cascade" }).notNull(),
@@ -132,6 +127,7 @@ export const adminActivityLogs = pgTable("admin_activity_logs", {
   userAgent: text("user_agent"),
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
+
 export const categories = pgTable("categories", {
   categoryId: serial("category_id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull().unique(),
@@ -144,21 +140,6 @@ export const categories = pgTable("categories", {
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
-});
-export const cart = pgTable("cart", {
-  cartId: serial("cart_id").primaryKey(),
-  userId: integer("user_id").references(() => users.userId, { onDelete: "cascade" }).notNull(),
-  productId: integer("product_id").references(() => products.productId, { onDelete: "cascade" }).notNull(),
-  quantity: integer("quantity").default(1).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull()
-});
-
-export const wishlist = pgTable("wishlist", {
-  wishlistId: serial("wishlist_id").primaryKey(),
-  userId: integer("user_id").references(() => users.userId, { onDelete: "cascade" }).notNull(),
-  productId: integer("product_id").references(() => products.productId, { onDelete: "cascade" }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
 export const products = pgTable("products", {
@@ -210,6 +191,22 @@ export const productVariants = pgTable("product_variants", {
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
 
+export const cart = pgTable("cart", {
+  cartId: serial("cart_id").primaryKey(),
+  userId: integer("user_id").references(() => users.userId, { onDelete: "cascade" }).notNull(),
+  productId: integer("product_id").references(() => products.productId, { onDelete: "cascade" }).notNull(),
+  quantity: integer("quantity").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const wishlist = pgTable("wishlist", {
+  wishlistId: serial("wishlist_id").primaryKey(),
+  userId: integer("user_id").references(() => users.userId, { onDelete: "cascade" }).notNull(),
+  productId: integer("product_id").references(() => products.productId, { onDelete: "cascade" }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
 export const addresses = pgTable("addresses", {
   addressId: serial("address_id").primaryKey(),
   userId: integer("user_id").references(() => users.userId, { onDelete: "cascade" }).notNull(),
@@ -223,9 +220,6 @@ export const addresses = pgTable("addresses", {
   town: varchar("town", { length: 100 }).notNull(),
   area: varchar("area", { length: 100 }),
   landmark: varchar("landmark", { length: 255 }),
-  pickupStation: varchar("pickup_station", { length: 255 }),
-  pickupStationAddress: text("pickup_station_address"),
-  pickupStationPhone: varchar("pickup_station_phone", { length: 20 }),
   addressLine1: text("address_line_1").notNull(),
   addressLine2: text("address_line_2"),
   postalCode: varchar("postal_code", { length: 20 }),
@@ -234,6 +228,31 @@ export const addresses = pgTable("addresses", {
   googleMapsLink: text("google_maps_link"),
   deliveryInstructions: text("delivery_instructions"),
   isDefault: boolean("is_default").default(false).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const pickupStations = pgTable("pickup_stations", {
+  stationId: serial("station_id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  county: varchar("county", { length: 100 }).notNull(),
+  town: varchar("town", { length: 100 }).notNull(),
+  address: text("address").notNull(),
+  phone: varchar("phone", { length: 20 }),
+  email: varchar("email", { length: 255 }),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const pickupLocations = pgTable("pickup_locations", {
+  locationId: serial("location_id").primaryKey(),
+  stationId: integer("station_id").references(() => pickupStations.stationId, { onDelete: "cascade" }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  address: text("address").notNull(),
+  landmark: varchar("landmark", { length: 255 }),
+  phone: varchar("phone", { length: 20 }),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -249,9 +268,6 @@ export const orders = pgTable("orders", {
   total: decimal("total", { precision: 10, scale: 2 }).notNull(),
   subtotal: decimal("subtotal", { precision: 10, scale: 2 }).notNull(),
   tax: decimal("tax", { precision: 10, scale: 2 }).default("0").notNull(),
-  shippingCost: decimal("shipping_cost", { precision: 10, scale: 2 }).default("0").notNull(),
-  discount: decimal("discount", { precision: 10, scale: 2 }).default("0").notNull(),
-  couponCode: varchar("coupon_code", { length: 50 }),
   status: orderStatusEnum("status").default("pending").notNull(),
   paymentStatus: paymentStatusEnum("payment_status").default("pending").notNull(),
   shippingAddress: jsonb("shipping_address").notNull(),
@@ -260,6 +276,8 @@ export const orders = pgTable("orders", {
   deliveryDate: timestamp("delivery_date"),
   adminNotes: text("admin_notes"),
   processedBy: integer("processed_by").references(() => users.userId, { onDelete: "set null" }),
+  pickupStationId: integer("pickup_station_id").references(() => pickupStations.stationId, { onDelete: "set null" }),
+  pickupLocationId: integer("pickup_location_id").references(() => pickupLocations.locationId, { onDelete: "set null" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
@@ -275,9 +293,6 @@ export const payments = pgTable("payments", {
   mpesaReceiptNumber: varchar("mpesa_receipt_number", { length: 50 }),
   mpesaPhoneNumber: varchar("mpesa_phone_number", { length: 20 }),
   mpesaTillNumber: varchar("mpesa_till_number", { length: 20 }),
-  bankReference: varchar("bank_reference", { length: 255 }),
-  cardLastFour: varchar("card_last_four", { length: 4 }),
-  cardBrand: varchar("card_brand", { length: 50 }),
   paymentDate: timestamp("payment_date"),
   paymentResponse: jsonb("payment_response"),
   notes: text("notes"),

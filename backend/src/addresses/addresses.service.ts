@@ -15,9 +15,6 @@ interface Address {
   town: string;
   area: string | null;
   landmark: string | null;
-  pickupStation: string | null;
-  pickupStationAddress: string | null;
-  pickupStationPhone: string | null;
   addressLine1: string;
   addressLine2: string | null;
   postalCode: string | null;
@@ -43,9 +40,6 @@ interface NewAddress {
   town: string;
   area?: string | null;
   landmark?: string | null;
-  pickupStation?: string | null;
-  pickupStationAddress?: string | null;
-  pickupStationPhone?: string | null;
   addressLine1: string;
   addressLine2?: string | null;
   postalCode?: string | null;
@@ -99,9 +93,6 @@ export const addressesService = {
       town: data.town,
       area: data.area || null,
       landmark: data.landmark || null,
-      pickupStation: data.pickupStation || null,
-      pickupStationAddress: data.pickupStationAddress || null,
-      pickupStationPhone: data.pickupStationPhone || null,
       addressLine1: data.addressLine1,
       addressLine2: data.addressLine2 || null,
       postalCode: data.postalCode || null,
@@ -179,7 +170,6 @@ export const addressesService = {
     if (address.addressLine2) parts.push(address.addressLine2);
     if (address.area) parts.push(address.area);
     if (address.town || address.county) parts.push(`${address.town} - ${address.county}`.trim());
-    if (address.pickupStation) parts.push(`Pickup: ${address.pickupStation}`);
     if (address.phoneNumber) parts.push(`${address.phonePrefix || '+254'} ${address.phoneNumber}`);
     return parts.join(" | ");
   },
@@ -191,9 +181,6 @@ export const addressesService = {
       location: `${address.area ? address.area + ' | ' : ''}${address.town} - ${address.county}`,
       address: `${address.addressLine1}${address.addressLine2 ? ', ' + address.addressLine2 : ''}`,
       landmark: address.landmark || null,
-      pickupStation: address.pickupStation || null,
-      pickupStationAddress: address.pickupStationAddress || null,
-      pickupStationPhone: address.pickupStationPhone || null,
       instructions: address.deliveryInstructions || null
     };
   }
