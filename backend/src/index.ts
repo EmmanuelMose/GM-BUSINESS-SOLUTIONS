@@ -25,7 +25,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://gm-business-solutions.vercel.app",
+  "https://gm-business-solutions.vercel.app/api",
 ];
 
 app.use(
