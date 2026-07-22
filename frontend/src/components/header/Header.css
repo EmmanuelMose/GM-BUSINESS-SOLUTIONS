@@ -1,4 +1,4 @@
-/* src/components/header/Header.css */
+
 .announcement-bar {
   position: sticky;
   top: 0;
@@ -43,20 +43,21 @@
 .header-content {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
   height: 72px;
   padding: 0 4px;
 }
 @media (max-width: 768px) {
   .header-content {
-    gap: 4px;
     height: 64px;
+    padding: 0 8px;
   }
 }
 .left-section {
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-shrink: 0;
 }
 .logo {
   font-family: var(--font-serif);
@@ -76,12 +77,13 @@
 }
 .categories-wrapper {
   position: relative;
+  flex-shrink: 0;
 }
 .categories-trigger {
   display: flex;
   align-items: center;
   gap: 2px;
-  padding: 4px 6px;
+  padding: 6px 8px;
   border-radius: var(--radius-control);
   color: var(--gray-600);
   transition: all 0.3s ease;
@@ -210,6 +212,7 @@
   border-radius: var(--radius-control);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   min-width: 100px;
+  margin: 0 16px;
 }
 .search-wrapper:focus-within {
   border-color: var(--brand-500);
@@ -242,6 +245,8 @@
   display: flex;
   align-items: center;
   gap: 2px;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 .icon-button {
   position: relative;
@@ -429,7 +434,7 @@
     padding: 4px;
   }
   .header-content {
-    gap: 2px;
+    padding: 0 4px;
   }
   .right-section .icon-button .icon-label {
     display: none;
