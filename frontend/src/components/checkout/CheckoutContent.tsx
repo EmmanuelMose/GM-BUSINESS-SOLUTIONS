@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, MapPin, Phone, Mail, CheckCircle, User, Store } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Phone, Mail, CheckCircle, User, Store, ChevronDown } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { ordersAPI } from "../../Features/orders/ordersAPI";
 import { paymentsAPI } from "../../Features/payments/paymentsAPI";
@@ -262,43 +262,52 @@ export default function CheckoutContent() {
                       <>
                         <div className="checkout-field">
                           <label className="checkout-label">Station</label>
-                          <select
-                            className={`checkout-select ${errors.stationId ? "error" : ""}`}
-                            value={stationId}
-                            onChange={(e) => setStationId(e.target.value)}
-                          >
-                            <option value="">Select a station</option>
-                            {stations.map((s) => (
-                              <option key={s.stationId} value={s.stationId}>
-                                {s.name} - {s.town}, {s.county}
-                              </option>
-                            ))}
-                          </select>
+                          <div className="checkout-select-wrapper">
+                            <select
+                              className={`checkout-select ${errors.stationId ? "error" : ""}`}
+                              value={stationId}
+                              onChange={(e) => setStationId(e.target.value)}
+                            >
+                              <option value="">Select a station</option>
+                              {stations.map((s) => (
+                                <option key={s.stationId} value={s.stationId}>
+                                  {s.name} - {s.town}, {s.county}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className="checkout-select-arrow" size={18} />
+                          </div>
                           {errors.stationId && <span className="checkout-error-text">{errors.stationId}</span>}
                         </div>
                         {stationId && (
                           <div className="checkout-field">
                             <label className="checkout-label">Pickup Location</label>
-                            <select
-                              className={`checkout-select ${errors.locationId ? "error" : ""}`}
-                              value={locationId}
-                              onChange={(e) => setLocationId(e.target.value)}
-                            >
-                              <option value="">Select a location</option>
-                              {locations.map((l) => (
-                                <option key={l.locationId} value={l.locationId}>
-                                  {l.name} - {l.address}
-                                </option>
-                              ))}
-                            </select>
+                            <div className="checkout-select-wrapper">
+                              <select
+                                className={`checkout-select ${errors.locationId ? "error" : ""}`}
+                                value={locationId}
+                                onChange={(e) => setLocationId(e.target.value)}
+                              >
+                                <option value="">Select a location</option>
+                                {locations.map((l) => (
+                                  <option key={l.locationId} value={l.locationId}>
+                                    {l.name} - {l.address}
+                                  </option>
+                                ))}
+                              </select>
+                              <ChevronDown className="checkout-select-arrow" size={18} />
+                            </div>
                             {errors.locationId && <span className="checkout-error-text">{errors.locationId}</span>}
                           </div>
                         )}
                         {stationId && selectedStation && (
                           <div className="checkout-station-info">
-                            <p><strong>{selectedStation.name}</strong></p>
-                            <p>{selectedStation.address}</p>
-                            <p>📞 {selectedStation.phone || "N/A"}</p>
+                            <div className="checkout-station-info-icon">📍</div>
+                            <div>
+                              <p className="checkout-station-info-name">{selectedStation.name}</p>
+                              <p className="checkout-station-info-address">{selectedStation.address}</p>
+                              <p className="checkout-station-info-phone">📞 {selectedStation.phone || "N/A"}</p>
+                            </div>
                           </div>
                         )}
                         <div className="checkout-nav">
