@@ -1,5 +1,7 @@
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { authAPI } from '../../Features/auth/authAPI';
 import './Login.css';
 
@@ -7,6 +9,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -31,7 +34,13 @@ export default function Login() {
         navigate('/');
       }
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please check your credentials.');
+      if (err.message.includes('credentials')) {
+        setError('Invalid email or password. Please try again.');
+      } else if (err.message.includes('not verified')) {
+        setError('Please verify your email before logging in.');
+      } else {
+        setError(err.message || 'Login failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -41,8 +50,9 @@ export default function Login() {
     <div className="auth-page">
       <div className="container">
         <div className="auth-card">
+          <Link to="/" className="auth-back-link">← Back to Home</Link>
           <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-sub">Sign in to your Naoja Ventures account</p>
+          <p className="auth-sub">Sign in to your GMNEX account</p>
 
           {error && <div className="auth-error">{error}</div>}
 
@@ -61,14 +71,23 @@ export default function Login() {
 
             <div className="auth-field">
               <label className="auth-label">Password</label>
-              <input
-                type="password"
-                className="auth-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                required
-              />
+              <div className="auth-password-wrapper">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className="auth-input"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  className="auth-password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
             <div className="auth-links">

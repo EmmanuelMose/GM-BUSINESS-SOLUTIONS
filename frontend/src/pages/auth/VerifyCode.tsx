@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authAPI } from '../../Features/auth/authAPI';
@@ -26,7 +27,13 @@ export default function VerifyCode() {
         navigate('/reset-password', { state: { email } });
       }, 1500);
     } catch (err: any) {
-      setError(err.message || 'Invalid or expired code. Please try again.');
+      if (err.message.includes('expired')) {
+        setError('Code expired. Please request a new one.');
+      } else if (err.message.includes('Invalid')) {
+        setError('Invalid code. Please check and try again.');
+      } else {
+        setError(err.message || 'Verification failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -36,6 +43,7 @@ export default function VerifyCode() {
     <div className="auth-page">
       <div className="container">
         <div className="auth-card">
+          <Link to="/forgot-password" className="auth-back-link">← Back to Forgot Password</Link>
           <h1 className="auth-title">Verify Code</h1>
           <p className="auth-sub">Enter the 6-digit code sent to your email</p>
 

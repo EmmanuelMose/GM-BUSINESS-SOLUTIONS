@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../../Features/auth/authAPI';
@@ -23,7 +24,11 @@ export default function ForgotPassword() {
         navigate('/verify-code', { state: { email } });
       }, 2000);
     } catch (err: any) {
-      setError(err.message || 'Failed to send reset code. Please try again.');
+      if (err.message.includes('not found') || err.message.includes('not verified')) {
+        setError('No account found with this email or email not verified.');
+      } else {
+        setError(err.message || 'Failed to send reset code. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -33,6 +38,7 @@ export default function ForgotPassword() {
     <div className="auth-page">
       <div className="container">
         <div className="auth-card">
+          <Link to="/login" className="auth-back-link">← Back to Sign In</Link>
           <h1 className="auth-title">Forgot Password</h1>
           <p className="auth-sub">Enter your email to receive a password reset code</p>
 
