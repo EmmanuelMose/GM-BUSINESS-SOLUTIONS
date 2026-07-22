@@ -109,6 +109,7 @@
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-card);
   padding: 24px;
+  overflow: visible;
 }
 .checkout-card-title {
   font-family: var(--font-serif);
