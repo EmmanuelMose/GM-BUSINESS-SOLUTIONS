@@ -1,8 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ProductCard from "../productcard/ProductCard";
 import Loader from "../loader/Loader";
 import { productsAPI, type Product } from "../../Features/products/productsAPI";
+import { wishlistAPI } from "../../Features/wishlist/wishlistAPI";
 import "./Products.css";
 
 export default function Products() {
@@ -12,7 +14,7 @@ export default function Products() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [wishlistStatus, setWishlistStatus] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,16 +22,24 @@ export default function Products() {
       try {
         const res = await productsAPI.getActive();
         if (res.success) {
-          setAllProducts(res.data);
+          let filtered = res.data;
           if (search) {
-            const filtered = res.data.filter(p => 
+            filtered = res.data.filter(p => 
               p.name.toLowerCase().includes(search.toLowerCase()) ||
               (p.brand && p.brand.toLowerCase().includes(search.toLowerCase()))
             );
-            setProducts(filtered);
-          } else {
-            setProducts(res.data.slice(0, 8));
           }
+          setProducts(filtered.slice(0, 8));
+
+          // Fetch wishlist status for each product
+          const statuses: Record<number, boolean> = {};
+          for (const p of filtered.slice(0, 8)) {
+            const wRes = await wishlistAPI.check(p.productId);
+            if (wRes.success) {
+              statuses[p.productId] = wRes.data;
+            }
+          }
+          setWishlistStatus(statuses);
         }
       } catch (error) {
         console.error(error);
@@ -39,6 +49,22 @@ export default function Products() {
     };
     fetchData();
   }, [search]);
+
+  const handleWishlistToggle = async (productId: number) => {
+    const currentlyWishlisted = wishlistStatus[productId] || false;
+    try {
+      if (currentlyWishlisted) {
+        await wishlistAPI.remove(productId);
+        setWishlistStatus(prev => ({ ...prev, [productId]: false }));
+      } else {
+        await wishlistAPI.add(productId);
+        setWishlistStatus(prev => ({ ...prev, [productId]: true }));
+      }
+    } catch (error) {
+      console.error("Error toggling wishlist:", error);
+      alert("Please login to add to wishlist");
+    }
+  };
 
   if (loading) return <Loader />;
 
@@ -55,7 +81,15 @@ export default function Products() {
           </div>
         ) : (
           <div className="products-grid">
-            {products.map(p => <ProductCard key={p.productId} product={p} />)}
+            {products.map(p => (
+              <ProductCard
+                key={p.productId}
+                product={p}
+                showWishlist={true}
+                isWishlisted={wishlistStatus[p.productId] || false}
+                onWishlistToggle={handleWishlistToggle}
+              />
+            ))}
           </div>
         )}
       </div>

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { Heart, Check } from "lucide-react";
 import QuantityControl from "../quantitycontrol/QuantityControl";
 import ProductCard from "../productcard/ProductCard";
 import Loader from "../loader/Loader";
 import { useCart } from "../context/CartContext";
 import { productsAPI, type Product } from "../../Features/products/productsAPI";
+import { wishlistAPI } from "../../Features/wishlist/wishlistAPI";
 import "./ProductContent.css";
 
 export default function ProductContent() {
@@ -16,6 +18,8 @@ export default function ProductContent() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -30,6 +34,10 @@ export default function ProductContent() {
               p => p.categoryId === res.data.categoryId && p.productId !== res.data.productId
             ).slice(0, 4);
             setRelated(relatedItems);
+          }
+          const wishlistRes = await wishlistAPI.check(res.data.productId);
+          if (wishlistRes.success) {
+            setIsWishlisted(wishlistRes.data);
           }
         }
       } catch (error) {
@@ -53,6 +61,25 @@ export default function ProductContent() {
     if (product) {
       addItem(product, quantity);
       navigate("/checkout");
+    }
+  };
+
+  const handleWishlistToggle = async () => {
+    if (!product) return;
+    setWishlistLoading(true);
+    try {
+      if (isWishlisted) {
+        await wishlistAPI.remove(product.productId);
+        setIsWishlisted(false);
+      } else {
+        await wishlistAPI.add(product.productId);
+        setIsWishlisted(true);
+      }
+    } catch (error) {
+      console.error("Error toggling wishlist:", error);
+      alert("Please login to add to wishlist");
+    } finally {
+      setWishlistLoading(false);
     }
   };
 
@@ -98,6 +125,14 @@ export default function ProductContent() {
                 Buy Now
               </button>
             </div>
+            <button
+              className={`product-wishlist ${isWishlisted ? "active" : ""}`}
+              onClick={handleWishlistToggle}
+              disabled={wishlistLoading}
+            >
+              {isWishlisted ? <Check size={16} /> : <Heart size={16} />}
+              {isWishlisted ? " Added to Wishlist" : " Add to Wishlist"}
+            </button>
             <a href={`https://wa.me/254704812343?text=${encodeURIComponent(`Hello GMNEX, I am inquiring about the product: ${product.name} (Price: KSh ${price.toLocaleString()}). Is it currently in stock?`)}`} target="_blank" rel="noopener noreferrer" className="btn-whatsapp product-whatsapp">Inquire via WhatsApp</a>
           </div>
         </div>
