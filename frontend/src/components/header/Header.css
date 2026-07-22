@@ -1,3 +1,4 @@
+/* src/components/header/Header.css */
 .announcement-bar {
   position: sticky;
   top: 0;
@@ -34,6 +35,10 @@
   background: white;
   border-bottom: 1px solid var(--gray-200);
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+/* Fix: allow dropdown to overflow */
+.header .container {
+  overflow: visible;
 }
 .header-content {
   display: flex;
