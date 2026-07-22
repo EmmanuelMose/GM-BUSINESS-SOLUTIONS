@@ -23,18 +23,9 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = [
-  "https://gm-business-solutions.vercel.app",
-  "http://localhost:5173",
-];
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: true,
     credentials: true,
   })
 );
