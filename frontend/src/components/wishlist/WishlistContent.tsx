@@ -1,3 +1,4 @@
+// src/components/wishlist/WishlistContent.tsx
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, ShoppingCart, AlertCircle, CheckCircle } from 'lucide-react';
@@ -10,7 +11,7 @@ import './WishlistContent.css';
 export default function WishlistContent() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const { decrement } = useWishlist();
+  const { removeFromWishlist, fetchWishlistCount } = useWishlist();
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -32,6 +33,7 @@ export default function WishlistContent() {
       const res = await wishlistAPI.getWishlist();
       if (res.success) {
         setItems(res.data);
+        await fetchWishlistCount();
       } else {
         setError('Failed to load wishlist');
       }
@@ -45,14 +47,13 @@ export default function WishlistContent() {
 
   const handleRemove = async (productId: number) => {
     try {
-      const res = await wishlistAPI.remove(productId);
-      if (res.success) {
-        setItems(items.filter(item => item.productId !== productId));
-        decrement();
-      }
+      await removeFromWishlist(productId);
+      setItems(items.filter(item => item.productId !== productId));
+      setToast({ message: 'Removed from wishlist', type: 'success' });
+      setTimeout(() => setToast(null), 3000);
     } catch (err) {
       console.error('Error removing from wishlist:', err);
-      setToast({ message: 'Failed to remove item. Please try again.', type: 'error' });
+      setToast({ message: 'Failed to remove item', type: 'error' });
       setTimeout(() => setToast(null), 3000);
     }
   };

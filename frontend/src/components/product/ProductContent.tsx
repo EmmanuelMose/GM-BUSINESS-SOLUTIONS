@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Heart, Check } from "lucide-react";
@@ -8,15 +9,15 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { productsAPI, type Product } from "../../Features/products/productsAPI";
-import { wishlistAPI } from "../../Features/wishlist/wishlistAPI";
 import "./ProductContent.css";
+import { wishlistAPI } from "../../Features/wishlist/wishlistAPI";
 
 export default function ProductContent() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { isAuthenticated } = useAuth();
-  const { increment, decrement } = useWishlist();
+  const { addToWishlist, removeFromWishlist } = useWishlist();
   const [product, setProduct] = useState<Product | null>(null);
   const [related, setRelated] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(1);
@@ -39,7 +40,11 @@ export default function ProductContent() {
             ).slice(0, 4);
             setRelated(relatedItems);
           }
+          // Check wishlist status only if authenticated
           if (isAuthenticated) {
+            // We need to fetch wishlist status – but we can also use the API directly
+            // For simplicity we'll call the API directly, or you could manage state via context.
+            // But we'll do a direct call here.
             const wishlistRes = await wishlistAPI.check(res.data.productId);
             if (wishlistRes.success) {
               setIsWishlisted(wishlistRes.data);
@@ -79,13 +84,11 @@ export default function ProductContent() {
     setWishlistLoading(true);
     try {
       if (isWishlisted) {
-        await wishlistAPI.remove(product.productId);
+        await removeFromWishlist(product.productId);
         setIsWishlisted(false);
-        decrement();
       } else {
-        await wishlistAPI.add(product.productId);
+        await addToWishlist(product.productId);
         setIsWishlisted(true);
-        increment();
       }
     } catch (error) {
       console.error("Error toggling wishlist:", error);
