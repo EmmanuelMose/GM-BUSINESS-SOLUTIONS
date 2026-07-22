@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { CartProvider } from "./components/context/CartContext";
+import { AuthProvider } from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
 import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
@@ -146,9 +147,11 @@ function App() {
   ]);
 
   return (
-    <CartProvider>
-      <RouterProvider router={router} />
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,20 +1,26 @@
-
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingBag, Trash2, ShoppingCart, AlertCircle } from 'lucide-react';
 import { wishlistAPI, type WishlistItem } from '../../Features/wishlist/wishlistAPI';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import './WishlistContent.css';
 
 export default function WishlistContent() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { addItem } = useCart();
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login?redirect=wishlist');
+      return;
+    }
     fetchWishlist();
-  }, []);
+  }, [isAuthenticated]);
 
   const fetchWishlist = async () => {
     setLoading(true);
@@ -28,16 +34,7 @@ export default function WishlistContent() {
       }
     } catch (err) {
       console.error('Error fetching wishlist:', err);
-      if (err && typeof err === 'object' && 'response' in err) {
-        const error = err as { response?: { status?: number } };
-        if (error.response?.status === 401) {
-          setError('Please login to view your wishlist');
-        } else {
-          setError('Failed to load wishlist. Please try again.');
-        }
-      } else {
-        setError('Failed to load wishlist. Please try again.');
-      }
+      setError('Failed to load wishlist. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -59,6 +56,10 @@ export default function WishlistContent() {
     addItem(product, 1);
   };
 
+  if (!isAuthenticated) {
+    return null;
+  }
+
   if (loading) {
     return (
       <div className="wishlist-loading">
@@ -73,9 +74,7 @@ export default function WishlistContent() {
       <div className="wishlist-error">
         <AlertCircle size={48} />
         <h2>{error}</h2>
-        {error.includes('login') && (
-          <Link to="/login" className="btn-primary">Login</Link>
-        )}
+        <button className="btn-primary" onClick={() => fetchWishlist()}>Try Again</button>
       </div>
     );
   }

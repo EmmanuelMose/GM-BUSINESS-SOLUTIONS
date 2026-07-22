@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authenticate } from "../middleware/auth.middleware";
 import {
   getWishlistController,
   addToWishlistController,
@@ -8,6 +9,8 @@ import {
 } from "./wishlist.controller";
 
 const wishlistRouter = Router();
+
+wishlistRouter.use(authenticate);
 
 wishlistRouter.get("/", getWishlistController);
 wishlistRouter.post("/", addToWishlistController);

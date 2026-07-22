@@ -5,6 +5,7 @@ import QuantityControl from "../quantitycontrol/QuantityControl";
 import ProductCard from "../productcard/ProductCard";
 import Loader from "../loader/Loader";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import { productsAPI, type Product } from "../../Features/products/productsAPI";
 import { wishlistAPI } from "../../Features/wishlist/wishlistAPI";
 import "./ProductContent.css";
@@ -13,6 +14,7 @@ export default function ProductContent() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { isAuthenticated } = useAuth();
   const [product, setProduct] = useState<Product | null>(null);
   const [related, setRelated] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(1);
@@ -35,9 +37,11 @@ export default function ProductContent() {
             ).slice(0, 4);
             setRelated(relatedItems);
           }
-          const wishlistRes = await wishlistAPI.check(res.data.productId);
-          if (wishlistRes.success) {
-            setIsWishlisted(wishlistRes.data);
+          if (isAuthenticated) {
+            const wishlistRes = await wishlistAPI.check(res.data.productId);
+            if (wishlistRes.success) {
+              setIsWishlisted(wishlistRes.data);
+            }
           }
         }
       } catch (error) {
@@ -47,7 +51,7 @@ export default function ProductContent() {
       }
     };
     fetchProduct();
-  }, [slug]);
+  }, [slug, isAuthenticated]);
 
   const handleAdd = () => {
     if (product) {
@@ -66,6 +70,10 @@ export default function ProductContent() {
 
   const handleWishlistToggle = async () => {
     if (!product) return;
+    if (!isAuthenticated) {
+      navigate(`/login?redirect=product/${product.slug}`);
+      return;
+    }
     setWishlistLoading(true);
     try {
       if (isWishlisted) {
@@ -77,7 +85,7 @@ export default function ProductContent() {
       }
     } catch (error) {
       console.error("Error toggling wishlist:", error);
-      alert("Please login to add to wishlist");
+      alert("Failed to update wishlist. Please try again.");
     } finally {
       setWishlistLoading(false);
     }

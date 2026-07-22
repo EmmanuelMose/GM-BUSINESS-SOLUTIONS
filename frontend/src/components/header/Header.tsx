@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, Heart, Search, Menu, X, ChevronDown } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ShoppingCart, User, Heart, Search, Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import { categoriesAPI, type Category } from "../../Features/categories/categoriesAPI";
 import "./Header.css";
 
 export default function Header() {
-  const location = useLocation();
   const navigate = useNavigate();
   const { itemCount } = useCart();
+  const { isAuthenticated, user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesMenuOpen, setCategoriesMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,6 +43,11 @@ export default function Header() {
       setMobileMenuOpen(false);
       setCategoriesMenuOpen(false);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   return (
@@ -90,7 +96,16 @@ export default function Header() {
               <input type="text" placeholder="Search products..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleSearch} className="search-input" />
             </div>
             <div className="right-section">
-              <Link to="/login" className="login-button"><User size={18} /><span>Login</span></Link>
+              {isAuthenticated ? (
+                <>
+                  <span className="user-greeting">Hi, {user?.fullName || 'User'}</span>
+                  <button onClick={handleLogout} className="logout-button" aria-label="Logout">
+                    <LogOut size={18} />
+                  </button>
+                </>
+              ) : (
+                <Link to="/login" className="login-button"><User size={18} /><span>Login</span></Link>
+              )}
               <Link to="/account" className="icon-button"><User size={20} /><span className="icon-label">Account</span></Link>
               <Link to="/wishlist" className="icon-button"><Heart size={20} /><span className="icon-label">Wishlist</span></Link>
               <Link to="/cart" className="icon-button">
@@ -122,7 +137,14 @@ export default function Header() {
               </Link>
             ))}
             <div className="mobile-divider" />
-            <Link to="/login" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Login</Link>
+            {isAuthenticated ? (
+              <>
+                <span className="mobile-user">Hi, {user?.fullName}</span>
+                <button onClick={handleLogout} className="mobile-nav-link">Logout</button>
+              </>
+            ) : (
+              <Link to="/login" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Login</Link>
+            )}
             <Link to="/account" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>My Account</Link>
             <Link to="/wishlist" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Wishlist</Link>
           </nav>

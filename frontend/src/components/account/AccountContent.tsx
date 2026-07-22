@@ -1,12 +1,13 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { inquiriesAPI } from '../../Features/inquiries/inquiriesAPI';
 import { ordersAPI } from '../../Features/orders/ordersAPI';
+import ProfileForm from './ProfileForm';
 import './AccountContent.css';
 
 const TABS = [
+  { id: 'profile', label: 'Profile', icon: '👤' },
   { id: 'orders', label: 'My Orders', icon: '📦' },
   { id: 'location', label: 'Our Offices', icon: '📍' },
   { id: 'policy', label: 'Fulfillment Policy', icon: '🚚' },
@@ -15,7 +16,7 @@ const TABS = [
 
 export default function AccountContent() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'orders';
+  const activeTab = searchParams.get('tab') || 'profile';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -128,6 +129,16 @@ export default function AccountContent() {
           </aside>
 
           <main className="account-main">
+            {activeTab === 'profile' && (
+              <section className="fade-in">
+                <div className="account-section-header">
+                  <h2 className="account-section-title">My Profile</h2>
+                  <p className="account-section-sub">Update your personal information</p>
+                </div>
+                <ProfileForm />
+              </section>
+            )}
+
             {activeTab === 'orders' && (
               <section className="fade-in">
                 <div className="account-section-header">

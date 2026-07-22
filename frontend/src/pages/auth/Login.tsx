@@ -1,17 +1,28 @@
-
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { authAPI } from '../../Features/auth/authAPI';
+import { useAuth } from '../../context/AuthContext';
 import './Login.css';
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login, isAuthenticated } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const redirectPath = new URLSearchParams(location.search).get('redirect') || 
+                       (location.state as any)?.from?.pathname || '/';
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(redirectPath);
+    }
+  }, [isAuthenticated]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,12 +37,18 @@ export default function Login() {
       localStorage.setItem('userRole', res.data.role);
       localStorage.setItem('userName', res.data.fullName);
 
+      login({
+        fullName: res.data.fullName,
+        role: res.data.role,
+        userId: res.data.userId,
+      });
+
       if (res.data.dashboard === 'admin') {
         navigate('/admin');
       } else if (res.data.dashboard === 'staff') {
         navigate('/staff');
       } else {
-        navigate('/');
+        navigate(redirectPath);
       }
     } catch (err: any) {
       if (err.message.includes('credentials')) {
