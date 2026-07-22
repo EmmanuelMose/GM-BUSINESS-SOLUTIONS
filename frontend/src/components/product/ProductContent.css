@@ -192,3 +192,23 @@
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 24px;
 }
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+  .product-image {
+    max-height: 300px;
+  }
+  .product-name {
+    font-size: 22px;
+  }
+  .product-price {
+    font-size: 24px;
+  }
+  .product-actions {
+    flex-direction: column;
+  }
+  .product-related-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}

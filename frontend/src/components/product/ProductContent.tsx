@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import QuantityControl from '../quantitycontrol/QuantityControl';
-import FulfillmentModule from '../fulfillmentmodule/FulfillmentModule';
-import ProductCard from '../productcard/ProductCard';
-import Loader from '../loader/Loader';
-import { useCart } from '../context/CartContext';
-import { productsAPI, type Product } from '../../Features/products/productsAPI';
-import './ProductContent.css';
+import { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import QuantityControl from "../quantitycontrol/QuantityControl";
+import ProductCard from "../productcard/ProductCard";
+import Loader from "../loader/Loader";
+import { useCart } from "../context/CartContext";
+import { productsAPI, type Product } from "../../Features/products/productsAPI";
+import "./ProductContent.css";
 
 export default function ProductContent() {
   const { slug } = useParams<{ slug: string }>();
@@ -27,24 +26,41 @@ export default function ProductContent() {
           setProduct(res.data);
           const all = await productsAPI.getActive();
           if (all.success) {
-            const related = all.data.filter(p => p.categoryId === res.data.categoryId && p.productId !== res.data.productId).slice(0, 4);
-            setRelated(related);
+            const relatedItems = all.data.filter(
+              p => p.categoryId === res.data.categoryId && p.productId !== res.data.productId
+            ).slice(0, 4);
+            setRelated(relatedItems);
           }
         }
-      } catch (error) { console.error(error); }
-      finally { setLoading(false); }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchProduct();
   }, [slug]);
 
-  const handleAdd = () => { if (product) { addItem(product, quantity); setAdded(true); setTimeout(() => setAdded(false), 2000); } };
-  const handleBuy = () => { if (product) { addItem(product, quantity); navigate('/checkout'); } };
+  const handleAdd = () => {
+    if (product) {
+      addItem(product, quantity);
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
+    }
+  };
+
+  const handleBuy = () => {
+    if (product) {
+      addItem(product, quantity);
+      navigate("/checkout");
+    }
+  };
 
   if (loading) return <Loader />;
   if (!product) return <div className="product-notfound">Product not found</div>;
 
   const price = parseFloat(product.price);
-  const isOut = product.status === 'out_of_stock' || product.stock <= 0;
+  const isOut = product.status === "out_of_stock" || product.stock <= 0;
 
   return (
     <div className="product-content">
@@ -74,23 +90,24 @@ export default function ProductContent() {
               <span>Quantity</span>
               <QuantityControl quantity={quantity} onIncrease={() => setQuantity(q => q + 1)} onDecrease={() => setQuantity(q => Math.max(1, q - 1))} size="sm" />
             </div>
-            <FulfillmentModule subtotal={price * quantity} />
             <div className="product-actions">
               <button className="product-add" onClick={handleAdd} disabled={added || isOut}>
-                {added ? 'Added!' : 'Add to Cart'}
+                {added ? "Added!" : "Add to Cart"}
               </button>
               <button className="product-buy" onClick={handleBuy} disabled={isOut}>
                 Buy Now
               </button>
             </div>
-            <a href={`https://wa.me/254704812343?text=${encodeURIComponent(`Hello Naoja Ventures, I am inquiring about the product: ${product.name} (Price: KSh ${price.toLocaleString()}). Is it currently in stock?`)}`} target="_blank" rel="noopener noreferrer" className="btn-whatsapp product-whatsapp">Inquire via WhatsApp</a>
+            <a href={`https://wa.me/254704812343?text=${encodeURIComponent(`Hello GMNEX, I am inquiring about the product: ${product.name} (Price: KSh ${price.toLocaleString()}). Is it currently in stock?`)}`} target="_blank" rel="noopener noreferrer" className="btn-whatsapp product-whatsapp">Inquire via WhatsApp</a>
           </div>
         </div>
 
         {related.length > 0 && (
           <div className="product-related">
             <h2 className="product-related-title">Related Products</h2>
-            <div className="product-related-grid">{related.map(p => <ProductCard key={p.productId} product={p} />)}</div>
+            <div className="product-related-grid">
+              {related.map(p => <ProductCard key={p.productId} product={p} />)}
+            </div>
           </div>
         )}
       </div>

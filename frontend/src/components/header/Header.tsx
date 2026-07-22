@@ -33,13 +33,13 @@ export default function Header() {
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent) => {
     if ((e as React.KeyboardEvent).key === "Enter" || (e as React.MouseEvent).type === "click") {
-      e.preventDefault();
       if (searchQuery.trim()) {
         navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
       } else {
         navigate("/");
       }
       setMobileMenuOpen(false);
+      setCategoriesMenuOpen(false);
     }
   };
 
@@ -85,18 +85,11 @@ export default function Header() {
               </div>
             </div>
             <div className="search-wrapper">
-              <Search size={16} className="search-icon" onClick={handleSearch} />
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleSearch}
-                className="search-input"
-              />
+              <Search size={18} className="search-icon" onClick={handleSearch} />
+              <input type="text" placeholder="Search products..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleSearch} className="search-input" />
             </div>
             <div className="right-section">
-              <Link to="/login" className="login-button"><User size={16} /><span>Login</span></Link>
+              <Link to="/login" className="login-button"><User size={18} /><span>Login</span></Link>
               <Link to="/account" className="icon-button"><User size={20} /><span className="icon-label">Account</span></Link>
               <Link to="/wishlist" className="icon-button"><Heart size={20} /><span className="icon-label">Wishlist</span></Link>
               <Link to="/cart" className="icon-button">
@@ -118,14 +111,7 @@ export default function Header() {
           </div>
           <div className="mobile-search">
             <Search size={16} className="mobile-search-icon" />
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearch}
-              className="mobile-search-input"
-            />
+            <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleSearch} className="mobile-search-input" />
           </div>
           <nav className="mobile-nav">
             <p className="mobile-nav-title">Categories</p>

@@ -22,10 +22,9 @@ export default function Products() {
         if (res.success) {
           setAllProducts(res.data);
           if (search) {
-            const filtered = res.data.filter(p =>
+            const filtered = res.data.filter(p => 
               p.name.toLowerCase().includes(search.toLowerCase()) ||
-              (p.brand && p.brand.toLowerCase().includes(search.toLowerCase())) ||
-              (p.description && p.description.toLowerCase().includes(search.toLowerCase()))
+              (p.brand && p.brand.toLowerCase().includes(search.toLowerCase()))
             );
             setProducts(filtered);
           } else {
@@ -47,23 +46,16 @@ export default function Products() {
     <section id="shop-products" className="products-section">
       <div className="container">
         <div className="products-header">
-          <h2 className="products-title">
-            {search ? `Search Results for "${search}"` : "Best Sellers"}
-          </h2>
-          <p className="products-sub">
-            {search ? `Found ${products.length} products` : "Highly recommended products in Kenya."}
-          </p>
+          <h2 className="products-title">{search ? `Results for "${search}"` : "Best Sellers"}</h2>
+          <p className="products-sub">{products.length} {products.length === 1 ? "product" : "products"} found</p>
         </div>
         {products.length === 0 ? (
           <div className="products-empty">
-            <p>No products found for "{search}".</p>
-            <p>Try searching with different keywords or browse our categories.</p>
+            <p>No products found for "{search}". Try a different search term.</p>
           </div>
         ) : (
           <div className="products-grid">
-            {products.map((p) => (
-              <ProductCard key={p.productId} product={p} />
-            ))}
+            {products.map(p => <ProductCard key={p.productId} product={p} />)}
           </div>
         )}
       </div>
