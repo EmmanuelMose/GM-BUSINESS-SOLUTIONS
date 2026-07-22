@@ -1,39 +1,65 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { wishlistAPI } from '../Features/wishlist/wishlistAPI';
+import { useAuth } from './AuthContext';
 
 interface WishlistContextType {
-  count: number;
-  refreshCount: () => Promise<void>;
-  increment: () => void;
-  decrement: () => void;
+  wishlistCount: number;
+  fetchWishlistCount: () => Promise<void>;
+  addToWishlist: (productId: number) => Promise<void>;
+  removeFromWishlist: (productId: number) => Promise<void>;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
-  const [count, setCount] = useState(0);
+  const [wishlistCount, setWishlistCount] = useState(0);
+  const { isAuthenticated } = useAuth();
 
-  const refreshCount = async () => {
+  const fetchWishlistCount = async () => {
+    if (!isAuthenticated) {
+      setWishlistCount(0);
+      return;
+    }
     try {
       const res = await wishlistAPI.getWishlist();
       if (res.success) {
-        setCount(res.data.length);
+        setWishlistCount(res.data.length);
       }
     } catch (error) {
-      // if unauthorized, set to 0
-      setCount(0);
+      console.error('Error fetching wishlist count:', error);
     }
   };
 
-  const increment = () => setCount(prev => prev + 1);
-  const decrement = () => setCount(prev => Math.max(0, prev - 1));
-
   useEffect(() => {
-    refreshCount();
-  }, []);
+    if (isAuthenticated) {
+      fetchWishlistCount();
+    } else {
+      setWishlistCount(0);
+    }
+  }, [isAuthenticated]);
+
+  const addToWishlist = async (productId: number) => {
+    try {
+      await wishlistAPI.add(productId);
+      setWishlistCount((prev) => prev + 1);
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      throw error;
+    }
+  };
+
+  const removeFromWishlist = async (productId: number) => {
+    try {
+      await wishlistAPI.remove(productId);
+      setWishlistCount((prev) => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+      throw error;
+    }
+  };
 
   return (
-    <WishlistContext.Provider value={{ count, refreshCount, increment, decrement }}>
+    <WishlistContext.Provider value={{ wishlistCount, fetchWishlistCount, addToWishlist, removeFromWishlist }}>
       {children}
     </WishlistContext.Provider>
   );

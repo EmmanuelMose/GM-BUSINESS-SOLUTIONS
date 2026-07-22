@@ -263,16 +263,11 @@ img {
 }
 @media (max-width: 768px) {
   .layout .main {
-    padding-top: 72px;
+    padding-top: 100px;
   }
 }
 @media (max-width: 480px) {
   .layout .main {
-    padding-top: 64px;
-  }
-  .btn-primary, .btn-secondary, .btn-whatsapp, .btn-danger, .btn-success {
-    height: 40px;
-    padding: 0 14px;
-    font-size: 13px;
+    padding-top: 96px;
   }
 }

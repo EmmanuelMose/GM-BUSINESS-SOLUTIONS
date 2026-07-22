@@ -11,7 +11,7 @@ export default function Header() {
   const navigate = useNavigate();
   const { itemCount } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
-  const { count: wishlistCount } = useWishlist();
+  const { wishlistCount } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesMenuOpen, setCategoriesMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -102,24 +102,23 @@ export default function Header() {
             <div className="right-section">
               {isAuthenticated ? (
                 <>
-                  <span className="user-greeting">Hi, {user?.fullName || 'User'}</span>
-                  <button onClick={handleLogout} className="logout-button" aria-label="Logout">
+                  <span className="user-greeting hide-mobile">Hi, {user?.fullName || 'User'}</span>
+                  <button onClick={handleLogout} className="logout-button hide-mobile" aria-label="Logout">
                     <LogOut size={18} />
                   </button>
                 </>
               ) : (
-                <Link to="/login" className="login-button"><User size={18} /><span>Login</span></Link>
+                <Link to="/login" className="login-button hide-mobile"><User size={18} /><span>Login</span></Link>
               )}
-              <Link to="/account" className="icon-button"><User size={20} /><span className="icon-label">Account</span></Link>
-              <Link to="/wishlist" className="icon-button" style={{ position: 'relative' }}>
+              <Link to="/account" className="icon-button hide-mobile"><User size={20} /><span className="icon-label">Account</span></Link>
+              <Link to="/wishlist" className="icon-button">
                 <Heart size={20} />
                 <span className="icon-label">Wishlist</span>
-                {isAuthenticated && wishlistCount > 0 && (
-                  <span className="wishlist-badge">{wishlistCount}</span>
-                )}
+                {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>}
               </Link>
               <Link to="/cart" className="icon-button">
                 <ShoppingCart size={20} />
+                <span className="icon-label">Cart</span>
                 {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
               </Link>
               <button className="mobile-menu-trigger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>

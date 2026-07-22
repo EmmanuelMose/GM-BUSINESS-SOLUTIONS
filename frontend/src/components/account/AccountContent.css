@@ -1,3 +1,4 @@
+
 .account-content {
   padding-top: 16px;
   padding-bottom: 32px;
@@ -6,6 +7,27 @@
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 24px;
+}
+.account-mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 76px;
+  left: 12px;
+  z-index: 150;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-control);
+  padding: 8px;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--gray-700);
+  align-items: center;
+  justify-content: center;
+}
+.account-mobile-toggle:hover {
+  background: var(--brand-50);
+  color: var(--brand-500);
 }
 .account-sidebar {
   background: white;
@@ -513,6 +535,9 @@
   .account-grid {
     grid-template-columns: 1fr;
   }
+  .account-mobile-toggle {
+    display: flex;
+  }
   .account-sidebar {
     position: fixed;
     top: 0;
@@ -535,27 +560,6 @@
   }
   .account-sidebar-close {
     display: block;
-  }
-  .account-mobile-toggle {
-    display: flex !important;
-    position: fixed;
-    top: 76px;
-    left: 12px;
-    z-index: 150;
-    background: white;
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-control);
-    padding: 8px;
-    box-shadow: var(--shadow-md);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--gray-700);
-    align-items: center;
-    justify-content: center;
-  }
-  .account-mobile-toggle:hover {
-    background: var(--brand-50);
-    color: var(--brand-500);
   }
   .account-main {
     padding: 16px;
