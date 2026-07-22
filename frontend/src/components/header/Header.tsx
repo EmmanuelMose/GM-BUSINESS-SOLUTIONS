@@ -35,6 +35,7 @@ export default function Header() {
     if ((e as React.KeyboardEvent).key === "Enter" || (e as React.MouseEvent).type === "click") {
       if (searchQuery.trim()) {
         navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+        setSearchQuery("");
       } else {
         navigate("/");
       }

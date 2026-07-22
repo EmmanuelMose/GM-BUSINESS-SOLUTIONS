@@ -1,3 +1,4 @@
+
 * {
   margin: 0;
   padding: 0;
@@ -257,4 +258,12 @@ img {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+.layout .main {
+  padding-top: 108px;
+}
+@media (max-width: 768px) {
+  .layout .main {
+    padding-top: 72px;
+  }
 }

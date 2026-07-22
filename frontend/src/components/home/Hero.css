@@ -2,6 +2,7 @@
   background: linear-gradient(to bottom right, var(--brand-50), white, var(--gray-50));
   padding: 64px 0;
   border-bottom: 1px solid var(--gray-100);
+  margin-top: 108px;
 }
 .hero-grid {
   display: grid;
@@ -143,4 +144,23 @@
   height: 1px;
   background: var(--gray-100);
   margin: 10px 0;
+}
+@media (max-width: 768px) {
+  .hero {
+    margin-top: 72px;
+    padding: 32px 0;
+  }
+  .hero-title {
+    font-size: 28px;
+  }
+  .hero-card {
+    padding: 20px;
+  }
+  .hero-logo {
+    width: 80px;
+    height: 80px;
+  }
+  .hero-logo-text {
+    font-size: 20px;
+  }
 }
