@@ -1,3 +1,4 @@
+// src/context/WishlistContext.tsx
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { wishlistAPI } from '../Features/wishlist/wishlistAPI';
 import { useAuth } from './AuthContext';

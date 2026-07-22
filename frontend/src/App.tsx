@@ -1,4 +1,4 @@
-
+// src/App.tsx
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { CartProvider } from "./components/context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
