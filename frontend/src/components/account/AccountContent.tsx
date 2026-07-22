@@ -1,13 +1,14 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 import { inquiriesAPI } from '../../Features/inquiries/inquiriesAPI';
 import { ordersAPI } from '../../Features/orders/ordersAPI';
 import './AccountContent.css';
 
 const TABS = [
-  { id: 'orders', label: 'Orders', icon: '📦' },
-  { id: 'location', label: 'Locations', icon: '📍' },
+  { id: 'orders', label: 'My Orders', icon: '📦' },
+  { id: 'location', label: 'Our Offices', icon: '📍' },
   { id: 'policy', label: 'Fulfillment Policy', icon: '🚚' },
   { id: 'support', label: 'Support', icon: '💬' },
 ];
@@ -15,6 +16,7 @@ const TABS = [
 export default function AccountContent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'orders';
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactMessage, setContactMessage] = useState('');
@@ -24,7 +26,10 @@ export default function AccountContent() {
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
 
-  const setTab = (tab: string) => setSearchParams({ tab });
+  const setTab = (tab: string) => {
+    setSearchParams({ tab });
+    setMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     if (activeTab === 'orders') {
@@ -90,8 +95,24 @@ export default function AccountContent() {
     <div className="account-content">
       <div className="container">
         <div className="account-grid">
-          <aside className="account-sidebar">
-            <h2 className="account-sidebar-title">My Account</h2>
+          <button 
+            className="account-mobile-toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          <aside className={`account-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
+            <div className="account-sidebar-header">
+              <h2 className="account-sidebar-title">My Account</h2>
+              <button 
+                className="account-sidebar-close"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
             <nav className="account-nav">
               {TABS.map((tab) => (
                 <button
@@ -181,8 +202,8 @@ export default function AccountContent() {
             {activeTab === 'location' && (
               <section className="fade-in">
                 <div className="account-section-header">
-                  <h2 className="account-section-title">Pickup Locations</h2>
-                  <p className="account-section-sub">Visit any of our nationwide pickup stations.</p>
+                  <h2 className="account-section-title">Our Offices Nationwide</h2>
+                  <p className="account-section-sub">Visit any of our branches across Kenya.</p>
                 </div>
                 <div className="account-location-grid">
                   <div className="account-card slide-up">
@@ -198,11 +219,10 @@ export default function AccountContent() {
                     </div>
                   </div>
                   <div className="account-card slide-up">
-                    <h3 className="account-card-title">Kisumu</h3>
+                    <h3 className="account-card-title">Mombasa</h3>
                     <p className="account-card-text">
-                      Oginga Odinga Road<br />
-                      Opposite Kisumu Hotel<br />
-                      Kisumu, Kenya
+                      Moi Avenue, Near Post Office<br />
+                      Mombasa CBD, Kenya
                     </p>
                     <div className="account-card-contact">
                       <p className="account-label">Contact</p>
@@ -210,10 +230,11 @@ export default function AccountContent() {
                     </div>
                   </div>
                   <div className="account-card slide-up">
-                    <h3 className="account-card-title">Mombasa</h3>
+                    <h3 className="account-card-title">Kisumu</h3>
                     <p className="account-card-text">
-                      Moi Avenue, Near Post Office<br />
-                      Mombasa CBD, Kenya
+                      Oginga Odinga Road<br />
+                      Opposite Kisumu Hotel<br />
+                      Kisumu, Kenya
                     </p>
                     <div className="account-card-contact">
                       <p className="account-label">Contact</p>

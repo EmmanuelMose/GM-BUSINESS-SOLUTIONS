@@ -7,6 +7,26 @@
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 32px;
+  position: relative;
+}
+.account-mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: 16px;
+  z-index: 100;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-control);
+  padding: 10px;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--gray-700);
+}
+.account-mobile-toggle:hover {
+  background: var(--brand-50);
+  color: var(--brand-500);
 }
 .account-sidebar {
   background: white;
@@ -14,6 +34,27 @@
   border-radius: var(--radius-card);
   padding: 20px;
   height: fit-content;
+  position: sticky;
+  top: 120px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.account-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.account-sidebar-close {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+.account-sidebar-close:hover {
+  color: var(--gray-700);
 }
 .account-sidebar-title {
   font-size: 12px;
@@ -21,7 +62,7 @@
   text-transform: uppercase;
   color: var(--gray-400);
   letter-spacing: 0.05em;
-  margin-bottom: 16px;
+  margin: 0;
   padding: 0 8px;
 }
 .account-nav {
@@ -489,8 +530,39 @@
   to { opacity: 1; transform: translateY(0); }
 }
 @media (max-width: 768px) {
+  .account-mobile-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .account-grid {
     grid-template-columns: 1fr;
+  }
+  .account-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 200;
+    transform: translateX(-100%);
+    opacity: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: var(--shadow-lg);
+    padding: 24px 20px;
+    overflow-y: auto;
+    background: white;
+  }
+  .account-sidebar.open {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  .account-sidebar-close {
+    display: block;
+  }
+  .account-main {
+    padding: 24px 16px;
   }
   .account-location-grid {
     grid-template-columns: 1fr;
@@ -500,9 +572,6 @@
   }
   .account-form-row {
     grid-template-columns: 1fr;
-  }
-  .account-main {
-    padding: 24px 16px;
   }
   .account-order-header {
     flex-direction: column;
@@ -517,5 +586,8 @@
   }
   .account-progress-label {
     font-size: 8px;
+  }
+  .account-section-title {
+    font-size: 22px;
   }
 }
