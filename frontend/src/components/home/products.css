@@ -28,3 +28,12 @@
   border-radius: 12px;
   background: white;
 }
+.products-empty p:first-child {
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--gray-700);
+}
+.products-empty p:last-child {
+  margin-top: 8px;
+  font-size: 14px;
+}
