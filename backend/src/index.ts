@@ -24,8 +24,8 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
+  "https://gm-business-solutions.vercel.app",
   "http://localhost:5173",
-  "https://gm-business-solutions.vercel.app/api",
 ];
 
 app.use(
