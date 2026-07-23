@@ -21,6 +21,7 @@
   flex-shrink: 0;
   min-height: 64px;
   gap: 12px;
+  z-index: 10;
 }
 .admin-topbar-left {
   display: flex;

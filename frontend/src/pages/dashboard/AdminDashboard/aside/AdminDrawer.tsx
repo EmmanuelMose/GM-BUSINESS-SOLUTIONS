@@ -17,6 +17,12 @@ export default function AdminDrawer({ isOpen, onToggle, isMobile = false, onClos
     window.location.href = '/';
   };
 
+  const handleItemClick = () => {
+    if (isMobile && onClose) {
+      onClose();
+    }
+  };
+
   return (
     <>
       {isMobile && isOpen && (
@@ -27,8 +33,8 @@ export default function AdminDrawer({ isOpen, onToggle, isMobile = false, onClos
           <span className={`drawer-logo ${isOpen ? 'visible' : 'hidden'}`}>
             GMNEX<span className="logo-dot">.</span>
           </span>
-          {isMobile && isOpen && (
-            <button onClick={onClose} className="drawer-close">
+          {isMobile && (
+            <button onClick={onToggle} className="drawer-close">
               <X size={24} />
             </button>
           )}
@@ -59,9 +65,7 @@ export default function AdminDrawer({ isOpen, onToggle, isMobile = false, onClos
                 className={({ isActive }) =>
                   `drawer-item ${isActive ? 'active' : ''}`
                 }
-                onClick={() => {
-                  if (isMobile && onClose) onClose();
-                }}
+                onClick={handleItemClick}
               >
                 <span className="drawer-icon">{item.icon}</span>
                 {isOpen && <span className="drawer-label">{item.name}</span>}

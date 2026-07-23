@@ -19,6 +19,11 @@ export default function Header() {
   const [categories, setCategories] = useState<Category[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Don't render header on admin or staff pages
+  if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/staff')) {
+    return null;
+  }
+
   useEffect(() => {
     categoriesAPI.getActive().then((res) => {
       if (res.success) setCategories(res.data);
@@ -56,11 +61,6 @@ export default function Header() {
       window.location.reload();
     }
   };
-
-  // Don't render header on admin pages
-  if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/staff')) {
-    return null;
-  }
 
   return (
     <>

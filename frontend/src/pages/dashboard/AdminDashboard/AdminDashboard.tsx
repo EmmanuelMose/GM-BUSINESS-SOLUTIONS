@@ -6,7 +6,6 @@ import './AdminDashboard.css';
 
 export default function AdminDashboard() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,7 +18,6 @@ export default function AdminDashboard() {
         setIsDrawerOpen(false);
       } else {
         setIsDrawerOpen(true);
-        setIsMobileMenuOpen(false);
       }
     };
     window.addEventListener('resize', handleResize);
@@ -27,13 +25,14 @@ export default function AdminDashboard() {
   }, []);
 
   const toggleDrawer = () => {
-    if (isMobile) {
-      setIsMobileMenuOpen(!isMobileMenuOpen);
-    } else {
-      setIsDrawerOpen(!isDrawerOpen);
-    }
+    setIsDrawerOpen(!isDrawerOpen);
   };
 
+  const closeDrawer = () => {
+    if (isMobile) {
+      setIsDrawerOpen(false);
+    }
+  };
 
   const handleBack = () => {
     navigate('/admin/admindashboard');
@@ -53,9 +52,6 @@ export default function AdminDashboard() {
       'analytics': 'Analytics',
       'reports': 'Reports',
       'pickup-stations': 'Pickup Stations',
-      'manage-users': 'Manage Users',
-      'manage-staff': 'Manage Staff',
-      'manage-admins': 'Manage Admins',
     };
     return titles[path || ''] || 'Dashboard';
   };
@@ -65,20 +61,21 @@ export default function AdminDashboard() {
   return (
     <div className="admin-dashboard">
       <AdminDrawer 
-        isOpen={isMobile ? isMobileMenuOpen : isDrawerOpen} 
+        isOpen={isDrawerOpen} 
         onToggle={toggleDrawer} 
         isMobile={isMobile}
+        onClose={closeDrawer}
       />
       <div className="admin-main">
         <div className="admin-topbar">
           <div className="admin-topbar-left">
             <button onClick={toggleDrawer} className="admin-menu-btn">
-              {isMobile ? (isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />) : (isDrawerOpen ? <X size={24} /> : <Menu size={24} />)}
+              {isDrawerOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
             {!isDashboard && (
               <button onClick={handleBack} className="admin-back-btn">
                 <ArrowLeft size={18} />
-                Back
+                <span>Back</span>
               </button>
             )}
             <h1 className="admin-page-title">{getPageTitle()}</h1>

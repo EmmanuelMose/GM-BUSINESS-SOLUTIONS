@@ -26,6 +26,7 @@
   z-index: 1000;
   transform: translateX(-100%);
   width: 280px;
+  transition: transform 0.3s ease;
 }
 .admin-drawer.mobile.open {
   transform: translateX(0);
@@ -88,10 +89,11 @@
   color: white;
   cursor: pointer;
   padding: 4px;
-  transition: opacity 0.3s;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 .drawer-close:hover {
   opacity: 0.7;
+  transform: rotate(90deg);
 }
 .drawer-nav {
   flex: 1;
