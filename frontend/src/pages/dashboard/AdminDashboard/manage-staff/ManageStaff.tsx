@@ -1,40 +1,67 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { Plus, Trash2, Search, X, Calendar } from 'lucide-react';
 import { staffAPI, type Staff } from '../../../../Features/staff/staffAPI';
 import { usersAPI } from '../../../../Features/users/usersAPI';
 import './ManageStaff.css';
+
+type StatusFilter = 'all' | 'active' | 'inactive';
 
 export default function ManageStaff() {
   const [staff, setStaff] = useState<Staff[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [] = useState<StatusFilter>('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedEmail, setSelectedEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [staffRes, usersRes] = await Promise.all([
-          staffAPI.getAll(),
-          usersAPI.getAll(),
-        ]);
-        if (staffRes.success) setStaff(staffRes.data);
-        if (usersRes.success) {
-          const staffUserIds = staffRes.data.map((s: any) => s.userId);
-          setUsers(usersRes.data.filter((u: any) => !staffUserIds.includes(u.userId) && u.role !== 'admin'));
-        }
-      } catch (error) {
-        console.error('Error fetching staff:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [staffRes, usersRes] = await Promise.all([
+        staffAPI.getAll(),
+        usersAPI.getAll(),
+      ]);
+      if (staffRes.success) setStaff(staffRes.data);
+      if (usersRes.success) {
+        const staffUserIds = staffRes.data.map((s: any) => s.userId);
+        setUsers(usersRes.data.filter((u: any) => !staffUserIds.includes(u.userId) && u.role !== 'admin'));
+      }
+    } catch (error) {
+      console.error('Error fetching staff:', error);
+      showToast('error', 'Failed to load staff');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showToast = (type: 'success' | 'error', message: string) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 4000);
+  };
+
+  const filteredStaff = useMemo(() => {
+    let filtered = staff;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(s =>
+        s.email.toLowerCase().includes(q)
+      );
+    }
+    return filtered;
+  }, [staff, searchQuery]);
+
   const handleAddStaff = async () => {
     if (!selectedUser || !selectedEmail) return;
+    setSubmitting(true);
     try {
       const res = await staffAPI.create({ userId: parseInt(selectedUser), email: selectedEmail });
       if (res.success) {
@@ -42,21 +69,34 @@ export default function ManageStaff() {
         setShowAddModal(false);
         setSelectedUser('');
         setSelectedEmail('');
+        showToast('success', 'Staff added successfully');
+        fetchData();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding staff:', error);
+      showToast('error', error.message || 'Failed to add staff');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleRemoveStaff = async (id: number) => {
     if (!window.confirm('Are you sure you want to remove this staff member?')) return;
+    setDeletingId(id);
     try {
       const res = await staffAPI.delete(id);
       if (res.success) {
         setStaff(staff.filter(s => s.staffId !== id));
+        showToast('success', 'Staff removed successfully');
+        fetchData();
+      } else {
+        showToast('error', 'Failed to remove staff');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error removing staff:', error);
+      showToast('error', error.message || 'Failed to remove staff');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -67,18 +107,47 @@ export default function ManageStaff() {
   };
 
   if (loading) {
-    return <div className="page-loading">Loading staff...</div>;
+    return (
+      <div className="manage-loading">
+        <div className="manage-loader"></div>
+        <p>Loading staff...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="admin-page">
-      <div className="page-header">
-        <h2>Manage Staff</h2>
-        <button className="btn-primary" onClick={() => setShowAddModal(true)}>Add Staff</button>
+    <div className="manage-page">
+      {toast && (
+        <div className={`manage-toast ${toast.type}`}>
+          <span>{toast.message}</span>
+          <button className="toast-close" onClick={() => setToast(null)}>✕</button>
+        </div>
+      )}
+
+      <div className="manage-header">
+        <div>
+          <h2>Manage Staff</h2>
+          <p className="manage-subtitle">Add or remove staff members</p>
+        </div>
+        <button className="btn-primary" onClick={() => setShowAddModal(true)}>
+          <Plus size={18} /> Add Staff
+        </button>
       </div>
 
-      <div className="table-container">
-        <table className="admin-table">
+      <div className="manage-filters">
+        <div className="manage-search">
+          <Search size={16} className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search by email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="manage-table-container">
+        <table className="manage-table">
           <thead>
             <tr>
               <th>Email</th>
@@ -88,18 +157,37 @@ export default function ManageStaff() {
             </tr>
           </thead>
           <tbody>
-            {staff.length === 0 ? (
+            {filteredStaff.length === 0 ? (
               <tr>
-                <td colSpan={4} className="empty-state">No staff members found</td>
+                <td colSpan={4} className="manage-empty">
+                  <span>👤</span>
+                  <p>No staff members found</p>
+                </td>
               </tr>
             ) : (
-              staff.map((member) => (
+              filteredStaff.map((member) => (
                 <tr key={member.staffId}>
                   <td className="staff-email">{member.email}</td>
                   <td>{member.userId || 'N/A'}</td>
-                  <td>{new Date(member.createdAt).toLocaleDateString()}</td>
-                  <td className="actions-cell">
-                    <button className="action-btn delete" onClick={() => handleRemoveStaff(member.staffId)}>🗑️</button>
+                  <td>
+                    <span className="date-cell">
+                      <Calendar size={14} />
+                      {new Date(member.createdAt).toLocaleDateString('en-KE', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                    </span>
+                  </td>
+                  <td className="manage-actions">
+                    <button
+                      className="action-btn delete"
+                      onClick={() => handleRemoveStaff(member.staffId)}
+                      disabled={deletingId === member.staffId}
+                      title="Remove Staff"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </td>
                 </tr>
               ))
@@ -109,17 +197,21 @@ export default function ManageStaff() {
       </div>
 
       {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Add Staff Member</h3>
+        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Add Staff Member</h3>
+              <button className="modal-close" onClick={() => setShowAddModal(false)}>
+                <X size={20} />
+              </button>
+            </div>
             <div className="modal-body">
-              <div className="auth-field">
-                <label className="auth-label">Select User</label>
+              <div className="form-group">
+                <label className="form-label">Select User</label>
                 <select
                   value={selectedUser}
                   onChange={(e) => handleUserSelect(e.target.value)}
-                  className="filter-select"
-                  style={{ width: '100%' }}
+                  className="form-select"
                 >
                   <option value="">Select a user</option>
                   {users.map((user) => (
@@ -130,21 +222,26 @@ export default function ManageStaff() {
                 </select>
               </div>
               {selectedEmail && (
-                <div className="auth-field">
-                  <label className="auth-label">Email (Auto-filled)</label>
+                <div className="form-group">
+                  <label className="form-label">Email (Auto-filled)</label>
                   <input
                     type="email"
-                    className="auth-input"
+                    className="form-input"
                     value={selectedEmail}
                     disabled
-                    style={{ background: 'var(--gray-50)' }}
                   />
                 </div>
               )}
             </div>
             <div className="modal-footer">
               <button className="btn-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
-              <button className="btn-primary" onClick={handleAddStaff} disabled={!selectedUser}>Add Staff</button>
+              <button
+                className="btn-primary"
+                onClick={handleAddStaff}
+                disabled={!selectedUser || submitting}
+              >
+                {submitting ? 'Adding...' : 'Add Staff'}
+              </button>
             </div>
           </div>
         </div>
