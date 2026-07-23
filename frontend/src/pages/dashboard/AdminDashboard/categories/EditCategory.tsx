@@ -1,3 +1,4 @@
+// src/pages/dashboard/AdminDashboard/categories/EditCategory.tsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
@@ -85,19 +86,35 @@ export default function EditCategory() {
     setSubmitting(true);
 
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('slug', formData.slug);
-      formDataToSend.append('description', formData.description || '');
-      formDataToSend.append('icon', formData.icon || '');
-      formDataToSend.append('parentId', formData.parentId || '');
-      formDataToSend.append('displayOrder', formData.displayOrder);
-      formDataToSend.append('isActive', String(formData.isActive));
+      const payload: any = {
+        name: formData.name,
+        slug: formData.slug,
+        description: formData.description || '',
+        icon: formData.icon || '',
+        parentId: formData.parentId ? parseInt(formData.parentId) : null,
+        displayOrder: parseInt(formData.displayOrder) || 0,
+        isActive: formData.isActive,
+      };
+
+      Object.keys(payload).forEach(key => {
+        if (payload[key] === null || payload[key] === undefined) {
+          delete payload[key];
+        }
+      });
+
+      let res;
+      
       if (formData.photo) {
+        const formDataToSend = new FormData();
+        Object.keys(payload).forEach(key => {
+          formDataToSend.append(key, String(payload[key]));
+        });
         formDataToSend.append('photo', formData.photo);
+        res = await categoriesAPI.update(parseInt(id!), formDataToSend);
+      } else {
+        res = await categoriesAPI.update(parseInt(id!), payload);
       }
 
-      const res = await categoriesAPI.update(parseInt(id!), formDataToSend);
       if (res.success) {
         setSuccess('Category updated successfully!');
         setTimeout(() => navigate('/admin/categories'), 2000);

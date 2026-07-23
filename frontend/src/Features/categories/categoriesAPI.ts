@@ -1,3 +1,4 @@
+// src/Features/categories/categoriesAPI.ts
 import axios from "axios";
 import { ApiDomain } from "../../utils/APIDomain";
 
@@ -42,10 +43,28 @@ export const categoriesAPI = {
     api.get(`/categories/slug/${slug}`).then(res => res.data),
   search: (query: string): Promise<{ success: boolean; data: Category[] }> =>
     api.get(`/categories/search?q=${encodeURIComponent(query)}`).then(res => res.data),
-  create: (data: FormData): Promise<{ success: boolean; data: Category }> =>
-    api.post('/categories', data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
-  update: (id: number, data: FormData): Promise<{ success: boolean; data: Category }> =>
-    api.put(`/categories/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
+  create: (data: FormData | any): Promise<{ success: boolean; data: Category }> => {
+    if (data instanceof FormData) {
+      return api.post('/categories', data, { 
+        headers: { 'Content-Type': 'multipart/form-data' } 
+      }).then(res => res.data);
+    } else {
+      return api.post('/categories', data, {
+        headers: { 'Content-Type': 'application/json' }
+      }).then(res => res.data);
+    }
+  },
+  update: (id: number, data: FormData | any): Promise<{ success: boolean; data: Category }> => {
+    if (data instanceof FormData) {
+      return api.put(`/categories/${id}`, data, { 
+        headers: { 'Content-Type': 'multipart/form-data' } 
+      }).then(res => res.data);
+    } else {
+      return api.put(`/categories/${id}`, data, {
+        headers: { 'Content-Type': 'application/json' }
+      }).then(res => res.data);
+    }
+  },
   delete: (id: number): Promise<{ success: boolean; data: Category }> =>
     api.delete(`/categories/${id}`).then(res => res.data),
   toggleStatus: (id: number): Promise<{ success: boolean; data: Category; message: string }> =>

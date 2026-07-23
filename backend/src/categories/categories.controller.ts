@@ -1,3 +1,4 @@
+// src/categories/categories.controller.ts
 import { Request, Response } from "express";
 import { categoriesService } from "./categories.service";
 import { uploadToCloudinary } from "../utils/cloudinaryUpload";
@@ -111,11 +112,33 @@ export const updateCategoryController = async (req: Request, res: Response) => {
     if (!id || typeof id !== 'string') {
       return res.status(400).json({ success: false, message: "Invalid category ID" });
     }
+
     const body = { ...req.body };
+
     if (req.file) {
       body.photo = await uploadToCloudinary(req.file.buffer);
     }
-    const data = await categoriesService.update(id, body);
+
+    const cleanData: any = {};
+    const allowedFields = ['name', 'slug', 'description', 'icon', 'photo', 'parentId', 'displayOrder', 'isActive'];
+    
+    allowedFields.forEach(field => {
+      if (body[field] !== undefined && body[field] !== '') {
+        cleanData[field] = body[field];
+      }
+    });
+
+    if (cleanData.parentId !== undefined) {
+      cleanData.parentId = cleanData.parentId ? parseInt(cleanData.parentId) : null;
+    }
+    if (cleanData.displayOrder !== undefined) {
+      cleanData.displayOrder = parseInt(cleanData.displayOrder) || 0;
+    }
+    if (cleanData.isActive !== undefined) {
+      cleanData.isActive = cleanData.isActive === 'true' || cleanData.isActive === true;
+    }
+
+    const data = await categoriesService.update(id, cleanData);
     if (!data) {
       return res.status(404).json({ success: false, message: "Category not found" });
     }

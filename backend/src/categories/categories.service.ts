@@ -1,3 +1,4 @@
+// src/categories/categories.service.ts
 import db from "../Drizzle/db";
 import { categories, products } from "../Drizzle/schema";
 import { eq, like, or, and, count, asc, isNull } from "drizzle-orm";
@@ -33,7 +34,6 @@ interface CategoryWithCount extends Category {
 }
 
 export const categoriesService = {
-  // Get all categories with product counts
   getAll: async (): Promise<CategoryWithCount[]> => {
     const allCategories = await db.query.categories.findMany({
       orderBy: [asc(categories.displayOrder), asc(categories.name)]
@@ -56,7 +56,6 @@ export const categoriesService = {
     return categoriesWithCounts;
   },
 
-  // Get active categories only for storefront
   getActive: async (): Promise<CategoryWithCount[]> => {
     const activeCategories = await db.query.categories.findMany({
       where: eq(categories.isActive, true),
@@ -80,7 +79,6 @@ export const categoriesService = {
     return categoriesWithCounts;
   },
 
-  // Get root categories (no parent)
   getRootCategories: async (): Promise<CategoryWithCount[]> => {
     const rootCategories = await db.query.categories.findMany({
       where: and(
@@ -107,7 +105,6 @@ export const categoriesService = {
     return categoriesWithCounts;
   },
 
-  // Get subcategories by parent ID
   getSubcategories: async (parentId: number): Promise<CategoryWithCount[]> => {
     const subcategories = await db.query.categories.findMany({
       where: and(
@@ -134,7 +131,6 @@ export const categoriesService = {
     return categoriesWithCounts;
   },
 
-  // Get category by ID
   getById: async (id: string): Promise<CategoryWithCount | null> => {
     const categoryId = parseInt(id, 10);
     if (isNaN(categoryId)) {
@@ -167,7 +163,6 @@ export const categoriesService = {
     };
   },
 
-  // Get category by slug
   getBySlug: async (slug: string): Promise<CategoryWithCount | null> => {
     const result = await db.query.categories.findFirst({
       where: eq(categories.slug, slug)
@@ -186,7 +181,6 @@ export const categoriesService = {
     };
   },
 
-  // Search categories by name or description
   search: async (searchTerm: string): Promise<Category[]> => {
     return await db.query.categories.findMany({
       where: or(
@@ -197,7 +191,6 @@ export const categoriesService = {
     });
   },
 
-  // Create new category
   create: async (data: NewCategory): Promise<Category> => {
     const existing = await db.query.categories.findFirst({
       where: or(
@@ -238,7 +231,6 @@ export const categoriesService = {
     return created;
   },
 
-  // Update category
   update: async (id: string, data: Partial<NewCategory>): Promise<Category | null> => {
     const categoryId = parseInt(id, 10);
     if (isNaN(categoryId)) {
@@ -253,19 +245,27 @@ export const categoriesService = {
       throw new Error("Category not found");
     }
 
-    if (data.name || data.slug) {
-      const conflicts = await db.query.categories.findFirst({
+    if (data.name) {
+      const duplicate = await db.query.categories.findFirst({
         where: and(
-          or(
-            data.name ? eq(categories.name, data.name) : undefined,
-            data.slug ? eq(categories.slug, data.slug) : undefined
-          ),
+          eq(categories.name, data.name),
           eq(categories.categoryId, categoryId)
         )
       });
+      if (duplicate && duplicate.categoryId !== categoryId) {
+        throw new Error("Another category with this name already exists");
+      }
+    }
 
-      if (conflicts && conflicts.categoryId !== categoryId) {
-        throw new Error("Another category with this name or slug already exists");
+    if (data.slug) {
+      const duplicate = await db.query.categories.findFirst({
+        where: and(
+          eq(categories.slug, data.slug),
+          eq(categories.categoryId, categoryId)
+        )
+      });
+      if (duplicate && duplicate.categoryId !== categoryId) {
+        throw new Error("Another category with this slug already exists");
       }
     }
 
@@ -273,21 +273,24 @@ export const categoriesService = {
       if (data.parentId === categoryId) {
         throw new Error("Category cannot be its own parent");
       }
-
       if (data.parentId) {
         const parent = await db.query.categories.findFirst({
           where: eq(categories.categoryId, data.parentId)
         });
-
         if (!parent) {
           throw new Error("Parent category not found");
         }
       }
     }
 
+    const updateData: any = { ...data };
+    if (updateData.parentId === null) {
+      updateData.parentId = null;
+    }
+
     const [updated] = await db.update(categories)
       .set({
-        ...data,
+        ...updateData,
         updatedAt: new Date()
       })
       .where(eq(categories.categoryId, categoryId))
@@ -296,7 +299,6 @@ export const categoriesService = {
     return updated || null;
   },
 
-  // Delete category
   delete: async (id: string): Promise<Category | null> => {
     const categoryId = parseInt(id, 10);
     if (isNaN(categoryId)) {
@@ -336,7 +338,6 @@ export const categoriesService = {
     return deleted || null;
   },
 
-  // Toggle category active status
   toggleStatus: async (id: string): Promise<Category | null> => {
     const categoryId = parseInt(id, 10);
     if (isNaN(categoryId)) {
@@ -362,7 +363,6 @@ export const categoriesService = {
     return updated || null;
   },
 
-  // Bulk delete categories
   bulkDelete: async (ids: number[]): Promise<{ success: number[]; failed: { id: number; reason: string }[] }> => {
     const results = {
       success: [] as number[],
