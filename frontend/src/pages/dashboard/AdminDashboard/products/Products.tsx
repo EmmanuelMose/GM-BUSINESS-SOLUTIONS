@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { productsAPI, type Product } from '../../../../Features/products/productsAPI';
 import './Products.css';
 
@@ -27,6 +28,19 @@ export default function Products() {
     (p.sku && p.sku.toLowerCase().includes(search.toLowerCase()))
   );
 
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    try {
+      const res = await productsAPI.delete(id);
+      if (res.success) {
+        setProducts(products.filter(p => p.productId !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert('Failed to delete product');
+    }
+  };
+
   if (loading) {
     return <div className="page-loading">Loading products...</div>;
   }
@@ -43,10 +57,9 @@ export default function Products() {
             onChange={(e) => setSearch(e.target.value)}
             className="search-input"
           />
-          <button className="btn-primary">Add Product</button>
+          <Link to="/admin/products/create" className="btn-primary">Add Product</Link>
         </div>
       </div>
-
       <div className="table-container">
         <table className="admin-table">
           <thead>
@@ -61,9 +74,7 @@ export default function Products() {
           </thead>
           <tbody>
             {filteredProducts.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="empty-state">No products found</td>
-              </tr>
+              <tr><td colSpan={6} className="empty-state">No products found</td></tr>
             ) : (
               filteredProducts.map((product) => (
                 <tr key={product.productId}>
@@ -77,8 +88,8 @@ export default function Products() {
                     </span>
                   </td>
                   <td className="actions-cell">
-                    <button className="action-btn edit">✏️</button>
-                    <button className="action-btn delete">🗑️</button>
+                    <Link to={`/admin/products/edit/${product.productId}`} className="action-btn edit">✏️</Link>
+                    <button className="action-btn delete" onClick={() => handleDelete(product.productId)}>🗑️</button>
                   </td>
                 </tr>
               ))

@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { ApiDomain } from '../../utils/APIDomain';
+import axios from "axios";
+import { ApiDomain } from "../../utils/APIDomain";
 
 export interface Product {
   productId: number;
@@ -35,11 +35,15 @@ export interface Product {
   variants?: any[];
 }
 
-export type NewProduct = Omit<Product, 'productId' | 'views' | 'rating' | 'reviewCount' | 'createdAt' | 'updatedAt' | 'status'> & {
-  status?: Product['status'];
-};
-
 const api = axios.create({ baseURL: ApiDomain });
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const productsAPI = {
   getAll: (): Promise<{ success: boolean; data: Product[] }> =>
@@ -67,10 +71,10 @@ export const productsAPI = {
     });
     return api.get(`/products/filter?${params}`).then(res => res.data);
   },
-  create: (data: NewProduct): Promise<{ success: boolean; data: Product }> =>
-    api.post('/products', data).then(res => res.data),
-  update: (id: number, data: Partial<NewProduct>): Promise<{ success: boolean; data: Product }> =>
-    api.put(`/products/${id}`, data).then(res => res.data),
+  create: (data: FormData): Promise<{ success: boolean; data: Product }> =>
+    api.post('/products', data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
+  update: (id: number, data: FormData): Promise<{ success: boolean; data: Product }> =>
+    api.put(`/products/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
   delete: (id: number): Promise<{ success: boolean; data: Product }> =>
     api.delete(`/products/${id}`).then(res => res.data),
   toggleFeatured: (id: number): Promise<{ success: boolean; data: Product; message: string }> =>

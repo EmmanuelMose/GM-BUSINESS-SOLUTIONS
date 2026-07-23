@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 import {
   getAllProductsController,
   getActiveProductsController,
@@ -20,6 +21,7 @@ import {
 } from "./products.controller";
 
 const productsRouter = Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 productsRouter.get("/active", getActiveProductsController);
 productsRouter.get("/featured", getFeaturedProductsController);
@@ -31,8 +33,8 @@ productsRouter.get("/search", searchProductsController);
 productsRouter.get("/filter", filterProductsController);
 productsRouter.get("/", getAllProductsController);
 productsRouter.get("/:id", getProductByIdController);
-productsRouter.post("/", createProductController);
-productsRouter.put("/:id", updateProductController);
+productsRouter.post("/", upload.single("featuredPhoto"), createProductController);
+productsRouter.put("/:id", upload.single("featuredPhoto"), updateProductController);
 productsRouter.delete("/:id", deleteProductController);
 productsRouter.patch("/:id/toggle-featured", toggleFeaturedController);
 productsRouter.patch("/:id/toggle-bestseller", toggleBestSellerController);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { categoriesAPI, type Category } from '../../../../Features/categories/categoriesAPI';
 import './Categories.css';
 
@@ -21,6 +22,19 @@ export default function Categories() {
     fetchCategories();
   }, []);
 
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this category?')) return;
+    try {
+      const res = await categoriesAPI.delete(id);
+      if (res.success) {
+        setCategories(categories.filter(c => c.categoryId !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      alert('Failed to delete category');
+    }
+  };
+
   if (loading) {
     return <div className="page-loading">Loading categories...</div>;
   }
@@ -29,9 +43,8 @@ export default function Categories() {
     <div className="admin-page">
       <div className="page-header">
         <h2>Categories</h2>
-        <button className="btn-primary">Add Category</button>
+        <Link to="/admin/categories/create" className="btn-primary">Add Category</Link>
       </div>
-
       <div className="table-container">
         <table className="admin-table">
           <thead>
@@ -45,9 +58,7 @@ export default function Categories() {
           </thead>
           <tbody>
             {categories.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="empty-state">No categories found</td>
-              </tr>
+              <tr><td colSpan={5} className="empty-state">No categories found</td></tr>
             ) : (
               categories.map((category) => (
                 <tr key={category.categoryId}>
@@ -63,8 +74,8 @@ export default function Categories() {
                     </span>
                   </td>
                   <td className="actions-cell">
-                    <button className="action-btn edit">✏️</button>
-                    <button className="action-btn delete">🗑️</button>
+                    <Link to={`/admin/categories/edit/${category.categoryId}`} className="action-btn edit">✏️</Link>
+                    <button className="action-btn delete" onClick={() => handleDelete(category.categoryId)}>🗑️</button>
                   </td>
                 </tr>
               ))

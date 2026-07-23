@@ -31,7 +31,6 @@ export default function Coupons() {
         <h2>Coupons</h2>
         <button className="btn-primary">Add Coupon</button>
       </div>
-
       <div className="table-container">
         <table className="admin-table">
           <thead>
@@ -47,17 +46,13 @@ export default function Coupons() {
           </thead>
           <tbody>
             {coupons.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="empty-state">No coupons found</td>
-              </tr>
+              <tr><td colSpan={7} className="empty-state">No coupons found</td></tr>
             ) : (
               coupons.map((coupon) => (
                 <tr key={coupon.couponId}>
                   <td className="coupon-code">{coupon.code}</td>
                   <td>{coupon.description || 'N/A'}</td>
-                  <td>
-                    {coupon.discountType === 'percentage' ? `${coupon.discountValue}%` : `KSh ${coupon.discountValue}`}
-                  </td>
+                  <td>{coupon.discountType === 'percentage' ? `${coupon.discountValue}%` : `KSh ${coupon.discountValue}`}</td>
                   <td>{coupon.usedCount} / {coupon.usageLimit || '∞'}</td>
                   <td>{coupon.endDate ? new Date(coupon.endDate).toLocaleDateString() : 'Never'}</td>
                   <td>

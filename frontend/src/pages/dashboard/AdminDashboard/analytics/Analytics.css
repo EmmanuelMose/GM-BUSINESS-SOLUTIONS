@@ -13,10 +13,11 @@
   align-items: center;
   gap: 16px;
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 .analytics-card:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
 }
 .analytics-card.warning {
   border-left: 4px solid #f59e0b;
@@ -50,4 +51,8 @@
   text-align: center;
   color: var(--gray-400);
   font-weight: 500;
+  transition: all 0.3s ease;
+}
+.analytics-chart-placeholder:hover {
+  box-shadow: var(--shadow-md);
 }

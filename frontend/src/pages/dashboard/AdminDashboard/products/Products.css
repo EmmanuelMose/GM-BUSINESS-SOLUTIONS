@@ -19,6 +19,7 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
 }
 .search-input {
   height: 40px;
@@ -28,21 +29,22 @@
   font-size: 14px;
   outline: none;
   min-width: 200px;
+  transition: all 0.3s ease;
+  background: white;
 }
 .search-input:focus {
   border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px rgba(11, 107, 58, 0.1);
 }
-.page-loading {
-  text-align: center;
-  padding: 48px 0;
-  color: var(--gray-500);
-  font-weight: 500;
+.search-input:hover {
+  border-color: var(--brand-300);
 }
 .table-container {
   overflow-x: auto;
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-card);
   background: white;
+  box-shadow: var(--shadow-sm);
 }
 .admin-table {
   width: 100%;
@@ -50,40 +52,44 @@
   font-size: 14px;
 }
 .admin-table thead {
-  background: var(--gray-50);
-  border-bottom: 1px solid var(--gray-200);
+  background: linear-gradient(180deg, var(--gray-50), white);
+  border-bottom: 2px solid var(--gray-200);
 }
 .admin-table th {
-  padding: 12px 16px;
+  padding: 14px 16px;
   text-align: left;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--gray-600);
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 .admin-table td {
-  padding: 12px 16px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--gray-100);
   color: var(--gray-700);
+  vertical-align: middle;
+}
+.admin-table tbody tr {
+  transition: background 0.2s ease;
 }
 .admin-table tbody tr:hover {
-  background: var(--gray-50);
+  background: var(--brand-50);
 }
 .product-name {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--gray-900);
 }
 .product-price {
-  font-weight: 600;
-  color: var(--gray-900);
+  font-weight: 700;
+  color: var(--brand-600);
 }
 .actions-cell {
   display: flex;
   gap: 8px;
 }
 .action-btn {
-  padding: 4px 8px;
+  padding: 6px 10px;
   border-radius: var(--radius-control);
   border: 1px solid var(--gray-200);
   background: white;
@@ -94,13 +100,54 @@
 .action-btn.edit:hover {
   background: var(--brand-50);
   border-color: var(--brand-500);
+  transform: scale(1.05);
 }
 .action-btn.delete:hover {
   background: #fee2e2;
   border-color: #dc2626;
+  transform: scale(1.05);
+}
+.action-btn.view {
+  color: #3b82f6;
+}
+.action-btn.view:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  transform: scale(1.05);
 }
 .empty-state {
   text-align: center;
   padding: 32px 16px;
   color: var(--gray-400);
+}
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: capitalize;
+}
+.status-in_stock {
+  background: #dcfce7;
+  color: #166534;
+}
+.status-low_stock {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status-out_of_stock {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.status-discontinued {
+  background: #fce4ec;
+  color: #c62828;
+}
+.page-loading {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--gray-500);
+  font-weight: 500;
 }

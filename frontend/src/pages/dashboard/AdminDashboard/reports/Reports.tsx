@@ -9,14 +9,9 @@ export default function Reports() {
       <div className="page-header">
         <h2>Reports</h2>
       </div>
-
       <div className="reports-container">
         <div className="report-options">
-          <select
-            value={reportType}
-            onChange={(e) => setReportType(e.target.value)}
-            className="filter-select"
-          >
+          <select value={reportType} onChange={(e) => setReportType(e.target.value)} className="filter-select">
             <option value="sales">Sales Report</option>
             <option value="inventory">Inventory Report</option>
             <option value="orders">Orders Report</option>
@@ -24,7 +19,6 @@ export default function Reports() {
           </select>
           <button className="btn-primary">Generate Report</button>
         </div>
-
         <div className="report-preview">
           <div className="report-placeholder">
             <span className="report-icon">📄</span>

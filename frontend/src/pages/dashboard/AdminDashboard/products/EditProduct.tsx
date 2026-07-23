@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { productsAPI } from '../../../../Features/products/productsAPI';
 import { categoriesAPI, type Category } from '../../../../Features/categories/categoriesAPI';
+import CloudinaryUpload from '../../../../components/CloudinaryUpload';
 import './EditProduct.css';
 
 export default function EditProduct() {
@@ -22,7 +23,8 @@ export default function EditProduct() {
     stock: '',
     lowStockThreshold: '5',
     categoryId: '',
-    featuredPhoto: '',
+    featuredPhoto: null as File | null,
+    existingPhoto: '',
     sku: '',
     brand: '',
     isFeatured: false,
@@ -49,7 +51,8 @@ export default function EditProduct() {
             stock: String(p.stock),
             lowStockThreshold: String(p.lowStockThreshold || 5),
             categoryId: String(p.categoryId || ''),
-            featuredPhoto: p.featuredPhoto || '',
+            featuredPhoto: null,
+            existingPhoto: p.featuredPhoto || '',
             sku: p.sku || '',
             brand: p.brand || '',
             isFeatured: p.isFeatured,
@@ -77,6 +80,14 @@ export default function EditProduct() {
     }
   };
 
+  const handlePhotoUpload = (file: File) => {
+    setFormData({ ...formData, featuredPhoto: file });
+  };
+
+  const handleRemovePhoto = () => {
+    setFormData({ ...formData, featuredPhoto: null, existingPhoto: '' });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -84,19 +95,28 @@ export default function EditProduct() {
     setSubmitting(true);
 
     try {
-      const payload = {
-        ...formData,
-        comparePrice: formData.comparePrice ? formData.comparePrice : null,
-        stock: parseInt(formData.stock),
-        lowStockThreshold: parseInt(formData.lowStockThreshold),
-        categoryId: formData.categoryId ? parseInt(formData.categoryId) : null,
-      };
-      const res = await productsAPI.update(parseInt(id!), payload);
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('slug', formData.slug);
+      formDataToSend.append('description', formData.description || '');
+      formDataToSend.append('shortDescription', formData.shortDescription || '');
+      formDataToSend.append('price', formData.price);
+      formDataToSend.append('comparePrice', formData.comparePrice || '');
+      formDataToSend.append('stock', formData.stock);
+      formDataToSend.append('lowStockThreshold', formData.lowStockThreshold);
+      formDataToSend.append('categoryId', formData.categoryId || '');
+      formDataToSend.append('sku', formData.sku || '');
+      formDataToSend.append('brand', formData.brand || '');
+      formDataToSend.append('isFeatured', String(formData.isFeatured));
+      formDataToSend.append('isBestSeller', String(formData.isBestSeller));
+      if (formData.featuredPhoto) {
+        formDataToSend.append('featuredPhoto', formData.featuredPhoto);
+      }
+
+      const res = await productsAPI.update(parseInt(id!), formDataToSend);
       if (res.success) {
         setSuccess('Product updated successfully!');
-        setTimeout(() => {
-          navigate('/admin/products');
-        }, 2000);
+        setTimeout(() => navigate('/admin/products'), 2000);
       }
     } catch (err: any) {
       setError(err.message || 'Failed to update product');
@@ -125,173 +145,90 @@ export default function EditProduct() {
         <div className="form-grid">
           <div className="form-group">
             <label className="form-label">Product Name *</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="form-input"
-              required
-            />
+            <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required />
           </div>
 
           <div className="form-group">
             <label className="form-label">Slug *</label>
-            <input
-              type="text"
-              name="slug"
-              value={formData.slug}
-              onChange={handleChange}
-              className="form-input"
-              required
-            />
+            <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="form-input" required />
           </div>
 
           <div className="form-group">
             <label className="form-label">Category *</label>
-            <select
-              name="categoryId"
-              value={formData.categoryId}
-              onChange={handleChange}
-              className="form-select"
-              required
-            >
+            <select name="categoryId" value={formData.categoryId} onChange={handleChange} className="form-select" required>
               <option value="">Select Category</option>
               {categories.map((cat) => (
-                <option key={cat.categoryId} value={cat.categoryId}>
-                  {cat.name}
-                </option>
+                <option key={cat.categoryId} value={cat.categoryId}>{cat.name}</option>
               ))}
             </select>
           </div>
 
           <div className="form-group">
             <label className="form-label">Price (KSh) *</label>
-            <input
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              className="form-input"
-              required
-              min="0"
-              step="0.01"
-            />
+            <input type="number" name="price" value={formData.price} onChange={handleChange} className="form-input" required min="0" step="0.01" />
           </div>
 
           <div className="form-group">
             <label className="form-label">Compare Price</label>
-            <input
-              type="number"
-              name="comparePrice"
-              value={formData.comparePrice}
-              onChange={handleChange}
-              className="form-input"
-              min="0"
-              step="0.01"
-            />
+            <input type="number" name="comparePrice" value={formData.comparePrice} onChange={handleChange} className="form-input" min="0" step="0.01" />
           </div>
 
           <div className="form-group">
             <label className="form-label">Stock *</label>
-            <input
-              type="number"
-              name="stock"
-              value={formData.stock}
-              onChange={handleChange}
-              className="form-input"
-              required
-              min="0"
-            />
+            <input type="number" name="stock" value={formData.stock} onChange={handleChange} className="form-input" required min="0" />
           </div>
 
           <div className="form-group">
             <label className="form-label">Low Stock Threshold</label>
-            <input
-              type="number"
-              name="lowStockThreshold"
-              value={formData.lowStockThreshold}
-              onChange={handleChange}
-              className="form-input"
-              min="0"
-            />
+            <input type="number" name="lowStockThreshold" value={formData.lowStockThreshold} onChange={handleChange} className="form-input" min="0" />
           </div>
 
           <div className="form-group">
             <label className="form-label">SKU</label>
-            <input
-              type="text"
-              name="sku"
-              value={formData.sku}
-              onChange={handleChange}
-              className="form-input"
-            />
+            <input type="text" name="sku" value={formData.sku} onChange={handleChange} className="form-input" />
           </div>
 
           <div className="form-group">
             <label className="form-label">Brand</label>
-            <input
-              type="text"
-              name="brand"
-              value={formData.brand}
-              onChange={handleChange}
-              className="form-input"
-            />
+            <input type="text" name="brand" value={formData.brand} onChange={handleChange} className="form-input" />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Featured Photo URL</label>
-            <input
-              type="url"
-              name="featuredPhoto"
-              value={formData.featuredPhoto}
-              onChange={handleChange}
-              className="form-input"
+            <label className="form-label">Featured Photo</label>
+            {formData.existingPhoto && !formData.featuredPhoto && (
+              <div className="existing-photo">
+                <img src={formData.existingPhoto} alt="Current" />
+                <button type="button" onClick={handleRemovePhoto} className="remove-photo-btn">Remove</button>
+              </div>
+            )}
+            <CloudinaryUpload
+              onUpload={handlePhotoUpload}
+              onRemove={handleRemovePhoto}
+              currentImage={formData.existingPhoto || null}
+              label="Upload New Image"
             />
           </div>
 
           <div className="form-group full-width">
             <label className="form-label">Short Description</label>
-            <textarea
-              name="shortDescription"
-              value={formData.shortDescription}
-              onChange={handleChange}
-              className="form-textarea"
-              rows={2}
-            />
+            <textarea name="shortDescription" value={formData.shortDescription} onChange={handleChange} className="form-textarea" rows={2} />
           </div>
 
           <div className="form-group full-width">
             <label className="form-label">Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="form-textarea"
-              rows={4}
-            />
+            <textarea name="description" value={formData.description} onChange={handleChange} className="form-textarea" rows={4} />
           </div>
 
           <div className="form-group checkbox-group">
             <label className="form-checkbox">
-              <input
-                type="checkbox"
-                name="isFeatured"
-                checked={formData.isFeatured}
-                onChange={handleChange}
-              />
+              <input type="checkbox" name="isFeatured" checked={formData.isFeatured} onChange={handleChange} />
               Featured Product
             </label>
           </div>
 
           <div className="form-group checkbox-group">
             <label className="form-checkbox">
-              <input
-                type="checkbox"
-                name="isBestSeller"
-                checked={formData.isBestSeller}
-                onChange={handleChange}
-              />
+              <input type="checkbox" name="isBestSeller" checked={formData.isBestSeller} onChange={handleChange} />
               Best Seller
             </label>
           </div>

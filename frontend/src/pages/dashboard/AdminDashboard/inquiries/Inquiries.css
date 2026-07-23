@@ -8,10 +8,11 @@
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-card);
   padding: 16px;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 .inquiry-card:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 .inquiry-card.unread {
   border-left: 4px solid var(--brand-500);
@@ -50,7 +51,7 @@
   color: var(--gray-700);
   font-size: 14px;
   margin: 8px 0;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 .inquiry-phone {
   font-size: 13px;
@@ -69,8 +70,10 @@
   border-radius: var(--radius-control);
   font-weight: 600;
   font-size: 13px;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
 }
 .mark-read-btn:hover {
   background: var(--brand-600);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(11, 107, 58, 0.3);
 }

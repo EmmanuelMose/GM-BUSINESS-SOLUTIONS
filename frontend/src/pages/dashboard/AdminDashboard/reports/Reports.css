@@ -3,6 +3,7 @@
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-card);
   padding: 24px;
+  box-shadow: var(--shadow-sm);
 }
 .report-options {
   display: flex;
@@ -10,12 +11,17 @@
   margin-bottom: 24px;
 }
 .report-preview {
-  border: 1px dashed var(--gray-300);
+  border: 2px dashed var(--gray-300);
   border-radius: var(--radius-card);
   min-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+}
+.report-preview:hover {
+  border-color: var(--brand-500);
+  background: var(--brand-50);
 }
 .report-placeholder {
   text-align: center;

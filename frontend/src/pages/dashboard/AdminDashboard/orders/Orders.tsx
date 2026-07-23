@@ -33,11 +33,7 @@ export default function Orders() {
       <div className="page-header">
         <h2>Orders</h2>
         <div className="page-actions">
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="filter-select"
-          >
+          <select value={filter} onChange={(e) => setFilter(e.target.value)} className="filter-select">
             <option value="all">All Orders</option>
             <option value="pending">Pending</option>
             <option value="confirmed">Confirmed</option>
@@ -48,7 +44,6 @@ export default function Orders() {
           </select>
         </div>
       </div>
-
       <div className="table-container">
         <table className="admin-table">
           <thead>
@@ -64,9 +59,7 @@ export default function Orders() {
           </thead>
           <tbody>
             {filteredOrders.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="empty-state">No orders found</td>
-              </tr>
+              <tr><td colSpan={7} className="empty-state">No orders found</td></tr>
             ) : (
               filteredOrders.map((order) => (
                 <tr key={order.orderId}>
@@ -74,14 +67,10 @@ export default function Orders() {
                   <td>{order.guestEmail || order.userId || 'Guest'}</td>
                   <td className="order-total">KSh {parseFloat(order.total).toLocaleString()}</td>
                   <td>
-                    <span className={`status-badge status-${order.status}`}>
-                      {order.status}
-                    </span>
+                    <span className={`status-badge status-${order.status}`}>{order.status}</span>
                   </td>
                   <td>
-                    <span className={`status-badge status-${order.paymentStatus}`}>
-                      {order.paymentStatus}
-                    </span>
+                    <span className={`status-badge status-${order.paymentStatus}`}>{order.paymentStatus}</span>
                   </td>
                   <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                   <td className="actions-cell">

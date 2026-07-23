@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { ApiDomain } from '../../utils/APIDomain';
+import axios from "axios";
+import { ApiDomain } from "../../utils/APIDomain";
 
 export interface Category {
   categoryId: number;
@@ -17,12 +17,15 @@ export interface Category {
   subcategories?: Category[];
 }
 
-export type NewCategory = Omit<Category, 'categoryId' | 'createdAt' | 'updatedAt'> & {
-  productCount?: never;
-  subcategories?: never;
-};
-
 const api = axios.create({ baseURL: ApiDomain });
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const categoriesAPI = {
   getAll: (): Promise<{ success: boolean; data: Category[] }> =>
@@ -39,10 +42,10 @@ export const categoriesAPI = {
     api.get(`/categories/slug/${slug}`).then(res => res.data),
   search: (query: string): Promise<{ success: boolean; data: Category[] }> =>
     api.get(`/categories/search?q=${encodeURIComponent(query)}`).then(res => res.data),
-  create: (data: NewCategory): Promise<{ success: boolean; data: Category }> =>
-    api.post('/categories', data).then(res => res.data),
-  update: (id: number, data: Partial<NewCategory>): Promise<{ success: boolean; data: Category }> =>
-    api.put(`/categories/${id}`, data).then(res => res.data),
+  create: (data: FormData): Promise<{ success: boolean; data: Category }> =>
+    api.post('/categories', data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
+  update: (id: number, data: FormData): Promise<{ success: boolean; data: Category }> =>
+    api.put(`/categories/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
   delete: (id: number): Promise<{ success: boolean; data: Category }> =>
     api.delete(`/categories/${id}`).then(res => res.data),
   toggleStatus: (id: number): Promise<{ success: boolean; data: Category; message: string }> =>

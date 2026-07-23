@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { productsService } from "./products.service";
+import { uploadToCloudinary } from "../utils/cloudinaryUpload";
 
 export const getAllProductsController = async (_req: Request, res: Response) => {
   try {
@@ -110,7 +111,11 @@ export const filterProductsController = async (req: Request, res: Response) => {
 
 export const createProductController = async (req: Request, res: Response) => {
   try {
-    const data = await productsService.create(req.body);
+    const body = { ...req.body };
+    if (req.file) {
+      body.featuredPhoto = await uploadToCloudinary(req.file.buffer);
+    }
+    const data = await productsService.create(body);
     res.status(201).json({ success: true, data });
   } catch (e: any) {
     const status = e.message.includes("already exists") ? 409 : 400;
@@ -124,7 +129,11 @@ export const updateProductController = async (req: Request, res: Response) => {
     if (!id || typeof id !== 'string') {
       return res.status(400).json({ success: false, message: "Invalid product ID" });
     }
-    const data = await productsService.update(id, req.body);
+    const body = { ...req.body };
+    if (req.file) {
+      body.featuredPhoto = await uploadToCloudinary(req.file.buffer);
+    }
+    const data = await productsService.update(id, body);
     if (!data) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
@@ -161,10 +170,10 @@ export const toggleFeaturedController = async (req: Request, res: Response) => {
     if (!data) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: `Product ${data.isFeatured ? 'featured' : 'unfeatured'} successfully`,
-      data 
+      data
     });
   } catch (e: any) {
     res.status(400).json({ success: false, message: e.message });
@@ -181,10 +190,10 @@ export const toggleBestSellerController = async (req: Request, res: Response) =>
     if (!data) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: `Product ${data.isBestSeller ? 'marked as best seller' : 'removed from best sellers'} successfully`,
-      data 
+      data
     });
   } catch (e: any) {
     res.status(400).json({ success: false, message: e.message });
@@ -205,10 +214,10 @@ export const updateStockController = async (req: Request, res: Response) => {
     if (!data) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: `Stock updated to ${stock} successfully`,
-      data 
+      data
     });
   } catch (e: any) {
     res.status(400).json({ success: false, message: e.message });
@@ -227,19 +236,17 @@ export const getLowStockProductsController = async (_req: Request, res: Response
 export const bulkDeleteProductsController = async (req: Request, res: Response) => {
   try {
     const { ids } = req.body;
-    
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Please provide an array of product IDs to delete" 
+      return res.status(400).json({
+        success: false,
+        message: "Please provide an array of product IDs to delete"
       });
     }
-
     const data = await productsService.bulkDelete(ids);
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: `Successfully deleted ${data.success.length} products`,
-      data 
+      data
     });
   } catch (e: any) {
     res.status(400).json({ success: false, message: e.message });

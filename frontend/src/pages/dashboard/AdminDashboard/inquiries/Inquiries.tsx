@@ -41,7 +41,6 @@ export default function Inquiries() {
       <div className="page-header">
         <h2>Customer Inquiries</h2>
       </div>
-
       <div className="inquiries-list">
         {inquiries.length === 0 ? (
           <div className="empty-state">No inquiries found</div>
@@ -54,9 +53,7 @@ export default function Inquiries() {
                   <span className="inquiry-email">{inquiry.email}</span>
                 </div>
                 <div className="inquiry-meta">
-                  <span className={`status-badge status-${inquiry.status}`}>
-                    {inquiry.status}
-                  </span>
+                  <span className={`status-badge status-${inquiry.status}`}>{inquiry.status}</span>
                   <span className="inquiry-date">{new Date(inquiry.createdAt).toLocaleString()}</span>
                 </div>
               </div>
@@ -64,9 +61,7 @@ export default function Inquiries() {
               {inquiry.phone && <p className="inquiry-phone">📞 {inquiry.phone}</p>}
               {inquiry.status === 'unread' && (
                 <div className="inquiry-actions">
-                  <button className="mark-read-btn" onClick={() => handleMarkRead(inquiry.inquiryId)}>
-                    Mark as Read
-                  </button>
+                  <button className="mark-read-btn" onClick={() => handleMarkRead(inquiry.inquiryId)}>Mark as Read</button>
                 </div>
               )}
             </div>

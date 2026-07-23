@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { categoriesAPI, type Category } from '../../../../Features/categories/categoriesAPI';
+import CloudinaryUpload from '../../../../components/CloudinaryUpload';
 import './EditCategory.css';
 
 export default function EditCategory() {
@@ -16,7 +17,8 @@ export default function EditCategory() {
     slug: '',
     description: '',
     icon: '',
-    photo: '',
+    photo: null as File | null,
+    existingPhoto: '',
     parentId: '',
     displayOrder: '0',
     isActive: true,
@@ -37,7 +39,8 @@ export default function EditCategory() {
             slug: c.slug,
             description: c.description || '',
             icon: c.icon || '',
-            photo: c.photo || '',
+            photo: null,
+            existingPhoto: c.photo || '',
             parentId: String(c.parentId || ''),
             displayOrder: String(c.displayOrder || 0),
             isActive: c.isActive,
@@ -66,6 +69,14 @@ export default function EditCategory() {
     }
   };
 
+  const handlePhotoUpload = (file: File) => {
+    setFormData({ ...formData, photo: file });
+  };
+
+  const handleRemovePhoto = () => {
+    setFormData({ ...formData, photo: null, existingPhoto: '' });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -73,17 +84,22 @@ export default function EditCategory() {
     setSubmitting(true);
 
     try {
-      const payload = {
-        ...formData,
-        parentId: formData.parentId ? parseInt(formData.parentId) : null,
-        displayOrder: parseInt(formData.displayOrder),
-      };
-      const res = await categoriesAPI.update(parseInt(id!), payload);
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('slug', formData.slug);
+      formDataToSend.append('description', formData.description || '');
+      formDataToSend.append('icon', formData.icon || '');
+      formDataToSend.append('parentId', formData.parentId || '');
+      formDataToSend.append('displayOrder', formData.displayOrder);
+      formDataToSend.append('isActive', String(formData.isActive));
+      if (formData.photo) {
+        formDataToSend.append('photo', formData.photo);
+      }
+
+      const res = await categoriesAPI.update(parseInt(id!), formDataToSend);
       if (res.success) {
         setSuccess('Category updated successfully!');
-        setTimeout(() => {
-          navigate('/admin/categories');
-        }, 2000);
+        setTimeout(() => navigate('/admin/categories'), 2000);
       }
     } catch (err: any) {
       setError(err.message || 'Failed to update category');
@@ -112,98 +128,58 @@ export default function EditCategory() {
         <div className="form-grid">
           <div className="form-group">
             <label className="form-label">Category Name *</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="form-input"
-              required
-            />
+            <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required />
           </div>
 
           <div className="form-group">
             <label className="form-label">Slug *</label>
-            <input
-              type="text"
-              name="slug"
-              value={formData.slug}
-              onChange={handleChange}
-              className="form-input"
-              required
-            />
+            <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="form-input" required />
           </div>
 
           <div className="form-group">
             <label className="form-label">Icon (Emoji)</label>
-            <input
-              type="text"
-              name="icon"
-              value={formData.icon}
-              onChange={handleChange}
-              className="form-input"
-            />
+            <input type="text" name="icon" value={formData.icon} onChange={handleChange} className="form-input" />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Photo URL</label>
-            <input
-              type="url"
-              name="photo"
-              value={formData.photo}
-              onChange={handleChange}
-              className="form-input"
+            <label className="form-label">Category Image</label>
+            {formData.existingPhoto && !formData.photo && (
+              <div className="existing-photo">
+                <img src={formData.existingPhoto} alt="Current" />
+                <button type="button" onClick={handleRemovePhoto} className="remove-photo-btn">Remove</button>
+              </div>
+            )}
+            <CloudinaryUpload
+              onUpload={handlePhotoUpload}
+              onRemove={handleRemovePhoto}
+              currentImage={formData.existingPhoto || null}
+              label="Upload New Image"
             />
           </div>
 
           <div className="form-group">
             <label className="form-label">Parent Category</label>
-            <select
-              name="parentId"
-              value={formData.parentId}
-              onChange={handleChange}
-              className="form-select"
-            >
+            <select name="parentId" value={formData.parentId} onChange={handleChange} className="form-select">
               <option value="">None (Root Category)</option>
               {categories.map((cat) => (
-                <option key={cat.categoryId} value={cat.categoryId}>
-                  {cat.name}
-                </option>
+                <option key={cat.categoryId} value={cat.categoryId}>{cat.name}</option>
               ))}
             </select>
           </div>
 
           <div className="form-group">
             <label className="form-label">Display Order</label>
-            <input
-              type="number"
-              name="displayOrder"
-              value={formData.displayOrder}
-              onChange={handleChange}
-              className="form-input"
-              min="0"
-            />
+            <input type="number" name="displayOrder" value={formData.displayOrder} onChange={handleChange} className="form-input" min="0" />
           </div>
 
           <div className="form-group full-width">
             <label className="form-label">Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="form-textarea"
-              rows={3}
-            />
+            <textarea name="description" value={formData.description} onChange={handleChange} className="form-textarea" rows={3} />
           </div>
 
           <div className="form-group checkbox-group full-width">
             <label className="form-checkbox">
-              <input
-                type="checkbox"
-                name="isActive"
-                checked={formData.isActive}
-                onChange={handleChange}
-              />
+              <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleChange} />
               Active
             </label>
           </div>

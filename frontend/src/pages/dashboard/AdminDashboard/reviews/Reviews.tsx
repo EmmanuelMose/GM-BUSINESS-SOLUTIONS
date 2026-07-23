@@ -52,7 +52,6 @@ export default function Reviews() {
       <div className="page-header">
         <h2>Reviews</h2>
       </div>
-
       <div className="reviews-grid">
         {reviews.length === 0 ? (
           <div className="empty-state">No reviews found</div>
@@ -70,9 +69,7 @@ export default function Reviews() {
               </div>
               <p className="review-comment">{review.comment}</p>
               <div className="review-footer">
-                <span className={`status-badge status-${review.status}`}>
-                  {review.status}
-                </span>
+                <span className={`status-badge status-${review.status}`}>{review.status}</span>
                 {review.status === 'pending' && (
                   <div className="review-actions">
                     <button className="approve-btn" onClick={() => handleApprove(review.reviewId)}>Approve</button>

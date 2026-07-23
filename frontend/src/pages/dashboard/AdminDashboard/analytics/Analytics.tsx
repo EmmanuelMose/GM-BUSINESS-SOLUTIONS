@@ -59,7 +59,6 @@ export default function Analytics() {
       <div className="page-header">
         <h2>Analytics</h2>
       </div>
-
       <div className="analytics-grid">
         <div className="analytics-card">
           <div className="analytics-icon">📋</div>
@@ -104,7 +103,6 @@ export default function Analytics() {
           </div>
         </div>
       </div>
-
       <div className="analytics-chart-placeholder">
         <p>📊 Sales Chart (Coming Soon)</p>
       </div>

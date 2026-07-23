@@ -119,9 +119,7 @@ export default function AdminDashboardOverview() {
             </thead>
             <tbody>
               {recentOrders.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="empty-state">No recent orders</td>
-                </tr>
+                <tr><td colSpan={6} className="empty-state">No recent orders</td></tr>
               ) : (
                 recentOrders.map((order: any) => (
                   <tr key={order.orderId}>
@@ -129,14 +127,10 @@ export default function AdminDashboardOverview() {
                     <td>{order.guestEmail || order.userId || 'Guest'}</td>
                     <td className="order-total">KSh {parseFloat(order.total).toLocaleString()}</td>
                     <td>
-                      <span className={`status-badge status-${order.status}`}>
-                        {order.status}
-                      </span>
+                      <span className={`status-badge status-${order.status}`}>{order.status}</span>
                     </td>
                     <td>
-                      <span className={`status-badge status-${order.paymentStatus}`}>
-                        {order.paymentStatus}
-                      </span>
+                      <span className={`status-badge status-${order.paymentStatus}`}>{order.paymentStatus}</span>
                     </td>
                     <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                   </tr>

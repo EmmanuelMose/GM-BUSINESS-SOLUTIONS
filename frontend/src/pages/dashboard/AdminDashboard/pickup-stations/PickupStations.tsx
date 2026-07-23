@@ -55,7 +55,6 @@ export default function PickupStations() {
         <h2>Pickup Stations</h2>
         <Link to="/admin/pickup-stations/create" className="btn-primary">Add Station</Link>
       </div>
-
       <div className="table-container">
         <table className="admin-table">
           <thead>
@@ -71,9 +70,7 @@ export default function PickupStations() {
           </thead>
           <tbody>
             {stations.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="empty-state">No pickup stations found</td>
-              </tr>
+              <tr><td colSpan={7} className="empty-state">No pickup stations found</td></tr>
             ) : (
               stations.map((station) => (
                 <tr key={station.stationId}>
