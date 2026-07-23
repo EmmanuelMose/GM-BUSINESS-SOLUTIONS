@@ -1,17 +1,413 @@
+.pickup-page {
+  padding: 0;
+  animation: fadeInUp 0.5s ease;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.pickup-toast {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  border-radius: var(--radius-card);
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: var(--shadow-lg);
+  animation: slideInRight 0.4s ease forwards;
+  max-width: 420px;
+  background: white;
+  border: 1px solid var(--gray-200);
+}
+.pickup-toast.success {
+  border-left: 5px solid #16a34a;
+  color: #166534;
+}
+.pickup-toast.error {
+  border-left: 5px solid #dc2626;
+  color: #991b1b;
+}
+.toast-close {
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.3s;
+}
+.toast-close:hover {
+  color: var(--gray-700);
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.pickup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.pickup-header h2 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin: 0;
+}
+.pickup-subtitle {
+  font-size: 14px;
+  color: var(--gray-500);
+  margin-top: 4px;
+}
+.pickup-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  gap: 16px;
+}
+.pickup-loader {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--gray-200);
+  border-top-color: var(--brand-500);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.pickup-loading p {
+  color: var(--gray-500);
+  font-weight: 500;
+}
+.pickup-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.pickup-search {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+.pickup-search .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+  pointer-events: none;
+}
+.pickup-search input {
+  width: 100%;
+  height: 40px;
+  padding: 0 16px 0 38px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-control);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: white;
+}
+.pickup-search input:focus {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 4px rgba(11, 107, 58, 0.08);
+}
+.pickup-filter {
+  position: relative;
+}
+.pickup-filter .filter-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+  pointer-events: none;
+}
+.pickup-filter select {
+  height: 40px;
+  padding: 0 32px 0 38px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-control);
+  font-size: 14px;
+  background: white;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  min-width: 130px;
+}
+.pickup-filter select:focus {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 4px rgba(11, 107, 58, 0.08);
+}
+.pickup-table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+.pickup-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+  min-width: 700px;
+}
+.pickup-table thead {
+  background: var(--gray-50);
+}
+.pickup-table thead th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--gray-600);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid var(--gray-200);
+}
+.pickup-table tbody tr {
+  transition: all 0.3s ease;
+  border-bottom: 1px solid var(--gray-100);
+}
+.pickup-table tbody tr:hover {
+  background: var(--brand-50);
+}
+.pickup-table tbody tr.inactive-row {
+  opacity: 0.65;
+}
+.pickup-table td {
+  padding: 12px 16px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--gray-100);
+}
+.pickup-table tbody tr:last-child td {
+  border-bottom: none;
+}
 .station-name {
   font-weight: 600;
   color: var(--gray-900);
+  font-size: 15px;
 }
-.action-btn.toggle {
-  padding: 4px 8px;
+.station-address {
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.station-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--gray-600);
+}
+.contact-item a {
+  color: var(--brand-500);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.contact-item a:hover {
+  color: var(--brand-600);
+  text-decoration: underline;
+}
+.status-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+  letter-spacing: 0.03em;
+}
+.status-active {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+.status-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+.pickup-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.action-btn {
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-control);
   border: 1px solid var(--gray-200);
   background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 14px;
+  transition: all 0.3s ease;
+  color: var(--gray-600);
+}
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.action-btn.edit {
+  color: var(--brand-500);
+  border-color: var(--brand-200);
+}
+.action-btn.edit:hover {
+  background: var(--brand-50);
+  border-color: var(--brand-500);
+}
+.action-btn.toggle {
+  color: var(--gray-500);
 }
 .action-btn.toggle:hover {
-  background: var(--gray-50);
-  transform: scale(1.05);
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+.action-btn.delete {
+  color: #dc2626;
+  border-color: #fecaca;
+}
+.action-btn.delete:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+.pickup-empty {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--gray-500);
+}
+.pickup-empty span {
+  display: block;
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+.pickup-empty p {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+.btn-sm {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+}
+.btn-primary {
+  height: 40px;
+  padding: 0 20px;
+  background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+  color: white;
+  border: none;
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(11, 107, 58, 0.25);
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(11, 107, 58, 0.35);
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+@media (max-width: 768px) {
+  .pickup-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pickup-header .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+  .pickup-filters {
+    flex-direction: column;
+  }
+  .pickup-search {
+    min-width: auto;
+  }
+  .pickup-filter select {
+    width: 100%;
+  }
+  .pickup-table {
+    font-size: 12px;
+    min-width: 600px;
+  }
+  .pickup-table th,
+  .pickup-table td {
+    padding: 8px 10px;
+  }
+  .action-btn {
+    width: 30px;
+    height: 30px;
+  }
+  .station-name {
+    font-size: 13px;
+  }
+}
+@media (max-width: 480px) {
+  .pickup-header h2 {
+    font-size: 20px;
+  }
+  .pickup-table {
+    font-size: 11px;
+    min-width: 500px;
+  }
+  .pickup-table th,
+  .pickup-table td {
+    padding: 6px 8px;
+  }
+  .status-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+  .action-btn {
+    width: 26px;
+    height: 26px;
+  }
+  .action-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  .pickup-toast {
+    right: 12px;
+    left: 12px;
+    font-size: 13px;
+    padding: 12px 16px;
+  }
 }

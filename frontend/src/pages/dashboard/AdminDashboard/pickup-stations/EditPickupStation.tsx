@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Save, MapPin, Phone, Mail } from 'lucide-react';
 import { pickupStationsAPI } from '../../../../Features/pickupStations/pickupStationsAPI';
 import './EditPickupStation.css';
 
@@ -36,6 +37,8 @@ export default function EditPickupStation() {
             email: s.email || '',
             isActive: s.isActive,
           });
+        } else {
+          setError('Station not found');
         }
       } catch (error) {
         console.error('Error fetching station:', error);
@@ -77,64 +80,126 @@ export default function EditPickupStation() {
   };
 
   if (loading) {
-    return <div className="page-loading">Loading pickup station...</div>;
+    return (
+      <div className="pickup-loading">
+        <div className="pickup-loader"></div>
+        <p>Loading pickup station...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="admin-page">
-      <div className="page-header">
-        <h2>Edit Pickup Station</h2>
-        <button className="btn-secondary" onClick={() => navigate('/admin/pickup-stations')}>
-          Back to Stations
-        </button>
+    <div className="pickup-page">
+      <div className="pickup-header">
+        <div className="pickup-header-left">
+          <button className="back-btn" onClick={() => navigate('/admin/pickup-stations')}>
+            <ArrowLeft size={18} /> Back to Stations
+          </button>
+          <h2>Edit Pickup Station</h2>
+        </div>
       </div>
 
       {error && <div className="form-error">{error}</div>}
       {success && <div className="form-success">{success}</div>}
 
-      <form onSubmit={handleSubmit} className="station-form">
-        <div className="form-grid">
+      <form onSubmit={handleSubmit} className="pickup-form">
+        <div className="pickup-form-grid">
           <div className="form-group">
-            <label className="form-label">Station Name *</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required />
+            <label className="form-label">Station Name <span className="required">*</span></label>
+            <div className="input-icon-wrapper">
+              <MapPin size={18} className="input-icon" />
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="form-input with-icon"
+                required
+              />
+            </div>
           </div>
 
           <div className="form-group">
-            <label className="form-label">County *</label>
-            <input type="text" name="county" value={formData.county} onChange={handleChange} className="form-input" required />
+            <label className="form-label">County <span className="required">*</span></label>
+            <input
+              type="text"
+              name="county"
+              value={formData.county}
+              onChange={handleChange}
+              className="form-input"
+              required
+            />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Town *</label>
-            <input type="text" name="town" value={formData.town} onChange={handleChange} className="form-input" required />
+            <label className="form-label">Town <span className="required">*</span></label>
+            <input
+              type="text"
+              name="town"
+              value={formData.town}
+              onChange={handleChange}
+              className="form-input"
+              required
+            />
           </div>
 
           <div className="form-group">
             <label className="form-label">Phone</label>
-            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="form-input" />
+            <div className="input-icon-wrapper">
+              <Phone size={18} className="input-icon" />
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="form-input with-icon"
+              />
+            </div>
           </div>
 
           <div className="form-group full-width">
-            <label className="form-label">Address *</label>
-            <textarea name="address" value={formData.address} onChange={handleChange} className="form-textarea" rows={2} required />
+            <label className="form-label">Address <span className="required">*</span></label>
+            <textarea
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="form-textarea"
+              rows={3}
+              required
+            />
           </div>
 
           <div className="form-group full-width">
             <label className="form-label">Email</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} className="form-input" />
+            <div className="input-icon-wrapper">
+              <Mail size={18} className="input-icon" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="form-input with-icon"
+              />
+            </div>
           </div>
 
           <div className="form-group checkbox-group full-width">
             <label className="form-checkbox">
-              <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleChange} />
+              <input
+                type="checkbox"
+                name="isActive"
+                checked={formData.isActive}
+                onChange={handleChange}
+              />
               Active
             </label>
+            <span className="checkbox-hint">Station will be available for customer pickup</span>
           </div>
         </div>
 
         <div className="form-actions">
           <button type="submit" className="btn-primary" disabled={submitting}>
-            {submitting ? 'Updating...' : 'Update Station'}
+            {submitting ? 'Updating...' : <><Save size={18} /> Update Station</>}
           </button>
           <button type="button" className="btn-secondary" onClick={() => navigate('/admin/pickup-stations')}>
             Cancel
