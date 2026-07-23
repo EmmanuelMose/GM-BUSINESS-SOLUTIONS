@@ -24,6 +24,33 @@ export default function Orders() {
 
   const filteredOrders = filter === 'all' ? orders : orders.filter(o => o.status === filter);
 
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this order?')) return;
+    try {
+      const res = await ordersAPI.delete(id);
+      if (res.success) {
+        setOrders(orders.filter(o => o.orderId !== id));
+      } else {
+        alert('Failed to delete order');
+      }
+    } catch (error: any) {
+      console.error('Error deleting order:', error);
+      alert(error.response?.data?.message || 'Failed to delete order');
+    }
+  };
+
+  const handleUpdateStatus = async (id: number, status: string) => {
+    try {
+      const res = await ordersAPI.updateStatus(id, status as any);
+      if (res.success) {
+        setOrders(orders.map(o => o.orderId === id ? { ...o, status: status as any } : o));
+      }
+    } catch (error: any) {
+      console.error('Error updating order status:', error);
+      alert(error.response?.data?.message || 'Failed to update order status');
+    }
+  };
+
   if (loading) {
     return <div className="page-loading">Loading orders...</div>;
   }
@@ -67,15 +94,28 @@ export default function Orders() {
                   <td>{order.guestEmail || order.userId || 'Guest'}</td>
                   <td className="order-total">KSh {parseFloat(order.total).toLocaleString()}</td>
                   <td>
-                    <span className={`status-badge status-${order.status}`}>{order.status}</span>
+                    <select 
+                      value={order.status} 
+                      onChange={(e) => handleUpdateStatus(order.orderId, e.target.value)}
+                      className={`status-select status-${order.status}`}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="processing">Processing</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
                   </td>
                   <td>
-                    <span className={`status-badge status-${order.paymentStatus}`}>{order.paymentStatus}</span>
+                    <span className={`status-badge status-${order.paymentStatus}`}>
+                      {order.paymentStatus}
+                    </span>
                   </td>
                   <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                   <td className="actions-cell">
-                    <button className="action-btn view">👁️</button>
-                    <button className="action-btn edit">✏️</button>
+                    <button className="action-btn view" title="View Order">👁️</button>
+                    <button className="action-btn delete" onClick={() => handleDelete(order.orderId)} title="Delete Order">🗑️</button>
                   </td>
                 </tr>
               ))
