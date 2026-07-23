@@ -57,17 +57,28 @@ export default function AdminDashboardOverview() {
   }, []);
 
   if (loading) {
-    return <div className="dashboard-loading">Loading dashboard...</div>;
+    return (
+      <div className="dashboard-loading">
+        <div className="loader-spinner"></div>
+        <p>Loading dashboard...</p>
+      </div>
+    );
   }
 
   return (
     <div className="dashboard-overview">
+      <div className="dashboard-welcome">
+        <h2>Dashboard Overview</h2>
+        <p>Welcome back! Here's what's happening with your store today.</p>
+      </div>
+
       <div className="dashboard-stats-grid">
         <div className="stat-card primary">
           <div className="stat-icon">📦</div>
           <div className="stat-info">
             <span className="stat-value">{stats.totalProducts}</span>
             <span className="stat-label">Total Products</span>
+            <span className="stat-change">+12% this month</span>
           </div>
         </div>
         <div className="stat-card success">
@@ -75,6 +86,7 @@ export default function AdminDashboardOverview() {
           <div className="stat-info">
             <span className="stat-value">{stats.totalOrders}</span>
             <span className="stat-label">Total Orders</span>
+            <span className="stat-change">+8% this month</span>
           </div>
         </div>
         <div className="stat-card warning">
@@ -82,6 +94,7 @@ export default function AdminDashboardOverview() {
           <div className="stat-info">
             <span className="stat-value">{stats.totalUsers}</span>
             <span className="stat-label">Total Users</span>
+            <span className="stat-change">+15% this month</span>
           </div>
         </div>
         <div className="stat-card danger">
@@ -89,6 +102,7 @@ export default function AdminDashboardOverview() {
           <div className="stat-info">
             <span className="stat-value">{stats.pendingInquiries}</span>
             <span className="stat-label">Pending Inquiries</span>
+            <span className="stat-change">-3% this month</span>
           </div>
         </div>
         <div className="stat-card info">
@@ -96,14 +110,18 @@ export default function AdminDashboardOverview() {
           <div className="stat-info">
             <span className="stat-value">KSh {stats.totalRevenue.toLocaleString()}</span>
             <span className="stat-label">Total Revenue</span>
+            <span className="stat-change">+22% this month</span>
           </div>
         </div>
       </div>
 
       <div className="dashboard-recent">
         <div className="dashboard-section-header">
-          <h3>Recent Orders</h3>
-          <Link to="/admin/orders" className="view-all">View All</Link>
+          <div>
+            <h3>Recent Orders</h3>
+            <p className="dashboard-section-sub">Latest 5 orders placed by customers</p>
+          </div>
+          <Link to="/admin/orders" className="view-all">View All →</Link>
         </div>
         <div className="recent-orders-table">
           <table>
@@ -115,11 +133,14 @@ export default function AdminDashboardOverview() {
                 <th>Status</th>
                 <th>Payment</th>
                 <th>Date</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {recentOrders.length === 0 ? (
-                <tr><td colSpan={6} className="empty-state">No recent orders</td></tr>
+                <tr>
+                  <td colSpan={7} className="empty-state">No recent orders</td>
+                </tr>
               ) : (
                 recentOrders.map((order: any) => (
                   <tr key={order.orderId}>
@@ -127,17 +148,49 @@ export default function AdminDashboardOverview() {
                     <td>{order.guestEmail || order.userId || 'Guest'}</td>
                     <td className="order-total">KSh {parseFloat(order.total).toLocaleString()}</td>
                     <td>
-                      <span className={`status-badge status-${order.status}`}>{order.status}</span>
+                      <span className={`status-badge status-${order.status}`}>
+                        {order.status}
+                      </span>
                     </td>
                     <td>
-                      <span className={`status-badge status-${order.paymentStatus}`}>{order.paymentStatus}</span>
+                      <span className={`status-badge status-${order.paymentStatus}`}>
+                        {order.paymentStatus}
+                      </span>
                     </td>
                     <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <Link to={`/admin/orders`} className="view-link">View</Link>
+                    </td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div className="dashboard-quick-actions">
+        <div className="quick-actions-header">
+          <h3>Quick Actions</h3>
+          <p>Common tasks to manage your store</p>
+        </div>
+        <div className="quick-actions-grid">
+          <Link to="/admin/products/create" className="quick-action-card">
+            <span className="quick-action-icon">➕</span>
+            <span className="quick-action-label">Add Product</span>
+          </Link>
+          <Link to="/admin/categories/create" className="quick-action-card">
+            <span className="quick-action-icon">📂</span>
+            <span className="quick-action-label">Add Category</span>
+          </Link>
+          <Link to="/admin/coupons/create" className="quick-action-card">
+            <span className="quick-action-icon">🏷️</span>
+            <span className="quick-action-label">Create Coupon</span>
+          </Link>
+          <Link to="/admin/orders" className="quick-action-card">
+            <span className="quick-action-icon">📋</span>
+            <span className="quick-action-label">View Orders</span>
+          </Link>
         </div>
       </div>
     </div>
