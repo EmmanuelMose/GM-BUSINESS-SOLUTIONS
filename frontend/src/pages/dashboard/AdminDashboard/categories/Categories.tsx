@@ -28,10 +28,12 @@ export default function Categories() {
       const res = await categoriesAPI.delete(id);
       if (res.success) {
         setCategories(categories.filter(c => c.categoryId !== id));
+      } else {
+        alert('Failed to delete category');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting category:', error);
-      alert('Failed to delete category');
+      alert(error.response?.data?.message || 'Failed to delete category');
     }
   };
 
@@ -66,8 +68,8 @@ export default function Categories() {
                     {category.icon && <span className="category-icon">{category.icon}</span>}
                     {category.name}
                   </td>
-                  <td>{category.slug}</td>
-                  <td>{category.productCount || 0}</td>
+                  <td className="category-slug">{category.slug}</td>
+                  <td className="category-products">{category.productCount || 0}</td>
                   <td>
                     <span className={`status-badge ${category.isActive ? 'status-active' : 'status-inactive'}`}>
                       {category.isActive ? 'Active' : 'Inactive'}

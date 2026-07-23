@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { authAPI } from '../../Features/auth/authAPI';
 import { useAuth } from '../../context/AuthContext';
 import './Login.css';
 
 export default function Login() {
-  const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -17,19 +16,6 @@ export default function Login() {
 
   const redirectPath = new URLSearchParams(location.search).get('redirect') ||
                        (location.state as any)?.from?.pathname || '/';
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      const role = localStorage.getItem('userRole');
-      if (role === 'admin') {
-        navigate('/admin');
-      } else if (role === 'staff') {
-        navigate('/staff');
-      } else {
-        navigate(redirectPath);
-      }
-    }
-  }, [isAuthenticated, navigate, redirectPath]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,11 +38,11 @@ export default function Login() {
       });
 
       if (res.data.role === 'admin') {
-        navigate('/admin');
+        window.location.href = '/admin';
       } else if (res.data.role === 'staff') {
-        navigate('/staff');
+        window.location.href = '/staff';
       } else {
-        navigate(redirectPath);
+        window.location.href = redirectPath;
       }
     } catch (err: any) {
       if (err.message.includes('credentials')) {
@@ -66,7 +52,6 @@ export default function Login() {
       } else {
         setError(err.message || 'Login failed. Please try again.');
       }
-    } finally {
       setLoading(false);
     }
   };

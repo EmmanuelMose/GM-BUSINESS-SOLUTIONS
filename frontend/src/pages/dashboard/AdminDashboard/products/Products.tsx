@@ -34,10 +34,12 @@ export default function Products() {
       const res = await productsAPI.delete(id);
       if (res.success) {
         setProducts(products.filter(p => p.productId !== id));
+      } else {
+        alert('Failed to delete product');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting product:', error);
-      alert('Failed to delete product');
+      alert(error.response?.data?.message || 'Failed to delete product');
     }
   };
 
@@ -79,9 +81,9 @@ export default function Products() {
               filteredProducts.map((product) => (
                 <tr key={product.productId}>
                   <td className="product-name">{product.name}</td>
-                  <td>{product.sku || 'N/A'}</td>
+                  <td className="product-sku">{product.sku || 'N/A'}</td>
                   <td className="product-price">KSh {parseFloat(product.price).toLocaleString()}</td>
-                  <td>{product.stock}</td>
+                  <td className="product-stock">{product.stock}</td>
                   <td>
                     <span className={`status-badge status-${product.status}`}>
                       {product.status.replace('_', ' ')}

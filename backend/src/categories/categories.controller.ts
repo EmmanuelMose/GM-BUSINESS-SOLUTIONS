@@ -138,6 +138,7 @@ export const deleteCategoryController = async (req: Request, res: Response) => {
     }
     res.json({ success: true, data });
   } catch (e: any) {
+    console.error("Delete category error:", e);
     res.status(400).json({ success: false, message: e.message });
   }
 };

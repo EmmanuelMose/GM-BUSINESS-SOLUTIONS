@@ -1,4 +1,3 @@
-// src/components/header/Header.tsx
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, User, Heart, Search, Menu, X, ChevronDown, LogOut } from "lucide-react";
@@ -51,7 +50,8 @@ export default function Header() {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       logout();
-      navigate("/");
+      localStorage.clear();
+      navigate("/login");
     }
   };
 
