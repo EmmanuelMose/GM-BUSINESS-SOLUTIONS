@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Plus, } from 'lucide-react';
 import { productsAPI } from '../../../../Features/products/productsAPI';
 import { categoriesAPI, type Category } from '../../../../Features/categories/categoriesAPI';
 import CloudinaryUpload from '../../../../components/CloudinaryUpload';
@@ -92,10 +93,12 @@ export default function CreateProduct() {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h2>Create Product</h2>
-        <button className="btn-secondary" onClick={() => navigate('/admin/products')}>
-          Back to Products
-        </button>
+        <div className="page-header-left">
+          <button className="back-btn" onClick={() => navigate('/admin/products')}>
+            <ArrowLeft size={18} /> Back to Products
+          </button>
+          <h2>Create New Product</h2>
+        </div>
       </div>
 
       {error && <div className="form-error">{error}</div>}
@@ -104,17 +107,17 @@ export default function CreateProduct() {
       <form onSubmit={handleSubmit} className="product-form">
         <div className="form-grid">
           <div className="form-group">
-            <label className="form-label">Product Name *</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required />
+            <label className="form-label">Product Name <span className="required">*</span></label>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required placeholder="e.g., iPhone 15 Pro Max" />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Slug *</label>
-            <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="form-input" required />
+            <label className="form-label">Slug <span className="required">*</span></label>
+            <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="form-input" required placeholder="e.g., iphone-15-pro-max" />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Category *</label>
+            <label className="form-label">Category <span className="required">*</span></label>
             <select name="categoryId" value={formData.categoryId} onChange={handleChange} className="form-select" required>
               <option value="">Select Category</option>
               {categories.map((cat) => (
@@ -124,33 +127,33 @@ export default function CreateProduct() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Price (KSh) *</label>
-            <input type="number" name="price" value={formData.price} onChange={handleChange} className="form-input" required min="0" step="0.01" />
+            <label className="form-label">Brand</label>
+            <input type="text" name="brand" value={formData.brand} onChange={handleChange} className="form-input" placeholder="e.g., Apple, Samsung" />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Price (KSh) <span className="required">*</span></label>
+            <input type="number" name="price" value={formData.price} onChange={handleChange} className="form-input" required min="0" step="0.01" placeholder="0.00" />
           </div>
 
           <div className="form-group">
             <label className="form-label">Compare Price</label>
-            <input type="number" name="comparePrice" value={formData.comparePrice} onChange={handleChange} className="form-input" min="0" step="0.01" />
+            <input type="number" name="comparePrice" value={formData.comparePrice} onChange={handleChange} className="form-input" min="0" step="0.01" placeholder="0.00" />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Stock *</label>
-            <input type="number" name="stock" value={formData.stock} onChange={handleChange} className="form-input" required min="0" />
+            <label className="form-label">Stock <span className="required">*</span></label>
+            <input type="number" name="stock" value={formData.stock} onChange={handleChange} className="form-input" required min="0" placeholder="0" />
           </div>
 
           <div className="form-group">
             <label className="form-label">Low Stock Threshold</label>
-            <input type="number" name="lowStockThreshold" value={formData.lowStockThreshold} onChange={handleChange} className="form-input" min="0" />
+            <input type="number" name="lowStockThreshold" value={formData.lowStockThreshold} onChange={handleChange} className="form-input" min="0" placeholder="5" />
           </div>
 
           <div className="form-group">
             <label className="form-label">SKU</label>
-            <input type="text" name="sku" value={formData.sku} onChange={handleChange} className="form-input" />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Brand</label>
-            <input type="text" name="brand" value={formData.brand} onChange={handleChange} className="form-input" />
+            <input type="text" name="sku" value={formData.sku} onChange={handleChange} className="form-input" placeholder="e.g., IPH15PM256" />
           </div>
 
           <div className="form-group">
@@ -165,12 +168,12 @@ export default function CreateProduct() {
 
           <div className="form-group full-width">
             <label className="form-label">Short Description</label>
-            <textarea name="shortDescription" value={formData.shortDescription} onChange={handleChange} className="form-textarea" rows={2} />
+            <textarea name="shortDescription" value={formData.shortDescription} onChange={handleChange} className="form-textarea" rows={2} placeholder="Brief product summary" />
           </div>
 
           <div className="form-group full-width">
             <label className="form-label">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} className="form-textarea" rows={4} />
+            <textarea name="description" value={formData.description} onChange={handleChange} className="form-textarea" rows={4} placeholder="Detailed product description" />
           </div>
 
           <div className="form-group checkbox-group">
@@ -190,7 +193,7 @@ export default function CreateProduct() {
 
         <div className="form-actions">
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Creating...' : 'Create Product'}
+            {loading ? 'Creating...' : <><Plus size={18} /> Create Product</>}
           </button>
           <button type="button" className="btn-secondary" onClick={() => navigate('/admin/products')}>
             Cancel

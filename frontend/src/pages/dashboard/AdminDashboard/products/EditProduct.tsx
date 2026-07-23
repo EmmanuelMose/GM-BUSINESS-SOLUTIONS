@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Save, } from 'lucide-react';
 import { productsAPI } from '../../../../Features/products/productsAPI';
 import { categoriesAPI, type Category } from '../../../../Features/categories/categoriesAPI';
 import CloudinaryUpload from '../../../../components/CloudinaryUpload';
@@ -132,10 +133,12 @@ export default function EditProduct() {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h2>Edit Product</h2>
-        <button className="btn-secondary" onClick={() => navigate('/admin/products')}>
-          Back to Products
-        </button>
+        <div className="page-header-left">
+          <button className="back-btn" onClick={() => navigate('/admin/products')}>
+            <ArrowLeft size={18} /> Back to Products
+          </button>
+          <h2>Edit Product</h2>
+        </div>
       </div>
 
       {error && <div className="form-error">{error}</div>}
@@ -144,17 +147,17 @@ export default function EditProduct() {
       <form onSubmit={handleSubmit} className="product-form">
         <div className="form-grid">
           <div className="form-group">
-            <label className="form-label">Product Name *</label>
+            <label className="form-label">Product Name <span className="required">*</span></label>
             <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Slug *</label>
+            <label className="form-label">Slug <span className="required">*</span></label>
             <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="form-input" required />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Category *</label>
+            <label className="form-label">Category <span className="required">*</span></label>
             <select name="categoryId" value={formData.categoryId} onChange={handleChange} className="form-select" required>
               <option value="">Select Category</option>
               {categories.map((cat) => (
@@ -164,7 +167,12 @@ export default function EditProduct() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Price (KSh) *</label>
+            <label className="form-label">Brand</label>
+            <input type="text" name="brand" value={formData.brand} onChange={handleChange} className="form-input" />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Price (KSh) <span className="required">*</span></label>
             <input type="number" name="price" value={formData.price} onChange={handleChange} className="form-input" required min="0" step="0.01" />
           </div>
 
@@ -174,7 +182,7 @@ export default function EditProduct() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Stock *</label>
+            <label className="form-label">Stock <span className="required">*</span></label>
             <input type="number" name="stock" value={formData.stock} onChange={handleChange} className="form-input" required min="0" />
           </div>
 
@@ -186,11 +194,6 @@ export default function EditProduct() {
           <div className="form-group">
             <label className="form-label">SKU</label>
             <input type="text" name="sku" value={formData.sku} onChange={handleChange} className="form-input" />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Brand</label>
-            <input type="text" name="brand" value={formData.brand} onChange={handleChange} className="form-input" />
           </div>
 
           <div className="form-group">
@@ -236,7 +239,7 @@ export default function EditProduct() {
 
         <div className="form-actions">
           <button type="submit" className="btn-primary" disabled={submitting}>
-            {submitting ? 'Updating...' : 'Update Product'}
+            {submitting ? 'Updating...' : <><Save size={18} /> Update Product</>}
           </button>
           <button type="button" className="btn-secondary" onClick={() => navigate('/admin/products')}>
             Cancel

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Plus, Search, Edit, Trash2 } from 'lucide-react';
 import { productsAPI, type Product } from '../../../../Features/products/productsAPI';
 import './Products.css';
 
@@ -7,6 +8,7 @@ export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [deleting, setDeleting] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,7 +31,8 @@ export default function Products() {
   );
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    if (!window.confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
+    setDeleting(id);
     try {
       const res = await productsAPI.delete(id);
       if (res.success) {
@@ -40,11 +43,13 @@ export default function Products() {
     } catch (error: any) {
       console.error('Error deleting product:', error);
       alert(error.response?.data?.message || 'Failed to delete product');
+    } finally {
+      setDeleting(null);
     }
   };
 
   if (loading) {
-    return <div className="page-loading">Loading products...</div>;
+    return <div className="page-loading">Loading products</div>;
   }
 
   return (
@@ -52,14 +57,19 @@ export default function Products() {
       <div className="page-header">
         <h2>Products</h2>
         <div className="page-actions">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-          />
-          <Link to="/admin/products/create" className="btn-primary">Add Product</Link>
+          <div className="search-wrapper">
+            <Search size={16} className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="search-input"
+            />
+          </div>
+          <Link to="/admin/products/create" className="btn-primary">
+            <Plus size={18} /> Add Product
+          </Link>
         </div>
       </div>
       <div className="table-container">
@@ -76,7 +86,11 @@ export default function Products() {
           </thead>
           <tbody>
             {filteredProducts.length === 0 ? (
-              <tr><td colSpan={6} className="empty-state">No products found</td></tr>
+              <tr>
+                <td colSpan={6} className="empty-state">
+                  {search ? 'No products match your search' : 'No products found'}
+                </td>
+              </tr>
             ) : (
               filteredProducts.map((product) => (
                 <tr key={product.productId}>
@@ -90,8 +104,17 @@ export default function Products() {
                     </span>
                   </td>
                   <td className="actions-cell">
-                    <Link to={`/admin/products/edit/${product.productId}`} className="action-btn edit">✏️</Link>
-                    <button className="action-btn delete" onClick={() => handleDelete(product.productId)}>🗑️</button>
+                    <Link to={`/admin/products/edit/${product.productId}`} className="action-btn edit" title="Edit Product">
+                      <Edit size={16} />
+                    </Link>
+                    <button 
+                      className="action-btn delete" 
+                      onClick={() => handleDelete(product.productId)}
+                      disabled={deleting === product.productId}
+                      title="Delete Product"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </td>
                 </tr>
               ))
