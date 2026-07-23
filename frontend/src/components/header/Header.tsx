@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ShoppingCart, User, Heart, Search, Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
@@ -8,6 +8,7 @@ import { categoriesAPI, type Category } from "../../Features/categories/categori
 import "./Header.css";
 
 export default function Header() {
+  const location = useLocation();
   const navigate = useNavigate();
   const { itemCount } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
@@ -51,9 +52,15 @@ export default function Header() {
     if (window.confirm("Are you sure you want to logout?")) {
       logout();
       localStorage.clear();
-      navigate("/login");
+      navigate("/");
+      window.location.reload();
     }
   };
+
+  // Don't render header on admin pages
+  if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/staff')) {
+    return null;
+  }
 
   return (
     <>

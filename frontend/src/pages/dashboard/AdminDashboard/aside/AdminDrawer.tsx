@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { adminDrawerData, type DrawerItem } from './drawerData';
 import { X } from 'lucide-react';
 import './AdminDrawer.css';
@@ -7,28 +7,28 @@ interface AdminDrawerProps {
   isOpen: boolean;
   onToggle: () => void;
   isMobile?: boolean;
+  onClose?: () => void;
 }
 
-export default function AdminDrawer({ isOpen, onToggle, isMobile = false }: AdminDrawerProps) {
-  const navigate = useNavigate();
+export default function AdminDrawer({ isOpen, onToggle, isMobile = false, onClose }: AdminDrawerProps) {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate('/');
+    window.location.href = '/';
   };
 
   return (
     <>
       {isMobile && isOpen && (
-        <div className="admin-overlay" onClick={onToggle} />
+        <div className="admin-overlay" onClick={onClose} />
       )}
       <aside className={`admin-drawer ${isOpen ? 'open' : 'closed'} ${isMobile ? 'mobile' : ''}`}>
         <div className="drawer-header">
           <span className={`drawer-logo ${isOpen ? 'visible' : 'hidden'}`}>
             GMNEX<span className="logo-dot">.</span>
           </span>
-          {isMobile && (
-            <button onClick={onToggle} className="drawer-close">
+          {isMobile && isOpen && (
+            <button onClick={onClose} className="drawer-close">
               <X size={24} />
             </button>
           )}
@@ -60,7 +60,7 @@ export default function AdminDrawer({ isOpen, onToggle, isMobile = false }: Admi
                   `drawer-item ${isActive ? 'active' : ''}`
                 }
                 onClick={() => {
-                  if (isMobile) onToggle();
+                  if (isMobile && onClose) onClose();
                 }}
               >
                 <span className="drawer-icon">{item.icon}</span>

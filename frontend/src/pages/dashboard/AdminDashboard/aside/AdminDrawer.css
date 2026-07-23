@@ -7,19 +7,20 @@
   flex-shrink: 0;
   overflow: hidden;
   height: 100vh;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
   position: sticky;
   top: 0;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 50;
 }
 .admin-drawer.open {
-  width: 280px;
+  width: 260px;
 }
 .admin-drawer.closed {
-  width: 72px;
+  width: 64px;
 }
 .admin-drawer.mobile {
   position: fixed;
-  top: 56px;
+  top: 0;
   left: 0;
   bottom: 0;
   z-index: 1000;
@@ -74,7 +75,7 @@
   font-size: 16px;
   cursor: pointer;
   padding: 4px 8px;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   border-radius: var(--radius-control);
 }
 .drawer-toggle:hover {
@@ -87,6 +88,7 @@
   color: white;
   cursor: pointer;
   padding: 4px;
+  transition: opacity 0.3s;
 }
 .drawer-close:hover {
   opacity: 0.7;
@@ -191,7 +193,7 @@
 }
 @media (max-width: 768px) {
   .admin-drawer.mobile {
-    top: 56px;
+    top: 0;
     width: 280px;
   }
   .drawer-header {
