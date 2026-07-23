@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Plus, Edit, Trash2 } from 'lucide-react';
 import { categoriesAPI, type Category } from '../../../../Features/categories/categoriesAPI';
 import './Categories.css';
 
 export default function Categories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -23,7 +25,8 @@ export default function Categories() {
   }, []);
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this category?')) return;
+    if (!window.confirm('Are you sure you want to delete this category? This action cannot be undone.')) return;
+    setDeleting(id);
     try {
       const res = await categoriesAPI.delete(id);
       if (res.success) {
@@ -34,18 +37,22 @@ export default function Categories() {
     } catch (error: any) {
       console.error('Error deleting category:', error);
       alert(error.response?.data?.message || 'Failed to delete category');
+    } finally {
+      setDeleting(null);
     }
   };
 
   if (loading) {
-    return <div className="page-loading">Loading categories...</div>;
+    return <div className="page-loading">Loading categories</div>;
   }
 
   return (
     <div className="admin-page">
       <div className="page-header">
         <h2>Categories</h2>
-        <Link to="/admin/categories/create" className="btn-primary">Add Category</Link>
+        <Link to="/admin/categories/create" className="btn-primary">
+          <Plus size={18} /> Add Category
+        </Link>
       </div>
       <div className="table-container">
         <table className="admin-table">
@@ -60,7 +67,11 @@ export default function Categories() {
           </thead>
           <tbody>
             {categories.length === 0 ? (
-              <tr><td colSpan={5} className="empty-state">No categories found</td></tr>
+              <tr>
+                <td colSpan={5} className="empty-state">
+                  No categories found
+                </td>
+              </tr>
             ) : (
               categories.map((category) => (
                 <tr key={category.categoryId}>
@@ -76,8 +87,17 @@ export default function Categories() {
                     </span>
                   </td>
                   <td className="actions-cell">
-                    <Link to={`/admin/categories/edit/${category.categoryId}`} className="action-btn edit">✏️</Link>
-                    <button className="action-btn delete" onClick={() => handleDelete(category.categoryId)}>🗑️</button>
+                    <Link to={`/admin/categories/edit/${category.categoryId}`} className="action-btn edit" title="Edit Category">
+                      <Edit size={16} />
+                    </Link>
+                    <button 
+                      className="action-btn delete" 
+                      onClick={() => handleDelete(category.categoryId)}
+                      disabled={deleting === category.categoryId}
+                      title="Delete Category"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </td>
                 </tr>
               ))

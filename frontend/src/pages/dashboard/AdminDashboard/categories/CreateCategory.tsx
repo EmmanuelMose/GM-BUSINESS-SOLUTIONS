@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Plus } from 'lucide-react';
 import { categoriesAPI, type Category } from '../../../../Features/categories/categoriesAPI';
 import CloudinaryUpload from '../../../../components/CloudinaryUpload';
 import './CreateCategory.css';
@@ -79,10 +80,12 @@ export default function CreateCategory() {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h2>Create Category</h2>
-        <button className="btn-secondary" onClick={() => navigate('/admin/categories')}>
-          Back to Categories
-        </button>
+        <div className="page-header-left">
+          <button className="back-btn" onClick={() => navigate('/admin/categories')}>
+            <ArrowLeft size={18} /> Back to Categories
+          </button>
+          <h2>Create New Category</h2>
+        </div>
       </div>
 
       {error && <div className="form-error">{error}</div>}
@@ -91,13 +94,13 @@ export default function CreateCategory() {
       <form onSubmit={handleSubmit} className="category-form">
         <div className="form-grid">
           <div className="form-group">
-            <label className="form-label">Category Name *</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required />
+            <label className="form-label">Category Name <span className="required">*</span></label>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required placeholder="e.g., Electronics" />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Slug *</label>
-            <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="form-input" required />
+            <label className="form-label">Slug <span className="required">*</span></label>
+            <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="form-input" required placeholder="e.g., electronics" />
           </div>
 
           <div className="form-group">
@@ -127,12 +130,12 @@ export default function CreateCategory() {
 
           <div className="form-group">
             <label className="form-label">Display Order</label>
-            <input type="number" name="displayOrder" value={formData.displayOrder} onChange={handleChange} className="form-input" min="0" />
+            <input type="number" name="displayOrder" value={formData.displayOrder} onChange={handleChange} className="form-input" min="0" placeholder="0" />
           </div>
 
           <div className="form-group full-width">
             <label className="form-label">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} className="form-textarea" rows={3} />
+            <textarea name="description" value={formData.description} onChange={handleChange} className="form-textarea" rows={3} placeholder="Brief description of the category" />
           </div>
 
           <div className="form-group checkbox-group full-width">
@@ -145,7 +148,7 @@ export default function CreateCategory() {
 
         <div className="form-actions">
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Creating...' : 'Create Category'}
+            {loading ? 'Creating...' : <><Plus size={18} /> Create Category</>}
           </button>
           <button type="button" className="btn-secondary" onClick={() => navigate('/admin/categories')}>
             Cancel

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Save } from 'lucide-react';
 import { categoriesAPI, type Category } from '../../../../Features/categories/categoriesAPI';
 import CloudinaryUpload from '../../../../components/CloudinaryUpload';
 import './EditCategory.css';
@@ -115,10 +116,12 @@ export default function EditCategory() {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h2>Edit Category</h2>
-        <button className="btn-secondary" onClick={() => navigate('/admin/categories')}>
-          Back to Categories
-        </button>
+        <div className="page-header-left">
+          <button className="back-btn" onClick={() => navigate('/admin/categories')}>
+            <ArrowLeft size={18} /> Back to Categories
+          </button>
+          <h2>Edit Category</h2>
+        </div>
       </div>
 
       {error && <div className="form-error">{error}</div>}
@@ -127,12 +130,12 @@ export default function EditCategory() {
       <form onSubmit={handleSubmit} className="category-form">
         <div className="form-grid">
           <div className="form-group">
-            <label className="form-label">Category Name *</label>
+            <label className="form-label">Category Name <span className="required">*</span></label>
             <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Slug *</label>
+            <label className="form-label">Slug <span className="required">*</span></label>
             <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="form-input" required />
           </div>
 
@@ -187,7 +190,7 @@ export default function EditCategory() {
 
         <div className="form-actions">
           <button type="submit" className="btn-primary" disabled={submitting}>
-            {submitting ? 'Updating...' : 'Update Category'}
+            {submitting ? 'Updating...' : <><Save size={18} /> Update Category</>}
           </button>
           <button type="button" className="btn-secondary" onClick={() => navigate('/admin/categories')}>
             Cancel
