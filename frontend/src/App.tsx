@@ -36,6 +36,7 @@ import ManageAdmins from "./pages/dashboard/AdminDashboard/manage-admins/ManageA
 import PickupStations from "./pages/dashboard/AdminDashboard/pickup-stations/PickupStations";
 import CreatePickupStation from "./pages/dashboard/AdminDashboard/pickup-stations/CreatePickupStation";
 import EditPickupStation from "./pages/dashboard/AdminDashboard/pickup-stations/EditPickupStation";
+import Payments from "./pages/dashboard/AdminDashboard/payments/Payments";
 
 import StaffDashboard from "./pages/dashboard/StaffDashboard/StaffDashboard";
 import StaffDashboardOverview from "./pages/dashboard/StaffDashboard/staffdashboard/StaffDashboardOverview";
@@ -119,6 +120,7 @@ function App() {
         { path: "orders", element: <Orders /> },
         { path: "reviews", element: <Reviews /> },
         { path: "coupons", element: <Coupons /> },
+         { path: "payments", element: <Payments /> },
         { path: "inquiries", element: <Inquiries /> },
         { path: "analytics", element: <Analytics /> },
         { path: "reports", element: <Reports /> },
