@@ -48,7 +48,6 @@ export const registerService = async (
     isActive: true,
   }).returning();
 
-  // Check if this email exists in admins or staff
   const adminRecord = await db.query.admins.findFirst({
     where: eq(admins.email, email),
   });
@@ -74,15 +73,15 @@ export const registerService = async (
 
   await sendEmail(
     email,
-    "Account Verification - Naoja Ventures",
+    "Account Verification - GMNEX",
     `Your verification code is ${verificationCode}`,
     `<h2>Verify Account</h2>
      <p>Hi ${fullName},</p>
      <p>Thank you for registering. Your verification code is:</p>
-     <h1 style="background:#6366f1;color:#fff;padding:15px;text-align:center;border-radius:5px;">${verificationCode}</h1>
+     <h1 style="background:#0b6b3a;color:#fff;padding:15px;text-align:center;border-radius:5px;">${verificationCode}</h1>
      <p>This code expires in 24 hours.</p>
      <br>
-     <p>Best regards,<br>Naoja Ventures Team</p>`
+     <p>Best regards,<br>GMNEX Team</p>`
   );
 };
 
@@ -106,7 +105,6 @@ export const loginService = async (email: string, password: string) => {
   const match = await bcrypt.compare(password.trim(), user.passwordHash);
   if (!match) throw new Error("Invalid credentials");
 
-  // Check if user is admin or staff (based on role in users table, which is already updated during registration)
   let role = user.role;
   let dashboard = "customer";
 
@@ -138,8 +136,8 @@ export const loginService = async (email: string, password: string) => {
   return {
     token,
     refreshToken,
-    role,
-    dashboard,
+    role: role,
+    dashboard: dashboard,
     userId: user.userId,
     email: user.email,
     fullName: user.fullName,
@@ -156,15 +154,15 @@ export const forgotPasswordService = async (email: string) => {
     .where(eq(users.userId, user.userId));
   await sendEmail(
     email,
-    "Password Reset - Naoja Ventures",
+    "Password Reset - GMNEX",
     `Reset code: ${resetCode}`,
     `<h2>Password Reset</h2>
      <p>Hi ${user.fullName},</p>
      <p>Your reset code is:</p>
-     <h1 style="background:#6366f1;color:#fff;padding:15px;text-align:center;border-radius:5px;">${resetCode}</h1>
+     <h1 style="background:#0b6b3a;color:#fff;padding:15px;text-align:center;border-radius:5px;">${resetCode}</h1>
      <p>This code expires in 10 minutes.</p>
      <br>
-     <p>Best regards,<br>Naoja Ventures Team</p>`
+     <p>Best regards,<br>GMNEX Team</p>`
   );
 };
 

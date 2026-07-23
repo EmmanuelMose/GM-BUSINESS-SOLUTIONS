@@ -8,21 +8,19 @@ import {
   resetPasswordService
 } from "./auth.service";
 
-// Register
 export const registerUserController = async (req: Request, res: Response) => {
   try {
     const { fullName, email, phone, password } = req.body;
     await registerService(fullName, email, phone, password);
-    res.json({ 
-      success: true, 
-      message: "Registration successful. Please check your email for verification code." 
+    res.json({
+      success: true,
+      message: "Registration successful. Please check your email for verification code."
     });
   } catch (e: any) {
     res.status(400).json({ success: false, message: e.message });
   }
 };
 
-// Verify
 export const verifyUserController = async (req: Request, res: Response) => {
   try {
     const { email, code } = req.body;
@@ -33,15 +31,14 @@ export const verifyUserController = async (req: Request, res: Response) => {
   }
 };
 
-// Login
 export const loginUserController = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const data = await loginService(email, password);
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       data,
-      redirect: data.dashboard === "admin" ? "/admin/dashboard" : 
+      redirect: data.dashboard === "admin" ? "/admin/dashboard" :
                 data.dashboard === "staff" ? "/staff/dashboard" : "/"
     });
   } catch (e: any) {
@@ -49,7 +46,6 @@ export const loginUserController = async (req: Request, res: Response) => {
   }
 };
 
-// Forgot Password
 export const forgotPasswordController = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
@@ -60,7 +56,6 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
   }
 };
 
-// Verify Reset Code
 export const verifyResetCodeController = async (req: Request, res: Response) => {
   try {
     const { email, code } = req.body;
@@ -71,7 +66,6 @@ export const verifyResetCodeController = async (req: Request, res: Response) => 
   }
 };
 
-// Reset Password
 export const resetPasswordController = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;

@@ -15,14 +15,21 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const redirectPath = new URLSearchParams(location.search).get('redirect') || 
+  const redirectPath = new URLSearchParams(location.search).get('redirect') ||
                        (location.state as any)?.from?.pathname || '/';
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(redirectPath);
+      const role = localStorage.getItem('userRole');
+      if (role === 'admin') {
+        navigate('/admin');
+      } else if (role === 'staff') {
+        navigate('/staff');
+      } else {
+        navigate(redirectPath);
+      }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate, redirectPath]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +38,7 @@ export default function Login() {
 
     try {
       const res = await authAPI.login({ email, password });
+
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('refreshToken', res.data.refreshToken);
       localStorage.setItem('userId', String(res.data.userId));
@@ -43,9 +51,9 @@ export default function Login() {
         userId: res.data.userId,
       });
 
-      if (res.data.dashboard === 'admin') {
+      if (res.data.role === 'admin') {
         navigate('/admin');
-      } else if (res.data.dashboard === 'staff') {
+      } else if (res.data.role === 'staff') {
         navigate('/staff');
       } else {
         navigate(redirectPath);
