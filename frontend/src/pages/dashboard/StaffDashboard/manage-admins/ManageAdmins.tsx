@@ -3,7 +3,7 @@ import { adminsAPI } from '../../../../Features/admins/adminsAPI';
 import { usersAPI } from '../../../../Features/users/usersAPI';
 import './ManageAdmins.css';
 
-export default function ManageAdmins() {
+export default function StaffManageAdmins() {
   const [admins, setAdmins] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

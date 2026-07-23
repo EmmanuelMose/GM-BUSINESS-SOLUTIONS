@@ -1,35 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ordersAPI } from '../../../../Features/orders/ordersAPI';
-import { usersAPI } from '../../../../Features/users/usersAPI';
+import { productsAPI } from '../../../../Features/products/productsAPI';
 import { inquiriesAPI } from '../../../../Features/inquiries/inquiriesAPI';
-import { adminsAPI } from '../../../../Features/admins/adminsAPI';
 import './StaffDashboardOverview.css';
 
 export default function StaffDashboardOverview() {
   const [stats, setStats] = useState({
     totalOrders: 0,
-    totalUsers: 0,
+    totalProducts: 0,
     pendingInquiries: 0,
     totalRevenue: 0,
-    totalAdmins: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [ordersRes, usersRes, inquiriesRes, adminsRes] = await Promise.all([
+        const [ordersRes, productsRes, inquiriesRes] = await Promise.all([
           ordersAPI.getAll(),
-          usersAPI.getAll(),
+          productsAPI.getAll(),
           inquiriesAPI.getAll(),
-          adminsAPI.getAll(),
         ]);
 
         const orders = ordersRes.success ? ordersRes.data : [];
-        const users = usersRes.success ? usersRes.data : [];
+        const products = productsRes.success ? productsRes.data : [];
         const inquiries = inquiriesRes.success ? inquiriesRes.data : [];
-        const admins = adminsRes.success ? adminsRes.data : [];
 
         const totalRevenue = orders.reduce((sum: number, order: any) => {
           return sum + (order.paymentStatus === 'paid' || order.status === 'delivered' ? parseFloat(order.total) : 0);
@@ -37,11 +34,12 @@ export default function StaffDashboardOverview() {
 
         setStats({
           totalOrders: orders.length,
-          totalUsers: users.length,
+          totalProducts: products.length,
           pendingInquiries: inquiries.filter((i: any) => i.status === 'unread').length,
           totalRevenue: totalRevenue,
-          totalAdmins: admins.length,
         });
+
+        setRecentOrders(orders.slice(0, 5));
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -53,24 +51,34 @@ export default function StaffDashboardOverview() {
   }, []);
 
   if (loading) {
-    return <div className="staff-loading">Loading dashboard...</div>;
+    return (
+      <div className="dashboard-loading">
+        <div className="loader-spinner"></div>
+        <p>Loading dashboard...</p>
+      </div>
+    );
   }
 
   return (
     <div className="staff-dashboard-overview">
-      <div className="staff-stats-grid">
+      <div className="dashboard-welcome">
+        <h2>Staff Dashboard</h2>
+        <p>Welcome back! Here's what's happening today.</p>
+      </div>
+
+      <div className="dashboard-stats-grid">
         <div className="stat-card primary">
+          <div className="stat-icon">📦</div>
+          <div className="stat-info">
+            <span className="stat-value">{stats.totalProducts}</span>
+            <span className="stat-label">Total Products</span>
+          </div>
+        </div>
+        <div className="stat-card success">
           <div className="stat-icon">📋</div>
           <div className="stat-info">
             <span className="stat-value">{stats.totalOrders}</span>
             <span className="stat-label">Total Orders</span>
-          </div>
-        </div>
-        <div className="stat-card success">
-          <div className="stat-icon">👥</div>
-          <div className="stat-info">
-            <span className="stat-value">{stats.totalUsers}</span>
-            <span className="stat-label">Total Users</span>
           </div>
         </div>
         <div className="stat-card warning">
@@ -87,12 +95,47 @@ export default function StaffDashboardOverview() {
             <span className="stat-label">Total Revenue</span>
           </div>
         </div>
-        <div className="stat-card purple">
-          <div className="stat-icon">🛡️</div>
-          <div className="stat-info">
-            <span className="stat-value">{stats.totalAdmins}</span>
-            <span className="stat-label">Total Admins</span>
+      </div>
+
+      <div className="dashboard-recent">
+        <div className="dashboard-section-header">
+          <div>
+            <h3>Recent Orders</h3>
+            <p className="dashboard-section-sub">Latest 5 orders placed</p>
           </div>
+          <a href="/staff/orders" className="view-all">View All →</a>
+        </div>
+        <div className="recent-orders-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Order Ref</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentOrders.length === 0 ? (
+                <tr><td colSpan={5} className="empty-state">No recent orders</td></tr>
+              ) : (
+                recentOrders.map((order: any) => (
+                  <tr key={order.orderId}>
+                    <td className="order-ref">{order.orderRef}</td>
+                    <td>{order.guestEmail || order.userId || 'Guest'}</td>
+                    <td className="order-total">KSh {parseFloat(order.total).toLocaleString()}</td>
+                    <td>
+                      <span className={`status-badge status-${order.status}`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

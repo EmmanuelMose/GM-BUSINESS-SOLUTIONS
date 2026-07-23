@@ -40,9 +40,13 @@ import Payments from "./pages/dashboard/AdminDashboard/payments/Payments";
 
 import StaffDashboard from "./pages/dashboard/StaffDashboard/StaffDashboard";
 import StaffDashboardOverview from "./pages/dashboard/StaffDashboard/staffdashboard/StaffDashboardOverview";
-import ManageAdminsStaff from "./pages/dashboard/StaffDashboard/manage-admins/ManageAdmins";
-import ViewOrders from "./pages/dashboard/StaffDashboard/view-orders/ViewOrders";
-import ViewInquiries from "./pages/dashboard/StaffDashboard/view-inquiries/ViewInquiries";
+import StaffProducts from "./pages/dashboard/StaffDashboard/products/Products";
+import StaffCategories from "./pages/dashboard/StaffDashboard/categories/Categories";
+import StaffOrders from "./pages/dashboard/StaffDashboard/orders/Orders";
+import StaffReviews from "./pages/dashboard/StaffDashboard/reviews/Reviews";
+import StaffCoupons from "./pages/dashboard/StaffDashboard/coupons/Coupons";
+import StaffInquiries from "./pages/dashboard/StaffDashboard/inquiries/Inquiries";
+import StaffPickupStations from "./pages/dashboard/StaffDashboard/pickup-stations/PickupStations";
 
 import Error from "./components/error/Error";
 import "./styles/styles.css";
@@ -138,9 +142,13 @@ function App() {
       children: [
         { path: "", element: <Navigate to="staffdashboard" replace /> },
         { path: "staffdashboard", element: <StaffDashboardOverview /> },
-        { path: "manage-admins", element: <ManageAdminsStaff /> },
-        { path: "view-orders", element: <ViewOrders /> },
-        { path: "view-inquiries", element: <ViewInquiries /> },
+        { path: "products", element: <StaffProducts /> },
+        { path: "categories", element: <StaffCategories /> },
+        { path: "orders", element: <StaffOrders /> },
+        { path: "reviews", element: <StaffReviews /> },
+        { path: "coupons", element: <StaffCoupons /> },
+        { path: "inquiries", element: <StaffInquiries /> },
+        { path: "pickup-stations", element: <StaffPickupStations /> },
       ]
     },
     {
