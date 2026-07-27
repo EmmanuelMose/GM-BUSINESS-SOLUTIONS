@@ -220,16 +220,3 @@ img {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.layout .main {
-  padding-top: 108px;
-}
-@media (max-width: 768px) {
-  .layout .main {
-    padding-top: 98px;
-  }
-}
-@media (max-width: 480px) {
-  .layout .main {
-    padding-top: 88px;
-  }
-}
