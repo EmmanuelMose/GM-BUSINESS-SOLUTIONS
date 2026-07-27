@@ -1,4 +1,3 @@
-// src/components/account/AccountContent.tsx
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
@@ -19,7 +18,7 @@ export default function AccountContent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'profile';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [contactName, setContactName] = useState('');``
+  const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactMessage, setContactMessage] = useState('');
   const [contactStatus, setContactStatus] = useState<{ success: boolean; message: string }>({ success: false, message: '' });
@@ -199,9 +198,16 @@ export default function AccountContent() {
                               <p><strong>Items:</strong> {order.items?.length || 0}</p>
                               <p><strong>Pickup Station:</strong> {order.pickupStationId ? 'Selected' : 'Not set'}</p>
                             </div>
-                            <Link to={`/track-order?ref=${order.orderRef}`} className="btn-primary account-track-btn">
-                              Track Order
-                            </Link>
+                            <div className="account-order-actions">
+                              <Link to={`/track-order?ref=${order.orderRef}`} className="btn-primary account-track-btn">
+                                Track Order
+                              </Link>
+                              {order.status === 'pending' && (
+                                <button className="btn-secondary account-cancel-btn">
+                                  Cancel Order
+                                </button>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>

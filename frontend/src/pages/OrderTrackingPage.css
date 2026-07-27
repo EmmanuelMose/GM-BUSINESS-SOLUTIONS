@@ -1,0 +1,415 @@
+.tracking-page {
+  padding: 32px 0 64px;
+  background: var(--gray-50);
+  min-height: calc(100vh - 200px);
+}
+.tracking-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.tracking-title {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.tracking-subtitle {
+  font-size: 16px;
+  color: var(--gray-500);
+  margin-top: 4px;
+}
+.tracking-form-container {
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+.tracking-form {
+  background: white;
+  border-radius: var(--radius-card);
+  padding: 24px;
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+.tracking-input-group {
+  display: flex;
+  gap: 12px;
+}
+.tracking-input {
+  flex: 1;
+  height: 48px;
+  padding: 0 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-control);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: white;
+}
+.tracking-input:focus {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px rgba(11, 107, 58, 0.1);
+}
+.tracking-btn {
+  height: 48px;
+  padding: 0 32px;
+  background: var(--brand-500);
+  color: white;
+  border: none;
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.tracking-btn:hover {
+  background: var(--brand-600);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(11, 107, 58, 0.3);
+}
+.tracking-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.tracking-error {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  color: #dc2626;
+  border-radius: var(--radius-control);
+  border: 1px solid #fecaca;
+  font-weight: 500;
+}
+.tracking-result {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--gray-200);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tracking-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gray-200);
+  margin-bottom: 24px;
+}
+.tracking-order-ref {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.tracking-order-date {
+  font-size: 14px;
+  color: var(--gray-500);
+  margin-top: 4px;
+}
+.tracking-order-status {
+  flex-shrink: 0;
+}
+.tracking-status-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+.tracking-progress {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  padding: 16px 0 32px;
+}
+.tracking-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+.tracking-progress-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--gray-200);
+  color: var(--gray-400);
+  transition: all 0.3s;
+  position: relative;
+  z-index: 2;
+}
+.tracking-progress-dot.active {
+  background: var(--brand-500);
+  color: white;
+}
+.tracking-progress-dot.completed {
+  background: #16a34a;
+  color: white;
+}
+.tracking-progress-dot.current {
+  background: var(--brand-500);
+  color: white;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(11, 107, 58, 0.4); }
+  50% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(11, 107, 58, 0); }
+}
+.tracking-progress-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 8px;
+}
+.tracking-progress-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tracking-progress-current {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--brand-500);
+  margin-top: 2px;
+}
+.tracking-progress-cancelled {
+  font-size: 10px;
+  font-weight: 700;
+  color: #dc2626;
+  margin-top: 2px;
+}
+.tracking-progress-line {
+  flex: 1;
+  height: 2px;
+  background: var(--gray-200);
+  position: absolute;
+  top: 18px;
+  left: calc(50% + 18px);
+  right: calc(-50% + 18px);
+  z-index: 1;
+}
+.tracking-progress-line.active {
+  background: var(--brand-500);
+}
+.tracking-cancelled-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #fef2f2;
+  border-radius: var(--radius-control);
+  border: 1px solid #fecaca;
+  margin-bottom: 20px;
+}
+.tracking-cancelled-message span {
+  font-size: 24px;
+}
+.tracking-cancelled-message p {
+  color: #991b1b;
+  font-weight: 500;
+}
+.tracking-delivered-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f0fdf4;
+  border-radius: var(--radius-control);
+  border: 1px solid #bbf7d0;
+  margin-bottom: 20px;
+}
+.tracking-delivered-message span {
+  font-size: 24px;
+}
+.tracking-delivered-message p {
+  color: #166534;
+  font-weight: 500;
+}
+.tracking-order-details {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--gray-50);
+  border-radius: var(--radius-control);
+}
+.tracking-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 16px;
+}
+.tracking-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tracking-detail-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  letter-spacing: 0.05em;
+}
+.tracking-detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+.tracking-payment-paid {
+  color: #16a34a;
+}
+.tracking-payment-pending {
+  color: #f59e0b;
+}
+.tracking-payment-failed {
+  color: #dc2626;
+}
+.tracking-items {
+  margin-top: 24px;
+}
+.tracking-items-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 12px;
+}
+.tracking-items-list {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+}
+.tracking-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.tracking-item:last-child {
+  border-bottom: none;
+}
+.tracking-item-info {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.tracking-item-name {
+  font-weight: 500;
+  color: var(--gray-800);
+}
+.tracking-item-qty {
+  font-size: 13px;
+  color: var(--gray-400);
+}
+.tracking-item-price {
+  font-weight: 600;
+  color: var(--gray-900);
+}
+.tracking-help {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.tracking-help p {
+  color: var(--gray-500);
+  font-size: 14px;
+}
+.tracking-help-link {
+  color: var(--brand-500);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.tracking-help-link:hover {
+  color: var(--brand-600);
+  text-decoration: underline;
+}
+@media (max-width: 768px) {
+  .tracking-page {
+    padding: 20px 0 40px;
+  }
+  .tracking-title {
+    font-size: 26px;
+  }
+  .tracking-input-group {
+    flex-direction: column;
+  }
+  .tracking-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .tracking-result {
+    padding: 20px;
+  }
+  .tracking-order-ref {
+    font-size: 20px;
+  }
+  .tracking-details-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .tracking-progress {
+    flex-direction: column;
+    gap: 16px;
+    padding: 0;
+  }
+  .tracking-progress-step {
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+  }
+  .tracking-progress-dot {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  .tracking-progress-content {
+    flex-direction: row;
+    gap: 8px;
+    margin-top: 0;
+    align-items: center;
+  }
+  .tracking-progress-label {
+    font-size: 12px;
+  }
+  .tracking-progress-line {
+    display: none;
+  }
+  .tracking-help {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+@media (max-width: 480px) {
+  .tracking-title {
+    font-size: 22px;
+  }
+  .tracking-result {
+    padding: 16px;
+  }
+  .tracking-order-header {
+    flex-direction: column;
+  }
+  .tracking-details-grid {
+    grid-template-columns: 1fr;
+  }
+}

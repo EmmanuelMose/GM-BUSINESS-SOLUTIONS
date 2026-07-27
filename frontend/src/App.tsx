@@ -10,6 +10,7 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import AccountPage from "./pages/AccountPage";
 import WishlistPage from "./pages/WishlistPage";
+import OrderTrackingPage from "./pages/OrderTrackingPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgetPassword";
@@ -86,6 +87,10 @@ function App() {
     {
       path: "/wishlist",
       element: <WishlistPage />,
+    },
+    {
+      path: "/track-order",
+      element: <OrderTrackingPage />,
     },
     {
       path: "/login",

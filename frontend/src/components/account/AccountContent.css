@@ -605,3 +605,41 @@
     font-size: 16px;
   }
 }
+.account-order-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.account-track-btn {
+  flex: 1;
+  justify-content: center;
+  min-width: 140px;
+}
+.account-cancel-btn {
+  flex: 1;
+  justify-content: center;
+  min-width: 140px;
+  background: #dc2626;
+  color: white;
+  border: none;
+  height: 44px;
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.account-cancel-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3);
+}
+@media (max-width: 480px) {
+  .account-order-actions {
+    flex-direction: column;
+  }
+  .account-track-btn,
+  .account-cancel-btn {
+    width: 100%;
+  }
+}
