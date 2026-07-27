@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, Heart, Search, Menu, X, ChevronDown, LogOut } from "lucide-react";
+import { ShoppingCart, User, Heart, Menu, X, LogOut, ChevronDown, Search } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { categoriesAPI, type Category } from "../../Features/categories/categoriesAPI";
+import { productsAPI, type Product } from "../../Features/products/productsAPI";
 import "./Header.css";
 
 export default function Header() {
@@ -16,10 +17,13 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesMenuOpen, setCategoriesMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
-  // Don't render header on admin or staff pages
   if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/staff')) {
     return null;
   }
@@ -35,22 +39,58 @@ export default function Header() {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setCategoriesMenuOpen(false);
       }
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSearchResults(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const delaySearch = setTimeout(async () => {
+      if (searchQuery.trim().length > 1) {
+        setSearchLoading(true);
+        try {
+          const res = await productsAPI.search(searchQuery.trim());
+          if (res.success) {
+            setSearchResults(res.data.slice(0, 6));
+            setShowSearchResults(true);
+          }
+        } catch (error) {
+          console.error('Search error:', error);
+        } finally {
+          setSearchLoading(false);
+        }
+      } else {
+        setSearchResults([]);
+        setShowSearchResults(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delaySearch);
+  }, [searchQuery]);
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent) => {
     if ((e as React.KeyboardEvent).key === "Enter" || (e as React.MouseEvent).type === "click") {
       if (searchQuery.trim()) {
         navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
         setSearchQuery("");
-      } else {
-        navigate("/");
+        setShowSearchResults(false);
       }
       setMobileMenuOpen(false);
       setCategoriesMenuOpen(false);
     }
+  };
+
+  const handleSearchResultClick = (slug: string) => {
+    navigate(`/product/${slug}`);
+    setSearchQuery("");
+    setShowSearchResults(false);
   };
 
   const handleLogout = () => {
@@ -62,13 +102,21 @@ export default function Header() {
     }
   };
 
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Shop', path: '/shop' },
+    { name: 'Services', path: '/category/services' },
+    { name: 'About Us', path: '/about' },
+    { name: 'Contact Us', path: '/account?tab=support' },
+  ];
+
   return (
     <>
       <div className="announcement-bar">
         <div className="container">
           <div className="announcement-content">
-            <span>📍 Pickup from over 50 stations across Kenya</span>
-            <span className="announcement-end">M-Pesa Till: <strong>4149288</strong></span>
+            <span>📞 Need Help? Call / WhatsApp: <strong>0712 345 678</strong></span>
+            <span className="announcement-end">📍 Pickup from 50+ stations</span>
           </div>
         </div>
       </div>
@@ -76,80 +124,164 @@ export default function Header() {
         <div className="container">
           <div className="header-content">
             <div className="left-section">
-              <Link to="/" className="logo">GMNEX<span className="logo-dot">.</span></Link>
+              <Link to="/" className="logo">SMARTP<span className="logo-dot">.</span></Link>
+              
               <div className="categories-wrapper" ref={dropdownRef}>
                 <button className="categories-trigger" onClick={() => setCategoriesMenuOpen(!categoriesMenuOpen)}>
-                  <Menu size={20} />
-                  <span className="categories-label">Categories</span>
+                  <span>Categories</span>
                   <ChevronDown size={16} className={`chevron ${categoriesMenuOpen ? "chevron-open" : ""}`} />
                 </button>
                 {categoriesMenuOpen && (
                   <div className="categories-dropdown">
                     <div className="categories-list">
                       {categories.map((cat) => (
-                        <Link key={cat.categoryId} to={`/category/${cat.slug}`} className="category-item" onClick={() => setCategoriesMenuOpen(false)}>
-                          {cat.photo ? <img src={cat.photo} alt={cat.name} className="category-image" /> : <div className="category-image-placeholder">{cat.icon || "📁"}</div>}
-                          <div className="category-info">
-                            <p className="category-name">{cat.name}</p>
-                            {cat.description && <p className="category-description">{cat.description}</p>}
-                          </div>
+                        <Link 
+                          key={cat.categoryId} 
+                          to={`/category/${cat.slug}`} 
+                          className="category-item" 
+                          onClick={() => setCategoriesMenuOpen(false)}
+                        >
+                          {cat.photo ? (
+                            <img src={cat.photo} alt={cat.name} className="category-item-image" />
+                          ) : (
+                            <span className="category-item-icon">{cat.icon || '📁'}</span>
+                          )}
+                          <span className="category-item-name">{cat.name}</span>
                         </Link>
                       ))}
-                    </div>
-                    <div className="dropdown-footer">
-                      <Link to="/account?tab=support" className="footer-link" onClick={() => setCategoriesMenuOpen(false)}>Support</Link>
                     </div>
                   </div>
                 )}
               </div>
             </div>
-            <div className="search-wrapper">
-              <Search size={18} className="search-icon" onClick={handleSearch} />
-              <input type="text" placeholder="Search products..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleSearch} className="search-input" />
-            </div>
+
+            <nav className="nav-links">
+              {navLinks.map((link) => (
+                <Link 
+                  key={link.path} 
+                  to={link.path} 
+                  className={location.pathname === link.path ? 'active' : ''}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
+
             <div className="right-section">
               {isAuthenticated ? (
-                <>
-                  <span className="user-greeting hide-mobile">Hi, {user?.fullName || 'User'}</span>
-                  <button onClick={handleLogout} className="logout-button hide-mobile" aria-label="Logout">
-                    <LogOut size={18} />
-                  </button>
-                </>
+                <button onClick={handleLogout} className="logout-button desktop-only" aria-label="Logout">
+                  <LogOut size={18} />
+                </button>
               ) : (
-                <Link to="/login" className="login-button hide-mobile"><User size={18} /><span>Login</span></Link>
+                <Link to="/login" className="login-button desktop-only">
+                  <User size={18} /><span>Login</span>
+                </Link>
               )}
-              <Link to="/account" className="icon-button hide-mobile"><User size={20} /><span className="icon-label">Account</span></Link>
+              
+              <Link to="/account" className="icon-button desktop-only">
+                <User size={20} />
+              </Link>
+              
               <Link to="/wishlist" className="icon-button">
                 <Heart size={20} />
-                <span className="icon-label">Wishlist</span>
                 {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>}
               </Link>
+              
               <Link to="/cart" className="icon-button">
                 <ShoppingCart size={20} />
-                <span className="icon-label">Cart</span>
                 {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
               </Link>
+              
               <button className="mobile-menu-trigger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
           </div>
         </div>
       </header>
+      
+      <div className="search-bar-container" ref={searchRef}>
+        <div className="container">
+          <div className="search-bar-wrapper">
+            <Search size={20} className="search-bar-icon" />
+            <input 
+              type="text" 
+              placeholder="Search products..." 
+              value={searchQuery} 
+              onChange={handleSearchInputChange}
+              onKeyDown={handleSearch} 
+              className="search-bar-input" 
+              onFocus={() => searchQuery.trim().length > 1 && setShowSearchResults(true)}
+            />
+            <button className="search-bar-btn" onClick={handleSearch}>Search</button>
+          </div>
+          
+          {showSearchResults && (
+            <div className="search-results-dropdown">
+              {searchLoading ? (
+                <div className="search-loading">Searching...</div>
+              ) : searchResults.length > 0 ? (
+                <>
+                  {searchResults.map((product) => (
+                    <div 
+                      key={product.productId} 
+                      className="search-result-item"
+                      onClick={() => handleSearchResultClick(product.slug)}
+                    >
+                      <div className="search-result-image">
+                        {product.featuredPhoto ? (
+                          <img src={product.featuredPhoto} alt={product.name} />
+                        ) : (
+                          <span>📦</span>
+                        )}
+                      </div>
+                      <div className="search-result-info">
+                        <span className="search-result-name">{product.name}</span>
+                        <span className="search-result-price">KSh {parseFloat(product.price).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="search-result-view-all">
+                    <button onClick={() => {
+                      navigate(`/?search=${encodeURIComponent(searchQuery)}`);
+                      setShowSearchResults(false);
+                      setSearchQuery("");
+                    }}>
+                      View all results ({searchResults.length}) →
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="search-no-results">No products found</div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      
       {mobileMenuOpen && (
         <div className="mobile-menu">
           <div className="mobile-menu-header">
-            <Link to="/" className="logo" onClick={() => setMobileMenuOpen(false)}>GMNEX<span className="logo-dot">.</span></Link>
+            <Link to="/" className="logo" onClick={() => setMobileMenuOpen(false)}>SMARTP<span className="logo-dot">.</span></Link>
             <button onClick={() => setMobileMenuOpen(false)}><X size={24} /></button>
           </div>
-          <div className="mobile-search">
-            <Search size={16} className="mobile-search-icon" />
-            <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleSearch} className="mobile-search-input" />
-          </div>
           <nav className="mobile-nav">
+            {navLinks.map((link) => (
+              <Link key={link.path} to={link.path} className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                {link.name}
+              </Link>
+            ))}
+            <div className="mobile-divider" />
             <p className="mobile-nav-title">Categories</p>
             {categories.map((cat) => (
               <Link key={cat.categoryId} to={`/category/${cat.slug}`} className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                {cat.photo ? (
+                  <span className="mobile-category-image-wrapper">
+                    <img src={cat.photo} alt={cat.name} className="mobile-category-image" />
+                  </span>
+                ) : (
+                  <span>{cat.icon || '📁'}</span>
+                )}
                 {cat.name}
               </Link>
             ))}
@@ -157,7 +289,7 @@ export default function Header() {
             {isAuthenticated ? (
               <>
                 <span className="mobile-user">Hi, {user?.fullName}</span>
-                <button onClick={handleLogout} className="mobile-nav-link">Logout</button>
+                <button onClick={handleLogout} className="mobile-nav-link logout-btn">Logout</button>
               </>
             ) : (
               <Link to="/login" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Login</Link>

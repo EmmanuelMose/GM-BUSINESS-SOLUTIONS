@@ -6,7 +6,7 @@ import { inquiriesAPI } from '../../Features/inquiries/inquiriesAPI';
 import { ordersAPI } from '../../Features/orders/ordersAPI';
 import ProfileForm from './ProfileForm';
 import './AccountContent.css';
-
+``
 const TABS = [
   { id: 'profile', label: 'Profile', icon: '👤' },
   { id: 'orders', label: 'My Orders', icon: '📦' },
@@ -19,7 +19,7 @@ export default function AccountContent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'profile';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [contactName, setContactName] = useState('');
+  const [contactName, setContactName] = useState('');``
   const [contactEmail, setContactEmail] = useState('');
   const [contactMessage, setContactMessage] = useState('');
   const [contactStatus, setContactStatus] = useState<{ success: boolean; message: string }>({ success: false, message: '' });

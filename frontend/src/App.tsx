@@ -3,6 +3,7 @@ import { CartProvider } from "./components/context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import HomePage from "./pages/HomePage";
+import ShopPage from "./pages/ShopPage";
 import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
 import CartPage from "./pages/CartPage";
@@ -60,6 +61,10 @@ function App() {
       path: "/",
       element: <HomePage />,
       errorElement: <Error />,
+    },
+    {
+      path: "/shop",
+      element: <ShopPage />,
     },
     {
       path: "/category/:slug",

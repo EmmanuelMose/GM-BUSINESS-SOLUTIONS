@@ -8,9 +8,9 @@ export default function HomePage() {
   return (
     <Layout>
       <Hero />
-      <Highlights />
       <Categories />
       <Products />
+      <Highlights />
     </Layout>
   );
 }

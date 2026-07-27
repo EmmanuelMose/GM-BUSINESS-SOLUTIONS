@@ -7,29 +7,60 @@ export default function Hero() {
       <div className="container">
         <div className="hero-grid">
           <div className="hero-content">
-            <span className="hero-badge">✓ Genuine Electronics & Accessories</span>
-            <h1 className="hero-title">Your Trusted Electrical & Electronics Partner</h1>
-            <p className="hero-text">GMNEX offers a wide variety of genuine smartphones, computers, solar accessories, and home appliances at affordable prices. Pay conveniently via M-Pesa and pickup from over 50 stations across Kenya.</p>
+            <span className="hero-badge">✦ 100% Genuine Products</span>
+            <h1 className="hero-title">
+              Your Trusted <span className="highlight">Smart</span> Device Partner
+            </h1>
+            <p className="hero-text">
+              SMARTP KENYA offers genuine smartphones, accessories, smart devices, 
+              and reliable services at the best prices in Kenya.
+            </p>
             <div className="hero-actions">
-              <a href="#shop-products" className="btn-primary">Shop Now</a>
+              <Link to="/shop" className="btn-primary">Shop Now</Link>
               <Link to="/account?tab=support" className="btn-secondary">Contact Us</Link>
-              <a href="https://wa.me/254704812343" target="_blank" rel="noopener noreferrer" className="btn-whatsapp">WhatsApp Us</a>
+              <a href="https://wa.me/254712345678" target="_blank" rel="noopener noreferrer" className="btn-whatsapp">WhatsApp Us</a>
             </div>
-            <div className="hero-tags">
-              <span className="hero-tag">📍 Nationwide Pickup</span>
-              <span className="hero-tag">📞 0704812343</span>
-              <span className="hero-tag">🕒 Sun - Thu: 8:30 AM - 8:00 PM | Fri: 8:30 AM - 3:00 PM</span>
+            <div className="hero-features">
+              <div className="hero-feature">
+                <span className="hero-feature-icon">✔</span>
+                <span>100% Genuine Products</span>
+              </div>
+              <div className="hero-feature">
+                <span className="hero-feature-icon">★</span>
+                <span>Best Prices in Kenya</span>
+              </div>
+              <div className="hero-feature">
+                <span className="hero-feature-icon">➜</span>
+                <span>Fast & Reliable Delivery</span>
+              </div>
+              <div className="hero-feature">
+                <span className="hero-feature-icon">⌂</span>
+                <span>50+ Pickup Stations</span>
+              </div>
             </div>
           </div>
           <div className="hero-visual">
             <div className="hero-card">
-              <div className="hero-logo"><span className="hero-logo-text">GMNEX</span></div>
-              <h3 className="hero-card-title">GMNEX</h3>
-              <p className="hero-card-sub">Kenya</p>
+              <div className="hero-logo">
+                <span className="hero-logo-text">SMARTP</span>
+              </div>
+              <h3 className="hero-card-title">SMARTP KENYA</h3>
+              <p className="hero-card-sub">Your Trusted Store</p>
               <div className="hero-card-details">
-                <div className="hero-card-row"><span>M-Pesa Buy Goods Till:</span><strong>4149288</strong></div>
+                <div className="hero-card-row">
+                  <span>M-Pesa Till:</span>
+                  <strong>4149288</strong>
+                </div>
                 <div className="hero-card-divider" />
-                <div className="hero-card-row"><span>Pickup:</span><strong>50+ Stations</strong></div>
+                <div className="hero-card-row">
+                  <span>Pickup Stations:</span>
+                  <strong>50+</strong>
+                </div>
+                <div className="hero-card-divider" />
+                <div className="hero-card-row">
+                  <span>Delivery:</span>
+                  <strong>Nationwide</strong>
+                </div>
               </div>
             </div>
           </div>

@@ -1,8 +1,6 @@
-
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import ProductCard from "../productcard/ProductCard";
-import Loader from "../loader/Loader";
 import { productsAPI, type Product } from "../../Features/products/productsAPI";
 import { wishlistAPI } from "../../Features/wishlist/wishlistAPI";
 import "./Product.css";
@@ -29,14 +27,18 @@ export default function Products() {
               (p.brand && p.brand.toLowerCase().includes(search.toLowerCase()))
             );
           }
-          setProducts(filtered.slice(0, 8));
+          const displayed = filtered.slice(0, 8);
+          setProducts(displayed);
 
-          // Fetch wishlist status for each product
           const statuses: Record<number, boolean> = {};
-          for (const p of filtered.slice(0, 8)) {
-            const wRes = await wishlistAPI.check(p.productId);
-            if (wRes.success) {
-              statuses[p.productId] = wRes.data;
+          for (const p of displayed) {
+            try {
+              const wRes = await wishlistAPI.check(p.productId);
+              if (wRes.success) {
+                statuses[p.productId] = wRes.data;
+              }
+            } catch {
+              statuses[p.productId] = false;
             }
           }
           setWishlistStatus(statuses);
@@ -66,31 +68,59 @@ export default function Products() {
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return (
+      <section className="products-section">
+        <div className="container">
+          <div className="products-header">
+            <h2 className="products-title">Featured Products</h2>
+            <p className="products-sub">Loading products...</p>
+          </div>
+          <div className="products-grid">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="product-card-skeleton">
+                <div className="skeleton-image"></div>
+                <div className="skeleton-content">
+                  <div className="skeleton-line"></div>
+                  <div className="skeleton-line short"></div>
+                  <div className="skeleton-line price"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section id="shop-products" className="products-section">
+    <section className="products-section">
       <div className="container">
         <div className="products-header">
-          <h2 className="products-title">{search ? `Results for "${search}"` : "Best Sellers"}</h2>
-          <p className="products-sub">{products.length} {products.length === 1 ? "product" : "products"} found</p>
+          <h2 className="products-title">{search ? `Results for "${search}"` : "Featured Products"}</h2>
+          <p className="products-sub">{products.length} products found</p>
         </div>
         {products.length === 0 ? (
           <div className="products-empty">
-            <p>No products found for "{search}". Try a different search term.</p>
+            <p>No products found. Try a different search term.</p>
           </div>
         ) : (
-          <div className="products-grid">
-            {products.map(p => (
-              <ProductCard
-                key={p.productId}
-                product={p}
-                showWishlist={true}
-                isWishlisted={wishlistStatus[p.productId] || false}
-                onWishlistToggle={handleWishlistToggle}
-              />
-            ))}
-          </div>
+          <>
+            <div className="products-grid">
+              {products.map(p => (
+                <ProductCard
+                  key={p.productId}
+                  product={p}
+                  showWishlist={true}
+                  isWishlisted={wishlistStatus[p.productId] || false}
+                  onWishlistToggle={handleWishlistToggle}
+                />
+              ))}
+            </div>
+            <div className="products-view-all">
+              <Link to="/shop" className="btn-primary">View All Products →</Link>
+            </div>
+          </>
         )}
       </div>
     </section>
