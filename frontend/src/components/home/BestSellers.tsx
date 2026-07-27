@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ProductCard from "../productcard/ProductCard";
 import { productsAPI, type Product } from "../../Features/products/productsAPI";
 import { wishlistAPI } from "../../Features/wishlist/wishlistAPI";
-import "./Product.css";
+import "./BestSellers.css";
 
-export default function Products() {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const search = searchParams.get("search") || "";
-
+export default function BestSellers() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [wishlistStatus, setWishlistStatus] = useState<Record<number, boolean>>({});
@@ -18,16 +14,9 @@ export default function Products() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await productsAPI.getFeatured();
+        const res = await productsAPI.getBestSellers();
         if (res.success) {
-          let filtered = res.data;
-          if (search) {
-            filtered = res.data.filter(p => 
-              p.name.toLowerCase().includes(search.toLowerCase()) ||
-              (p.brand && p.brand.toLowerCase().includes(search.toLowerCase()))
-            );
-          }
-          const displayed = filtered.slice(0, 8);
+          const displayed = res.data.slice(0, 8);
           setProducts(displayed);
 
           const statuses: Record<number, boolean> = {};
@@ -50,7 +39,7 @@ export default function Products() {
       }
     };
     fetchData();
-  }, [search]);
+  }, []);
 
   const handleWishlistToggle = async (productId: number) => {
     const currentlyWishlisted = wishlistStatus[productId] || false;
@@ -70,13 +59,13 @@ export default function Products() {
 
   if (loading) {
     return (
-      <section className="products-section">
+      <section className="bestsellers-section">
         <div className="container">
-          <div className="products-header">
-            <h2 className="products-title">Featured Products</h2>
-            <p className="products-sub">Loading products...</p>
+          <div className="bestsellers-header">
+            <h2 className="bestsellers-title">Best Sellers</h2>
+            <p className="bestsellers-sub">Loading best sellers...</p>
           </div>
-          <div className="products-grid">
+          <div className="bestsellers-grid">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="product-card-skeleton">
                 <div className="skeleton-image"></div>
@@ -93,37 +82,31 @@ export default function Products() {
     );
   }
 
-  if (products.length === 0 && !search) {
+  if (products.length === 0) {
     return null;
   }
 
   return (
-    <section className="products-section">
+    <section className="bestsellers-section">
       <div className="container">
-        <div className="products-header">
+        <div className="bestsellers-header">
           <div>
-            <h2 className="products-title">{search ? `Results for "${search}"` : "Featured Products"}</h2>
-            <p className="products-sub">{products.length} products found</p>
+            <h2 className="bestsellers-title">Best Sellers</h2>
+            <p className="bestsellers-sub">Our most popular products</p>
           </div>
-          <Link to="/shop" className="products-view-all">View All →</Link>
+          <Link to="/shop" className="bestsellers-view-all">View All →</Link>
         </div>
-        {products.length === 0 ? (
-          <div className="products-empty">
-            <p>No products found. Try a different search term.</p>
-          </div>
-        ) : (
-          <div className="products-grid">
-            {products.map(p => (
-              <ProductCard
-                key={p.productId}
-                product={p}
-                showWishlist={true}
-                isWishlisted={wishlistStatus[p.productId] || false}
-                onWishlistToggle={handleWishlistToggle}
-              />
-            ))}
-          </div>
-        )}
+        <div className="bestsellers-grid">
+          {products.map(p => (
+            <ProductCard
+              key={p.productId}
+              product={p}
+              showWishlist={true}
+              isWishlisted={wishlistStatus[p.productId] || false}
+              onWishlistToggle={handleWishlistToggle}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

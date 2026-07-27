@@ -3,6 +3,7 @@ import Hero from '../components/home/Hero';
 import Highlights from '../components/home/Highlights';
 import Categories from '../components/home/Categories';
 import Products from '../components/home/Products';
+import BestSellers from '../components/home/BestSellers';
 
 export default function HomePage() {
   return (
@@ -11,6 +12,7 @@ export default function HomePage() {
       <Categories />
       <Products />
       <Highlights />
+      <BestSellers />
     </Layout>
   );
 }
