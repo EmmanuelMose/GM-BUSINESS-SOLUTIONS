@@ -10,8 +10,12 @@
 .checkout-breadcrumb a {
   color: var(--brand-500);
 }
+.checkout-breadcrumb a:hover {
+  text-decoration: underline;
+}
 .checkout-breadcrumb .current {
   color: var(--gray-900);
+  font-weight: 600;
 }
 .checkout-success {
   text-align: center;
@@ -164,15 +168,6 @@
 }
 .checkout-select.error:focus {
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
-}
-.checkout-select option {
-  padding: 8px 12px;
-  background: white;
-  color: var(--gray-800);
-}
-.checkout-select option:checked {
-  background: var(--brand-50);
-  color: var(--brand-700);
 }
 .checkout-select-arrow {
   position: absolute;

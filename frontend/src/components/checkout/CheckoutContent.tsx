@@ -50,6 +50,12 @@ export default function CheckoutContent() {
     }
   }, [stationId]);
 
+  useEffect(() => {
+    if (formData.phone && mpesaPhone === "") {
+      setMpesaPhone(formData.phone);
+    }
+  }, [formData.phone]);
+
   const validateStep = (step: number) => {
     const e: Record<string, string> = {};
     if (step === 1) {
@@ -60,8 +66,12 @@ export default function CheckoutContent() {
       if (!stationId) e.stationId = "Please select a pickup station";
       if (!locationId) e.locationId = "Please select a pickup location";
     } else if (step === 3) {
-      if (!mpesaPhone.trim()) e.mpesaPhone = "Phone number is required";
-      else if (!/^[0-9]{10,12}$/.test(mpesaPhone.replace(/\D/g, ""))) e.mpesaPhone = "Invalid phone number";
+      const phoneToValidate = mpesaPhone || formData.phone;
+      if (!phoneToValidate.trim()) {
+        e.mpesaPhone = "Phone number is required";
+      } else if (!/^[0-9]{10,12}$/.test(phoneToValidate.replace(/\D/g, ""))) {
+        e.mpesaPhone = "Invalid phone number";
+      }
     }
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -177,6 +187,11 @@ export default function CheckoutContent() {
 
   const selectedStation = stations.find((s) => s.stationId === parseInt(stationId));
   const selectedLocation = locations.find((l) => l.locationId === parseInt(locationId));
+
+  if (items.length === 0 && !orderComplete) {
+    navigate("/cart");
+    return null;
+  }
 
   return (
     <div className="checkout-content">
