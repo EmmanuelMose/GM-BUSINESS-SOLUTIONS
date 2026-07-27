@@ -1,6 +1,6 @@
 import db from "../Drizzle/db";
 import { orders, orderItems, products } from "../Drizzle/schema";
-import { eq, desc, sql, count, max } from "drizzle-orm";
+import { eq, desc, sql, count, max, and } from "drizzle-orm";
 
 export const ordersService = {
   getAll: async () => {
@@ -40,6 +40,20 @@ export const ordersService = {
     return { ...order, items };
   },
 
+  getByUserAndRef: async (userId: number, ref: string) => {
+    const order = await db.query.orders.findFirst({
+      where: and(
+        eq(orders.userId, userId),
+        eq(orders.orderRef, ref)
+      )
+    });
+    if (!order) return null;
+    const items = await db.query.orderItems.findMany({
+      where: eq(orderItems.orderId, order.orderId)
+    });
+    return { ...order, items };
+  },
+
   getStats: async () => {
     const totalOrders = await db.select({ count: count() }).from(orders);
     const totalRevenue = await db.select({ sum: sql`SUM(total)` }).from(orders);
@@ -66,16 +80,14 @@ export const ordersService = {
       throw new Error("Order must have at least one item");
     }
     const orderRef = await ordersService.generateOrderRef();
-    const [order] = await db.insert(orders).values({
+
+    const orderData: any = {
       orderRef,
-      userId: data.userId || null,
-      guestEmail: data.guestEmail || null,
-      guestPhone: data.guestPhone || null,
       total: String(data.total),
       subtotal: String(data.subtotal),
       tax: String(data.tax || 0),
       status: data.status || "pending",
-      paymentStatus: data.paymentStatus || "pending",
+      paymentStatus: "pending",
       shippingAddress: data.shippingAddress,
       billingAddress: data.billingAddress,
       deliveryNotes: data.deliveryNotes || null,
@@ -83,7 +95,20 @@ export const ordersService = {
       pickupLocationId: data.pickupLocationId || null,
       createdAt: new Date(),
       updatedAt: new Date()
-    }).returning();
+    };
+
+    if (data.userId) {
+      orderData.userId = data.userId;
+      orderData.guestEmail = null;
+      orderData.guestPhone = null;
+    } else {
+      orderData.userId = null;
+      orderData.guestEmail = data.guestEmail || null;
+      orderData.guestPhone = data.guestPhone || null;
+    }
+
+    const [order] = await db.insert(orders).values(orderData).returning();
+
     for (const item of data.items) {
       const product = await db.query.products.findFirst({
         where: eq(products.productId, item.productId)

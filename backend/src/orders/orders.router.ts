@@ -4,6 +4,7 @@ import {
   getUserOrdersController,
   getOrderByIdController,
   getOrderByRefController,
+  getOrderByUserAndRefController,
   createOrderController,
   updateOrderStatusController,
   updatePaymentStatusController,
@@ -11,18 +12,20 @@ import {
   deleteOrderController,
   getOrderStatsController
 } from "./orders.controller";
+import { authenticate } from "../middleware/auth.middleware";
 
 const ordersRouter = Router();
 
-ordersRouter.get("/", getAllOrdersController);
-ordersRouter.get("/stats", getOrderStatsController);
-ordersRouter.get("/user", getUserOrdersController);
+ordersRouter.get("/", authenticate, getAllOrdersController);
+ordersRouter.get("/stats", authenticate, getOrderStatsController);
+ordersRouter.get("/user", authenticate, getUserOrdersController);
 ordersRouter.get("/ref/:ref", getOrderByRefController);
-ordersRouter.get("/:id", getOrderByIdController);
-ordersRouter.post("/", createOrderController);
-ordersRouter.patch("/:id/status", updateOrderStatusController);
-ordersRouter.patch("/:id/payment", updatePaymentStatusController);
-ordersRouter.patch("/:id/cancel", cancelOrderController);
-ordersRouter.delete("/:id", deleteOrderController);
+ordersRouter.get("/user/ref/:ref", authenticate, getOrderByUserAndRefController);
+ordersRouter.get("/:id", authenticate, getOrderByIdController);
+ordersRouter.post("/", authenticate, createOrderController);
+ordersRouter.patch("/:id/status", authenticate, updateOrderStatusController);
+ordersRouter.patch("/:id/payment", authenticate, updatePaymentStatusController);
+ordersRouter.patch("/:id/cancel", authenticate, cancelOrderController);
+ordersRouter.delete("/:id", authenticate, deleteOrderController);
 
 export default ordersRouter;

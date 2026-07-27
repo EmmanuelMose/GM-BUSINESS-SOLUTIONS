@@ -1,24 +1,37 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/layout/Layout';
 import { ordersAPI } from '../Features/orders/ordersAPI';
-import { Link, useSearchParams } from 'react-router-dom';
+import { pickupStationsAPI } from '../Features/pickupStations/pickupStationsAPI';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './OrderTrackingPage.css';
 
 export default function OrderTrackingPage() {
   const [searchParams] = useSearchParams();
   const refParam = searchParams.get('ref');
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   
   const [orderRef, setOrderRef] = useState(refParam || '');
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [tracked, setTracked] = useState(false);
+  const [pickupStation, setPickupStation] = useState<any>(null);
+  const [pickupLocation, setPickupLocation] = useState<any>(null);
 
   useEffect(() => {
-    if (refParam) {
+    if (!isAuthenticated) {
+      navigate('/login?redirect=track-order');
+      return;
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (refParam && isAuthenticated) {
       handleTrackOrder(refParam);
     }
-  }, [refParam]);
+  }, [refParam, isAuthenticated]);
 
   const handleTrackOrder = async (ref: string) => {
     setLoading(true);
@@ -27,10 +40,32 @@ export default function OrderTrackingPage() {
     setOrder(null);
 
     try {
-      const res = await ordersAPI.getByRef(ref.trim());
+      const res = await ordersAPI.getByUserAndRef(ref.trim());
       if (res.success) {
         setOrder(res.data);
         setTracked(true);
+        
+        if (res.data.pickupLocationId) {
+          try {
+            const stationRes = await pickupStationsAPI.getStationById(res.data.pickupLocationId);
+            if (stationRes.success) {
+              setPickupStation(stationRes.data);
+            }
+          } catch (err) {
+            console.error('Error fetching pickup station:', err);
+          }
+        }
+        
+        if (res.data.pickupLocationId) {
+          try {
+            const locRes = await pickupStationsAPI.getLocationById(res.data.pickupLocationId);
+            if (locRes.success) {
+              setPickupLocation(locRes.data);
+            }
+          } catch (err) {
+            console.error('Error fetching pickup location:', err);
+          }
+        }
       } else {
         setError('Order not found. Please check your order reference.');
       }
@@ -82,6 +117,10 @@ export default function OrderTrackingPage() {
   };
 
   const statusSteps = ['pending', 'confirmed', 'processing', 'shipped', 'delivered'];
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <Layout>
@@ -194,17 +233,35 @@ export default function OrderTrackingPage() {
                     </span>
                   </div>
                   <div className="tracking-detail-item">
-                    <span className="tracking-detail-label">Pickup Station</span>
-                    <span className="tracking-detail-value">
-                      {order.pickupStationId ? 'Selected' : 'Not set'}
-                    </span>
-                  </div>
-                  <div className="tracking-detail-item">
                     <span className="tracking-detail-label">Items</span>
                     <span className="tracking-detail-value">{order.items?.length || 0}</span>
                   </div>
                 </div>
               </div>
+
+              {(pickupStation || pickupLocation) && (
+                <div className="tracking-pickup-info">
+                  <h3 className="tracking-pickup-title">📍 Pickup Information</h3>
+                  <div className="tracking-pickup-details">
+                    {pickupStation && (
+                      <div className="tracking-pickup-item">
+                        <strong>Station:</strong> {pickupStation.name}
+                        <p>{pickupStation.address}</p>
+                        <p>{pickupStation.town}, {pickupStation.county}</p>
+                        {pickupStation.phone && <p>📞 {pickupStation.phone}</p>}
+                      </div>
+                    )}
+                    {pickupLocation && (
+                      <div className="tracking-pickup-item">
+                        <strong>Location:</strong> {pickupLocation.name}
+                        <p>{pickupLocation.address}</p>
+                        {pickupLocation.landmark && <p>Landmark: {pickupLocation.landmark}</p>}
+                        {pickupLocation.phone && <p>📞 {pickupLocation.phone}</p>}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {order.items && order.items.length > 0 && (
                 <div className="tracking-items">

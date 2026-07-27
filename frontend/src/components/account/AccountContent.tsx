@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { Menu, X, MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { inquiriesAPI } from '../../Features/inquiries/inquiriesAPI';
 import { ordersAPI } from '../../Features/orders/ordersAPI';
 import { pickupStationsAPI, type PickupStation, type PickupLocation } from '../../Features/pickupStations/pickupStationsAPI';
+import { useAuth } from '../../context/AuthContext';
 import ProfileForm from './ProfileForm';
 import './AccountContent.css';
 
@@ -16,6 +17,8 @@ const TABS = [
 ];
 
 export default function AccountContent() {
+  const { isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'profile';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -32,18 +35,26 @@ export default function AccountContent() {
   const [loadingPickup, setLoadingPickup] = useState(false);
   const [selectedStationId, setSelectedStationId] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/login?redirect=account');
+    }
+  }, [isAuthenticated, loading, navigate]);
+
   const setTab = (tab: string) => {
     setSearchParams({ tab });
     setMobileMenuOpen(false);
   };
 
   useEffect(() => {
-    if (activeTab === 'orders') {
+    if (activeTab === 'orders' && isAuthenticated) {
       const fetchOrders = async () => {
         setLoadingOrders(true);
         try {
           const res = await ordersAPI.getMyOrders();
-          if (res.success) setOrders(res.data);
+          if (res.success) {
+            setOrders(res.data);
+          }
         } catch (error) {
           console.error('Error fetching orders:', error);
         } finally {
@@ -52,7 +63,7 @@ export default function AccountContent() {
       };
       fetchOrders();
     }
-  }, [activeTab]);
+  }, [activeTab, isAuthenticated]);
 
   useEffect(() => {
     if (activeTab === 'pickup') {
@@ -129,6 +140,19 @@ export default function AccountContent() {
   };
 
   const statusSteps = ['pending', 'confirmed', 'processing', 'shipped', 'delivered'];
+
+  if (loading) {
+    return (
+      <div className="account-loading">
+        <div className="loader-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="account-content">

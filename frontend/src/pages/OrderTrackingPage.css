@@ -280,6 +280,34 @@
 .tracking-payment-failed {
   color: #dc2626;
 }
+.tracking-pickup-info {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--brand-50);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--brand-200);
+}
+.tracking-pickup-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+.tracking-pickup-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.tracking-pickup-item {
+  font-size: 14px;
+  color: var(--gray-700);
+}
+.tracking-pickup-item strong {
+  color: var(--gray-900);
+}
+.tracking-pickup-item p {
+  margin: 2px 0;
+}
 .tracking-items {
   margin-top: 24px;
 }
@@ -393,6 +421,9 @@
   }
   .tracking-progress-line {
     display: none;
+  }
+  .tracking-pickup-details {
+    grid-template-columns: 1fr;
   }
   .tracking-help {
     flex-direction: column;

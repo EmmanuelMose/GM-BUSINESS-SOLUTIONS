@@ -1,4 +1,3 @@
-// src/orders/orders.controller.ts
 import { Request, Response } from "express";
 import { ordersService } from "./orders.service";
 
@@ -56,19 +55,44 @@ export const getOrderByRefController = async (req: Request, res: Response) => {
   }
 };
 
+export const getOrderByUserAndRefController = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+    const refParam = req.params.ref;
+    if (!refParam || typeof refParam !== 'string') {
+      return res.status(400).json({ success: false, message: "Invalid order reference" });
+    }
+    const data = await ordersService.getByUserAndRef(userId, refParam);
+    if (!data) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+    res.json({ success: true, data });
+  } catch (e: any) {
+    res.status(400).json({ success: false, message: e.message });
+  }
+};
+
 export const createOrderController = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.userId;
-    if (!req.body.items || !Array.isArray(req.body.items) || req.body.items.length === 0) {
+    const { body } = req;
+    
+    if (!body.items || !Array.isArray(body.items) || body.items.length === 0) {
       return res.status(400).json({
         success: false,
         message: "Items array is required and must have at least one item",
       });
     }
-    const data = await ordersService.create({
-      ...req.body,
-      userId: userId || null,
-    });
+
+    const orderData = {
+      ...body,
+      userId: body.userId || userId || null,
+    };
+
+    const data = await ordersService.create(orderData);
     res.status(201).json({ success: true, data });
   } catch (e: any) {
     console.error("Order creation error:", e);

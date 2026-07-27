@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, MapPin, Phone, Mail, CheckCircle, User, Store, ChevronDown } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import { ordersAPI } from "../../Features/orders/ordersAPI";
 import { paymentsAPI } from "../../Features/payments/paymentsAPI";
 import { pickupStationsAPI, type PickupStation, type PickupLocation } from "../../Features/pickupStations/pickupStationsAPI";
@@ -15,6 +16,7 @@ const STEPS = [
 
 export default function CheckoutContent() {
   const { items, total, clearCart } = useCart();
+  const { user, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({ fullName: "", phone: "", email: "" });
@@ -30,6 +32,19 @@ export default function CheckoutContent() {
   const [mpesaPhone, setMpesaPhone] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [orderComplete, setOrderComplete] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/login?redirect=checkout');
+      return;
+    }
+  }, [isAuthenticated, loading, navigate]);
+
+  useEffect(() => {
+    if (items.length === 0 && !orderComplete) {
+      navigate("/cart");
+    }
+  }, [items, navigate, orderComplete]);
 
   useEffect(() => {
     setLoadingStations(true);
@@ -55,6 +70,16 @@ export default function CheckoutContent() {
       setMpesaPhone(formData.phone);
     }
   }, [formData.phone]);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setFormData({
+        fullName: user.fullName || "",
+        phone: user.phone || "",
+        email: user.email || "",
+      });
+    }
+  }, [isAuthenticated, user]);
 
   const validateStep = (step: number) => {
     const e: Record<string, string> = {};
@@ -88,10 +113,16 @@ export default function CheckoutContent() {
   };
 
   const handleCreateOrder = async () => {
+    if (!isAuthenticated) {
+      navigate('/login?redirect=checkout');
+      return;
+    }
     if (!validateStep(2)) return;
     setSubmitting(true);
     setPaymentStatus("Creating order...");
     try {
+      const userId = user ? parseInt(user.userId) : null;
+      
       const payload = {
         items: items.map((item) => ({
           productId: item.product.productId,
@@ -116,9 +147,7 @@ export default function CheckoutContent() {
           email: formData.email,
         },
         deliveryNotes: "",
-        guestEmail: formData.email,
-        guestPhone: formData.phone,
-        userId: null,
+        userId: userId,
         pickupStationId: stationId ? parseInt(stationId) : null,
         pickupLocationId: locationId ? parseInt(locationId) : null,
       };
@@ -188,8 +217,16 @@ export default function CheckoutContent() {
   const selectedStation = stations.find((s) => s.stationId === parseInt(stationId));
   const selectedLocation = locations.find((l) => l.locationId === parseInt(locationId));
 
-  if (items.length === 0 && !orderComplete) {
-    navigate("/cart");
+  if (loading) {
+    return (
+      <div className="checkout-loading">
+        <div className="loader-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
     return null;
   }
 

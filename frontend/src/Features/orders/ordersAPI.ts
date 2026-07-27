@@ -17,6 +17,7 @@ export interface OrderItem {
 }
 
 export interface Order {
+  pickupLocationId: any;
   orderId: number;
   orderRef: string;
   userId: number | null;
@@ -68,29 +69,64 @@ export type NewOrder = {
   userId?: number | null;
 };
 
+export interface ReceiptData {
+  order: Order;
+  pickupStation?: {
+    name: string;
+    address: string;
+    phone: string | null;
+    town: string;
+    county: string;
+  };
+  pickupLocation?: {
+    name: string;
+    address: string;
+    landmark: string | null;
+    phone: string | null;
+  };
+}
+
 const api = axios.create({ baseURL: ApiDomain });
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const ordersAPI = {
   getMyOrders: (): Promise<{ success: boolean; data: Order[] }> =>
     api.get('/orders/user').then(res => res.data),
+
   getById: (id: number): Promise<{ success: boolean; data: Order }> =>
     api.get(`/orders/${id}`).then(res => res.data),
+
   getByRef: (ref: string): Promise<{ success: boolean; data: Order }> =>
     api.get(`/orders/ref/${ref}`).then(res => res.data),
-  create: (data: NewOrder): Promise<{
-    message: string; success: boolean; data: Order 
-}> =>
+
+  getByUserAndRef: (ref: string): Promise<{ success: boolean; data: Order }> =>
+    api.get(`/orders/user/ref/${ref}`).then(res => res.data),
+
+  create: (data: NewOrder): Promise<{ success: boolean; data: Order; message: string }> =>
     api.post('/orders', data).then(res => res.data),
+
   cancel: (id: number): Promise<{ success: boolean; data: Order; message: string }> =>
     api.patch(`/orders/${id}/cancel`).then(res => res.data),
+
   getAll: (): Promise<{ success: boolean; data: Order[] }> =>
     api.get('/orders').then(res => res.data),
+
   getStats: (): Promise<{ success: boolean; data: { totalOrders: number; totalRevenue: number; pendingOrders: number } }> =>
     api.get('/orders/stats').then(res => res.data),
+
   updateStatus: (id: number, status: Order['status']): Promise<{ success: boolean; data: Order; message: string }> =>
     api.patch(`/orders/${id}/status`, { status }).then(res => res.data),
+
   updatePaymentStatus: (id: number, paymentStatus: Order['paymentStatus']): Promise<{ success: boolean; data: Order; message: string }> =>
     api.patch(`/orders/${id}/payment`, { paymentStatus }).then(res => res.data),
+
   delete: (id: number): Promise<{ success: boolean; data: Order; message: string }> =>
     api.delete(`/orders/${id}`).then(res => res.data),
 };
