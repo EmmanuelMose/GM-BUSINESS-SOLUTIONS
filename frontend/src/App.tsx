@@ -53,9 +53,6 @@ import Error from "./components/error/Error";
 import "./styles/styles.css";
 
 function App() {
-  const isAdmin = localStorage.getItem('userRole') === 'admin';
-  const isStaff = localStorage.getItem('userRole') === 'staff';
-
   const router = createBrowserRouter([
     {
       path: "/",
@@ -116,7 +113,7 @@ function App() {
     },
     {
       path: "/admin",
-      element: isAdmin ? <AdminDashboard /> : <Navigate to="/login" replace />,
+      element: <AdminDashboard />,
       children: [
         { path: "", element: <Navigate to="admindashboard" replace /> },
         { path: "admindashboard", element: <AdminDashboardOverview /> },
@@ -143,7 +140,7 @@ function App() {
     },
     {
       path: "/staff",
-      element: isStaff ? <StaffDashboard /> : <Navigate to="/login" replace />,
+      element: <StaffDashboard />,
       children: [
         { path: "", element: <Navigate to="staffdashboard" replace /> },
         { path: "staffdashboard", element: <StaffDashboardOverview /> },

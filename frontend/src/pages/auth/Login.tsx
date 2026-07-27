@@ -25,24 +25,27 @@ export default function Login() {
     try {
       const res = await authAPI.login({ email, password });
 
+      // Store all data first
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('refreshToken', res.data.refreshToken);
       localStorage.setItem('userId', String(res.data.userId));
       localStorage.setItem('userRole', res.data.role);
       localStorage.setItem('userName', res.data.fullName);
 
+      // Update auth context
       login({
         fullName: res.data.fullName,
         role: res.data.role,
         userId: res.data.userId,
       });
 
+      // Force reload to ensure auth context picks up the role
       if (res.data.role === 'admin') {
-        window.location.href = '/admin';
+        window.location.replace('/admin');
       } else if (res.data.role === 'staff') {
-        window.location.href = '/staff';
+        window.location.replace('/staff');
       } else {
-        window.location.href = redirectPath;
+        window.location.replace(redirectPath);
       }
     } catch (err: any) {
       if (err.message.includes('credentials')) {

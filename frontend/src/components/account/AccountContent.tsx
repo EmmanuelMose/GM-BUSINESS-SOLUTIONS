@@ -6,7 +6,7 @@ import { inquiriesAPI } from '../../Features/inquiries/inquiriesAPI';
 import { ordersAPI } from '../../Features/orders/ordersAPI';
 import ProfileForm from './ProfileForm';
 import './AccountContent.css';
-``
+
 const TABS = [
   { id: 'profile', label: 'Profile', icon: '👤' },
   { id: 'orders', label: 'My Orders', icon: '📦' },

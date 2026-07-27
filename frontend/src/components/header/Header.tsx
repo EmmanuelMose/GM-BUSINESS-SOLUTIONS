@@ -12,7 +12,7 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const { itemCount } = useCart();
-  const { isAuthenticated, user, loading } = useAuth();
+  const { isAuthenticated, user, loading, logout } = useAuth();
   const { wishlistCount } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesMenuOpen, setCategoriesMenuOpen] = useState(false);
@@ -87,8 +87,9 @@ export default function Header() {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
+      logout();
       localStorage.clear();
-      window.location.href = "/";
+      window.location.replace("/");
     }
   };
 
