@@ -62,7 +62,7 @@ export default function Login() {
         <div className="auth-card">
           <Link to="/" className="auth-back-link">← Back to Home</Link>
           <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-sub">Sign in to your GMNEX account</p>
+          <p className="auth-sub">Sign in to your SMARTP account</p>
 
           {error && <div className="auth-error">{error}</div>}
 

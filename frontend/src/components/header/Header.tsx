@@ -12,7 +12,7 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const { itemCount } = useCart();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
   const { wishlistCount } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesMenuOpen, setCategoriesMenuOpen] = useState(false);
@@ -87,10 +87,8 @@ export default function Header() {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
-      logout();
       localStorage.clear();
-      navigate("/");
-      window.location.reload();
+      window.location.href = "/";
     }
   };
 
@@ -101,6 +99,31 @@ export default function Header() {
     { name: 'About Us', path: '/about' },
     { name: 'Contact Us', path: '/account?tab=support' },
   ];
+
+  if (loading) {
+    return (
+      <div className="announcement-bar">
+        <div className="container">
+          <div className="announcement-content">
+            <span>📞 Need Help? Call / WhatsApp: <strong>0712 345 678</strong></span>
+            <span className="announcement-end">📍 Pickup from 50+ stations</span>
+          </div>
+        </div>
+        <header className="header">
+          <div className="container">
+            <div className="header-content">
+              <div className="left-section">
+                <Link to="/" className="logo">SMARTP<span className="logo-dot">.</span></Link>
+              </div>
+              <div className="right-section">
+                <div className="loading-placeholder">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </header>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -161,9 +184,12 @@ export default function Header() {
 
             <div className="right-section">
               {isAuthenticated ? (
-                <button onClick={handleLogout} className="logout-button desktop-only" aria-label="Logout">
-                  <LogOut size={18} />
-                </button>
+                <>
+                  <span className="user-greeting desktop-only">Hi, {user?.fullName || 'User'}</span>
+                  <button onClick={handleLogout} className="logout-button desktop-only" aria-label="Logout">
+                    <LogOut size={18} />
+                  </button>
+                </>
               ) : (
                 <Link to="/login" className="login-button desktop-only">
                   <User size={18} /><span>Login</span>
