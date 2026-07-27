@@ -1,12 +1,12 @@
 .hero {
   background: linear-gradient(135deg, #f0f7f4 0%, #ffffff 50%, #e8f5ee 100%);
-  padding: 0 0 32px;
+  padding: 0;
   border-bottom: 1px solid var(--gray-100);
   position: relative;
   overflow: hidden;
   animation: heroFadeIn 0.8s ease forwards;
   margin: 0;
-  min-height: 100vh;
+  min-height: calc(100vh - 180px);
   display: flex;
   align-items: center;
 }
@@ -87,6 +87,8 @@
   flex-direction: column;
   gap: 12px;
   animation: slideUpContent 0.8s ease forwards;
+  padding-top: 0;
+  margin-top: 0;
 }
 
 @keyframes slideUpContent {
@@ -114,6 +116,7 @@
   box-shadow: 0 2px 12px rgba(11, 107, 58, 0.3);
   transition: all 0.3s ease;
   animation: pulseBadge 2s ease-in-out infinite;
+  margin-top: 0;
 }
 
 @keyframes pulseBadge {
@@ -553,6 +556,10 @@
 }
 
 @media (max-width: 1024px) {
+  .hero {
+    min-height: auto;
+    padding: 0;
+  }
   .hero-card {
     max-width: 340px;
     padding: 28px;
@@ -569,7 +576,7 @@
 @media (max-width: 768px) {
   .hero {
     min-height: auto;
-    padding: 0 0 24px;
+    padding: 0;
   }
   .hero-grid {
     gap: 24px;
@@ -614,7 +621,7 @@
 
 @media (max-width: 480px) {
   .hero {
-    padding: 0 0 16px;
+    padding: 0;
   }
   .hero-title {
     font-size: 22px;

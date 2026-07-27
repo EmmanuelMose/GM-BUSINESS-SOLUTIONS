@@ -308,7 +308,7 @@
   }
 }
 
-/* Search Bar - No margin */
+/* Search Bar - No margin, flush with header */
 .search-bar-container {
   background: white;
   padding: 0;
@@ -366,7 +366,7 @@
   background: var(--brand-600);
 }
 
-/* Search Results Dropdown */
+/* Search Results Dropdown - appears above hero */
 .search-results-dropdown {
   position: absolute;
   top: calc(100% + 2px);

@@ -20,7 +20,7 @@ export default function Header() {
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [searchLoading, setSearchLoading] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -47,43 +47,35 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    const delaySearch = setTimeout(async () => {
-      if (searchQuery.trim().length > 1) {
-        setSearchLoading(true);
-        try {
-          const res = await productsAPI.search(searchQuery.trim());
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    
+    if (query.trim().length > 0) {
+      setIsSearching(true);
+      productsAPI.search(query.trim())
+        .then((res) => {
           if (res.success) {
             setSearchResults(res.data.slice(0, 6));
             setShowSearchResults(true);
           }
-        } catch (error) {
-          console.error('Search error:', error);
-        } finally {
-          setSearchLoading(false);
-        }
-      } else {
-        setSearchResults([]);
-        setShowSearchResults(false);
-      }
-    }, 300);
-
-    return () => clearTimeout(delaySearch);
-  }, [searchQuery]);
-
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+          setIsSearching(false);
+        })
+        .catch(() => {
+          setIsSearching(false);
+        });
+    } else {
+      setSearchResults([]);
+      setShowSearchResults(false);
+    }
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent) => {
     if ((e as React.KeyboardEvent).key === "Enter" || (e as React.MouseEvent).type === "click") {
       if (searchQuery.trim()) {
         navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
-        setSearchQuery("");
         setShowSearchResults(false);
       }
-      setMobileMenuOpen(false);
-      setCategoriesMenuOpen(false);
     }
   };
 
@@ -211,14 +203,18 @@ export default function Header() {
               onChange={handleSearchInputChange}
               onKeyDown={handleSearch} 
               className="search-bar-input" 
-              onFocus={() => searchQuery.trim().length > 1 && setShowSearchResults(true)}
+              onFocus={() => {
+                if (searchQuery.trim().length > 0 && searchResults.length > 0) {
+                  setShowSearchResults(true);
+                }
+              }}
             />
             <button className="search-bar-btn" onClick={handleSearch}>Search</button>
           </div>
           
           {showSearchResults && (
             <div className="search-results-dropdown">
-              {searchLoading ? (
+              {isSearching ? (
                 <div className="search-loading">Searching...</div>
               ) : searchResults.length > 0 ? (
                 <>
@@ -245,9 +241,8 @@ export default function Header() {
                     <button onClick={() => {
                       navigate(`/?search=${encodeURIComponent(searchQuery)}`);
                       setShowSearchResults(false);
-                      setSearchQuery("");
                     }}>
-                      View all results ({searchResults.length}) →
+                      View all results →
                     </button>
                   </div>
                 </>
