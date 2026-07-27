@@ -6,15 +6,5 @@
 }
 .main {
   flex: 1;
-  padding-top: 108px;
-}
-@media (max-width: 768px) {
-  .main {
-    padding-top: 72px;
-  }
-}
-@media (max-width: 480px) {
-  .main {
-    padding-top: 64px;
-  }
+  padding-top: 0;
 }

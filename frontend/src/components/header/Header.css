@@ -307,8 +307,6 @@
     display: none !important;
   }
 }
-
-/* Search Bar - No margin, flush with header */
 .search-bar-container {
   background: white;
   padding: 0;
@@ -365,8 +363,6 @@
 .search-bar-btn:hover {
   background: var(--brand-600);
 }
-
-/* Search Results Dropdown - appears above hero */
 .search-results-dropdown {
   position: absolute;
   top: calc(100% + 2px);
@@ -465,7 +461,6 @@
 .search-result-view-all button:hover {
   color: var(--brand-600);
 }
-
 @media (max-width: 768px) {
   .search-bar-wrapper {
     max-width: 100%;
@@ -525,8 +520,6 @@
     padding: 6px 10px;
   }
 }
-
-/* Mobile Menu */
 .mobile-menu {
   position: fixed;
   inset: 0;
